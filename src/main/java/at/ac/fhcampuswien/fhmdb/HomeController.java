@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.SortedState;
@@ -15,10 +16,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
     @FXML
@@ -32,6 +31,12 @@ public class HomeController implements Initializable {
 
     @FXML
     public JFXComboBox genreComboBox;
+
+    @FXML
+    public JFXComboBox releaseYearComboBox;
+
+    @FXML
+    public JFXComboBox ratingComboBox;
 
     @FXML
     public JFXButton sortBtn;
@@ -49,7 +54,8 @@ public class HomeController implements Initializable {
     }
 
     public void initializeState() {
-        allMovies = Movie.initializeMovies();
+        //allMovies = Movie.initializeMovies();
+        allMovies = MovieAPI.getAllMovies();
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
@@ -63,6 +69,26 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
+
+
+        List<String> releaseYears = allMovies.stream()
+                .map(Movie::getReleaseYear)
+                .distinct()
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+        releaseYearComboBox.getItems().addAll(releaseYears);
+        releaseYearComboBox.setPromptText("Filter by Release Year");
+
+
+        ratingComboBox.setPromptText("Filter by Rating");
+        ratingComboBox.getItems().add("No filter");
+        ratingComboBox.getItems().add(" > 2");
+        ratingComboBox.getItems().add(" > 4");
+        ratingComboBox.getItems().add(" > 6");
+        ratingComboBox.getItems().add(" > 8");
+        ratingComboBox.getItems().add(" > 9");
+
+
     }
 
     // sort movies based on sortedState
@@ -77,7 +103,7 @@ public class HomeController implements Initializable {
             sortedState = SortedState.DESCENDING;
         }
     }
-
+/*
     public List<Movie> filterByQuery(List<Movie> movies, String query){
         if(query == null || query.isEmpty()) return movies;
 
@@ -120,20 +146,50 @@ public class HomeController implements Initializable {
 
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
-    }
+    }*/
 
     public void searchBtnClicked(ActionEvent actionEvent) {
         String searchQuery = searchField.getText().trim().toLowerCase();
-        Object genre = genreComboBox.getSelectionModel().getSelectedItem();
+        String genre = genreComboBox.getSelectionModel().getSelectedItem().toString();
+        String year = releaseYearComboBox.getSelectionModel().getSelectedItem().toString();
+        String rating = ratingComboBox.getSelectionModel().getSelectedItem().toString();
 
-        applyAllFilters(searchQuery, genre);
+        //FilterLogic
+
+        //applyAllFilters(searchQuery, genre);
+         /*Genre genre = null;
+         if (genreString != null){
+            genre = Genre.valueOf(genreString);
+
+         }*/
+        List <Movie> movies = MovieAPI.getMovies(searchQuery, genre, year, rating) ;
+        observableMovies.clear();
+        observableMovies.addAll(movies);
 
         if(sortedState != SortedState.NONE) {
             sortMovies();
         }
+
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
         sortMovies();
+    }
+
+    String getMostPopularActor(List<Movie> movies){
+        //return allMovies.stream()
+        return "hi";
+    }
+
+    int getLongestMovieTitle(List<Movie> movies){
+        return 0;
+    }
+
+    long countMoviesFrom(List<Movie> movies, String director){
+        return 0;
+    }
+
+    List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear){
+        return new ArrayList<>();
     }
 }

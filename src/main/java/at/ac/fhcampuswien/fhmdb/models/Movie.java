@@ -1,29 +1,32 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Movie {
-    private final String title;
-    private final String description;
-    private final List<Genre> genres;
+    public final String title;
+    public final String description;
+    public final List<Genre> genres;
+    public final String releaseYear;
+    public final double rating;
 
-    public Movie(String title, String description, List<Genre> genres) {
+
+    public Movie(String title, String description, List<Genre> genres, String releaseYear, double rating) {
         this.title = title;
         this.description = description;
         this.genres = genres;
+        this.releaseYear = releaseYear;
+        this.rating = rating;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null) {
+        if (obj == null) {
             return false;
         }
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(!(obj instanceof Movie other)) {
+        if (!(obj instanceof Movie other)) {
             return false;
         }
         return this.title.equals(other.title) && this.description.equals(other.description) && this.genres.equals(other.genres);
@@ -41,7 +44,13 @@ public class Movie {
         return genres;
     }
 
-    public static List<Movie> initializeMovies(){
+    public String getReleaseYear(){
+        return releaseYear;
+    }
+
+    public double getRating(){return rating;}
+
+    /*public static List<Movie> initializeMovies() {
         List<Movie> movies = new ArrayList<>();
         movies.add(new Movie(
                 "Life Is Beautiful",
@@ -66,4 +75,11 @@ public class Movie {
 
         return movies;
     }
+}
+
+}
+
+
+     */
+
 }
