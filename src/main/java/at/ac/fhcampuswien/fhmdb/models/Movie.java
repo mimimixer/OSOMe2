@@ -6,7 +6,7 @@ public class Movie {
     public final String title;
     public final String description;
     public final List<Genre> genres;
-    public final String releaseYear;
+    public final int releaseYear;
     public final double rating;
 
     public final List<String>  writers;
@@ -16,7 +16,7 @@ public class Movie {
     public final String imgUrl;
 
 
-    public Movie(String title, String description, List<Genre> genres, String releaseYear, double rating,
+    public Movie(String title, String description, List<Genre> genres, int releaseYear, double rating,
                         List<String> writers, List<String> directors, List<String> mainCast,
                         int lengthInMinutes, String imgUrl) {
 
@@ -59,7 +59,7 @@ public class Movie {
         return genres;
     }
 
-    public String getReleaseYear(){
+    public int getReleaseYear(){
         return releaseYear;
     }
 

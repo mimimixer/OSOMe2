@@ -17,7 +17,9 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class HomeController implements Initializable {
     @FXML
@@ -71,22 +73,21 @@ public class HomeController implements Initializable {
         genreComboBox.setPromptText("Filter by Genre");
 
 
-        List<String> releaseYears = allMovies.stream()
+        List<Integer> releaseYears = allMovies.stream()
                 .map(Movie::getReleaseYear)
                 .distinct()
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
         releaseYearComboBox.getItems().addAll(releaseYears);
         releaseYearComboBox.setPromptText("Filter by Release Year");
+        releaseYearComboBox.getItems().add("No filter");
+
 
 
         ratingComboBox.setPromptText("Filter by Rating");
-        ratingComboBox.getItems().add("No filter");
-        ratingComboBox.getItems().add(" > 2");
-        ratingComboBox.getItems().add(" > 4");
-        ratingComboBox.getItems().add(" > 6");
-        ratingComboBox.getItems().add(" > 8");
-        ratingComboBox.getItems().add(" > 9");
+        IntStream.rangeClosed(0, 9).forEach(ratingComboBox.getItems()::add);
+
+
 
 
     }
@@ -103,7 +104,7 @@ public class HomeController implements Initializable {
             sortedState = SortedState.DESCENDING;
         }
     }
-/*
+
     public List<Movie> filterByQuery(List<Movie> movies, String query){
         if(query == null || query.isEmpty()) return movies;
 
@@ -146,23 +147,20 @@ public class HomeController implements Initializable {
 
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
-    }*/
+    }
 
     public void searchBtnClicked(ActionEvent actionEvent) {
         String searchQuery = searchField.getText().trim().toLowerCase();
         String genre = genreComboBox.getSelectionModel().getSelectedItem().toString();
-        String year = releaseYearComboBox.getSelectionModel().getSelectedItem().toString();
-        String rating = ratingComboBox.getSelectionModel().getSelectedItem().toString();
+        String releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem().toString();
+        String ratingFrom = ratingComboBox.getSelectionModel().getSelectedItem().toString();
 
         //FilterLogic
 
         //applyAllFilters(searchQuery, genre);
-         /*Genre genre = null;
-         if (genreString != null){
-            genre = Genre.valueOf(genreString);
 
-         }*/
-        List <Movie> movies = MovieAPI.getMovies(searchQuery, genre, year, rating) ;
+
+        List <Movie> movies = MovieAPI.getMovies(searchQuery, genre, releaseYear, ratingFrom) ;
         observableMovies.clear();
         observableMovies.addAll(movies);
 
@@ -176,20 +174,35 @@ public class HomeController implements Initializable {
         sortMovies();
     }
 
-    String getMostPopularActor(List<Movie> movies){
-        //return allMovies.stream()
-        return "hi";
+    String getMostPopularActor(List<Movie> movies) {
+        return movies.stream()
+                .flatMap(movie -> movie.getMainCast().stream())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("");
+
+
     }
 
+
     int getLongestMovieTitle(List<Movie> movies){
-        return 0;
+        return movies.stream()
+                .mapToInt(movie -> movie.getTitle().length())
+                .max()
+                .orElse(0);
+
     }
 
     long countMoviesFrom(List<Movie> movies, String director){
-        return 0;
+        return movies.stream().filter(movie -> movie.getDirectors().contains(director)).count();
     }
 
     List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear){
-        return new ArrayList<>();
+        return movies.stream()
+                .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
+                .collect(Collectors.toList());
     }
 }
