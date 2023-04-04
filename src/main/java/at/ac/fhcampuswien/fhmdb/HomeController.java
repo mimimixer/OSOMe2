@@ -132,7 +132,6 @@ public class HomeController implements Initializable {
             sortMovies();
         }
     }
-
     public void sortBtnClicked(ActionEvent actionEvent) {
         sortMovies();
     }
