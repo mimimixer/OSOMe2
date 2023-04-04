@@ -2,6 +2,7 @@ package at.ac.fhcampuswien.fhmdb.models;
 
 import java.io.*;
 import okhttp3.*;
+import com.google.gson.*;
 
 public class MovieAPI {
     OkHttpClient client = new OkHttpClient();

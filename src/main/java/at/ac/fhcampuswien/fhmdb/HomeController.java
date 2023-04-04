@@ -15,31 +15,26 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class HomeController implements Initializable {
     @FXML
     public JFXButton searchBtn;
-
     @FXML
     public TextField searchField;
-
     @FXML
     public JFXListView movieListView;
-
     @FXML
     public JFXComboBox genreComboBox;
+    @FXML
+    public JFXComboBox releaseYearComboBox=new JFXComboBox<>();
+    @FXML
+    public JFXComboBox ratingComboBox=new JFXComboBox<>();
 
     @FXML
     public JFXButton sortBtn;
-
     public List<Movie> allMovies;
-
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
-
     protected SortedState sortedState;
 
     @Override
@@ -63,6 +58,26 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
+
+        //https://stackoverflow.com/questions/27226795/adding-a-list-of-years-inside-a-jcombobox 4.4.23
+        ArrayList<Integer> years_tmp = new ArrayList<Integer>();
+        for(int years = Calendar.getInstance().get(Calendar.YEAR); years>= 1878; years--) {
+            years_tmp.add(Integer.valueOf(years));
+        }
+        releaseYearComboBox.getItems().add("No filter");  // add "no filter" to the combobox
+        releaseYearComboBox.getItems().addAll(years_tmp);
+        releaseYearComboBox.setPromptText("Filter by Release Year");
+
+        ArrayList<Double> ratingList = new ArrayList<Double>();
+        for(int i = 0; i<= 10; i++) {
+            Double rate=0.0+i;
+            System.out.println(rate);
+            ratingList.add(rate);
+        }
+        System.out.println(ratingList.toString());
+        ratingComboBox.getItems().add("No filter");  // add "no filter" to the combobox
+        ratingComboBox.getItems().addAll(ratingList);    // add all genres to the combobox
+        ratingComboBox.setPromptText("Filter by Rating");
     }
 
     // sort movies based on sortedState
