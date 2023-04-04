@@ -14,7 +14,7 @@ import java.util.List;
 public class MovieAPI {
 
     private static final String baseURL = "http://prog2.fh-campuswien.ac.at/movies";
-    private static final String DELIMITER = "";
+    private static final String DELIMITER = "&";
 
     private static String buildURL(String query, String genre, String releaseYear, String ratingFrom){
         StringBuilder url = new StringBuilder(baseURL);
@@ -24,10 +24,10 @@ public class MovieAPI {
             if(query != null && !query.isEmpty()){
                 url.append("query=").append(query).append(DELIMITER);
             }
-            if(genre != null){
+            if(genre != null && !genre.equals("No filter") ){
                 url.append("genre=").append(genre).append(DELIMITER);
             }
-            if (releaseYear != null) {
+            if (releaseYear != null && !releaseYear.equals("No filter")) {
                 url.append("releaseYear=").append(releaseYear).append(DELIMITER);
             }
             if (ratingFrom != null) {

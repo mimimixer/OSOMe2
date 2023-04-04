@@ -72,7 +72,7 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
 
-
+        releaseYearComboBox.getItems().add("No filter");
         List<Integer> releaseYears = allMovies.stream()
                 .map(Movie::getReleaseYear)
                 .distinct()
@@ -80,7 +80,7 @@ public class HomeController implements Initializable {
                 .collect(Collectors.toList());
         releaseYearComboBox.getItems().addAll(releaseYears);
         releaseYearComboBox.setPromptText("Filter by Release Year");
-        releaseYearComboBox.getItems().add("No filter");
+
 
 
 
@@ -150,10 +150,13 @@ public class HomeController implements Initializable {
     }
 
     public void searchBtnClicked(ActionEvent actionEvent) {
+
         String searchQuery = searchField.getText().trim().toLowerCase();
         String genre = genreComboBox.getSelectionModel().getSelectedItem().toString();
         String releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem().toString();
         String ratingFrom = ratingComboBox.getSelectionModel().getSelectedItem().toString();
+
+
 
         //FilterLogic
 
