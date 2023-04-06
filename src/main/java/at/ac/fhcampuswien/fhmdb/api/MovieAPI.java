@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,15 +17,15 @@ public class MovieAPI {
     private static final String baseURL = "http://prog2.fh-campuswien.ac.at/movies";
     private static final String DELIMITER = "&";
 
-    private static String buildURL(String query, String genre, String releaseYear, String ratingFrom){
+    private static String buildURL(String query, String genre, String releaseYear, String ratingFrom) {
         StringBuilder url = new StringBuilder(baseURL);
 
-        if((query != null && !query.isEmpty()) || genre != null || releaseYear != null || ratingFrom != null){
+        if ((query != null && !query.isEmpty()) || genre != null || releaseYear != null || ratingFrom != null) {
             url.append("?");
-            if(query != null && !query.isEmpty()){
+            if (query != null && !query.isEmpty()) {
                 url.append("query=").append(query).append(DELIMITER);
             }
-            if(genre != null && !genre.equals("No filter") ){
+            if (genre != null && !genre.equals("No filter")) {
                 url.append("genre=").append(genre).append(DELIMITER);
             }
             if (releaseYear != null && !releaseYear.equals("No filter")) {
@@ -37,7 +38,7 @@ public class MovieAPI {
         return url.toString();
     }
 
-    public static List<Movie> getMovies(String query, String genre, String releaseYear, String ratingFrom){
+    public static List<Movie> getMovies(String query, String genre, String releaseYear, String ratingFrom) {
         String url = buildURL(query, genre, releaseYear, ratingFrom);
 
         Request request = new Request.Builder()
@@ -47,21 +48,46 @@ public class MovieAPI {
                 .build();
 
         OkHttpClient client = new OkHttpClient();
-        try (Response response = client.newCall(request).execute()){
+        try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
             Gson gson = new Gson();
             Movie[] movies = gson.fromJson(responseBody, Movie[].class);
 
             return Arrays.asList(movies);
-        }
-        catch (Exception e){
+
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
         return new ArrayList<>();
     }
 
-    public static List<Movie> getAllMovies(){
+    public static List<Movie> getAllMovies() {
         return getMovies(null, null, null, null);
+    }
+
+    //dummy function to get the String not Json
+    public static String movieString(String query, String genre, String releaseYear, String ratingFrom) {
+        String url = buildURL(query, genre, releaseYear, ratingFrom);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .removeHeader("User-Agent")
+                .addHeader("User-Agent", "http.agent")
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        try (Response response = client.newCall(request).execute()) {
+            String responseBody = response.body().string();
+            //Gson gson = new Gson();
+            //Movie[] movies = gson.fromJson(responseBody, Movie[].class);
+            //System.out.println(responseBody);
+            return responseBody;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return "error";
+        }
+
+
     }
 
 }

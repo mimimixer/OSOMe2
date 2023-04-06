@@ -152,18 +152,29 @@ public class HomeController implements Initializable {
     public void searchBtnClicked(ActionEvent actionEvent) {
 
         String searchQuery = searchField.getText().trim().toLowerCase();
-        String genre = genreComboBox.getSelectionModel().getSelectedItem().toString();
-        String releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem().toString();
-        String ratingFrom = ratingComboBox.getSelectionModel().getSelectedItem().toString();
+        Object genre = genreComboBox.getSelectionModel().getSelectedItem();
+        Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
+        Object ratingFrom = ratingComboBox.getSelectionModel().getSelectedItem();
+
+        String genreStr ="No filter";
+        String releaseYearStr = "No filter";
+        String ratingStr = "0";
+
+        //NULL Handling cause i hate red text
+        if (genre !=null){
+            genreStr = genre.toString();
+        }
+        if (releaseYear != null){
+            releaseYearStr = releaseYear.toString();
+        }
+
+        if(ratingFrom != null){
+            ratingStr = ratingFrom.toString();
+        }
 
 
-
-        //FilterLogic
-
-        //applyAllFilters(searchQuery, genre);
-
-
-        List <Movie> movies = MovieAPI.getMovies(searchQuery, genre, releaseYear, ratingFrom) ;
+        observableMovies.addAll(allMovies);
+        List <Movie> movies = MovieAPI.getMovies(searchQuery, genreStr, releaseYearStr, ratingStr) ;
         observableMovies.clear();
         observableMovies.addAll(movies);
 
@@ -171,10 +182,20 @@ public class HomeController implements Initializable {
             sortMovies();
         }
 
+        // DUMMY calling extra Functions
+        System.out.println(getLongestMovieTitle(movies));
+        System.out.println(getMostPopularActor(movies));
+        System.out.println(countMoviesFrom(movies, "Quentin Tarantino"));
+        System.out.println(getMoviesBetweenYears(movies, 2008, 2019));
+        System.out.println(getBusiestWriter(movies));
+
+
+
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
         sortMovies();
+        //MovieAPI.movieString(null, null, null, null);
     }
 
     String getMostPopularActor(List<Movie> movies) {
@@ -200,12 +221,24 @@ public class HomeController implements Initializable {
     }
 
     long countMoviesFrom(List<Movie> movies, String director){
-        return movies.stream().filter(movie -> movie.getDirectors().contains(director)).count();
+        return movies.stream()
+                .filter(movie -> movie.getDirectors().contains(director))
+                .count();
     }
 
     List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear){
         return movies.stream()
                 .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
                 .collect(Collectors.toList());
+    }
+
+    String getBusiestWriter(List<Movie> movies){
+        return movies.stream()
+                .flatMap(movie -> movie.getWriters().stream())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey).orElse("");
     }
 }
