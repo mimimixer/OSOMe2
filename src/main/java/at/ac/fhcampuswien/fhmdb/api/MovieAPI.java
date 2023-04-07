@@ -40,7 +40,7 @@ public class MovieAPI {
     private static String buildURL(String id){
         StringBuilder url = new StringBuilder(baseURL);
         if(id != null){
-            url.append("/").append("id");
+            url.append("/").append(id);
         }
         return url.toString();
     }
@@ -49,6 +49,7 @@ public class MovieAPI {
         String url = buildURL(id);
         Request request = new Request.Builder()
                 .url(url)
+                .removeHeader("User-Agent")
                 .addHeader("User-Agent", "http.agent")
                 .build();
 
@@ -62,8 +63,8 @@ public class MovieAPI {
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
-
-        }return null;
+            return null;
+        }
     }
 
     public static List<Movie> getMovies(String query, String genre, String releaseYear, String ratingFrom) {

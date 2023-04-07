@@ -27,6 +27,7 @@ public class HomeController implements Initializable {
 
     @FXML
     public TextField searchField;
+    public TextField idField;
 
     @FXML
     public JFXListView movieListView;
@@ -151,43 +152,55 @@ public class HomeController implements Initializable {
 
     public void searchBtnClicked(ActionEvent actionEvent) {
 
-        String searchQuery = searchField.getText().trim().toLowerCase();
-        Object genre = genreComboBox.getSelectionModel().getSelectedItem();
-        Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
-        Object ratingFrom = ratingComboBox.getSelectionModel().getSelectedItem();
+        if (idField != null){
+            String id = idField.getText().trim().toLowerCase();
+            Movie movie = MovieAPI.getSpecificMovie(id);
+            observableMovies.clear();
+            observableMovies.add(movie);
 
-        String genreStr = null;
-        String releaseYearStr = null;
-        String ratingStr = null;
+        } else {
 
-        //NULL Handling cause i hate red text
-        if (genre !=null){
-            genreStr = genre.toString();
+            String searchQuery = searchField.getText().trim().toLowerCase();
+            Object genre = genreComboBox.getSelectionModel().getSelectedItem();
+            Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
+            Object ratingFrom = ratingComboBox.getSelectionModel().getSelectedItem();
+
+            String genreStr = null;
+            String releaseYearStr = null;
+            String ratingStr = null;
+
+            //NULL Handling cause i hate red text
+            if (genre != null) {
+                genreStr = genre.toString();
+            }
+            if (releaseYear != null) {
+                releaseYearStr = releaseYear.toString();
+            }
+
+            if (ratingFrom != null) {
+                ratingStr = ratingFrom.toString();
+            }
+
+
+            observableMovies.addAll(allMovies);
+            List<Movie> movies = MovieAPI.getMovies(searchQuery, genreStr, releaseYearStr, ratingStr);
+            observableMovies.clear();
+            observableMovies.addAll(movies);
+
+            // DUMMY calling extra Functions
+            System.out.println(getLongestMovieTitle(movies));
+            System.out.println(getMostPopularActor(movies));
+            System.out.println(countMoviesFrom(movies, "Quentin Tarantino"));
+            System.out.println(getMoviesBetweenYears(movies, 2008, 2019));
+            System.out.println(getBusiestWriter(movies));
         }
-        if (releaseYear != null){
-            releaseYearStr = releaseYear.toString();
-        }
-
-        if(ratingFrom != null){
-            ratingStr = ratingFrom.toString();
-        }
-
-
-        observableMovies.addAll(allMovies);
-        List <Movie> movies = MovieAPI.getMovies(searchQuery, genreStr, releaseYearStr, ratingStr) ;
-        observableMovies.clear();
-        observableMovies.addAll(movies);
 
         if(sortedState != SortedState.NONE) {
             sortMovies();
         }
 
-        // DUMMY calling extra Functions
-        System.out.println(getLongestMovieTitle(movies));
-        System.out.println(getMostPopularActor(movies));
-        System.out.println(countMoviesFrom(movies, "Quentin Tarantino"));
-        System.out.println(getMoviesBetweenYears(movies, 2008, 2019));
-        System.out.println(getBusiestWriter(movies));
+
+
 
 
 
