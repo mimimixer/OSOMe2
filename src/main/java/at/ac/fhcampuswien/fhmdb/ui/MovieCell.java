@@ -4,6 +4,8 @@ import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
@@ -14,7 +16,15 @@ public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
     private final Label detail = new Label();
     private final Label genre = new Label();
-    private final VBox layout = new VBox(title, detail, genre);
+    private final Label people = new Label();
+
+    private final VBox layout = new VBox(title, detail ,people, genre);
+
+
+
+
+
+
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -28,15 +38,26 @@ public class MovieCell extends ListCell<Movie> {
             title.setText(movie.getTitle());
             detail.setText(
                     movie.getDescription() != null
-                            ? movie.getDescription()
-                            : "No description available"
-            );
+                            ? movie.getDescription() +"\n" + "Release year " + movie.getReleaseYear() + " Rated " + movie.getRating() + " Movie Length: " +movie.getLengthInMinutes() +" minutes"
+                            : "No description available" +"\n" + "Release year " + movie.getReleaseYear() + " Rated " + movie.getRating()+  " Movie Length: " +movie.getLengthInMinutes() +" minutes"
+             );
 
             String genres = movie.getGenres()
                     .stream()
                     .map(Enum::toString)
                     .collect(Collectors.joining(", "));
             genre.setText(genres);
+            String actors = String.join(", ", movie.getMainCast());
+            String writersstr = String.join(", ", movie.getWriters());
+            String directorsstr = String.join(", ", movie.getDirectors());
+            people.setText("Main Cast: " + actors +"\n" +
+                    "Writers: " + writersstr + "\n" +
+                    "Directors: " + directorsstr);
+
+
+
+
+
 
 
             // color scheme
@@ -44,6 +65,7 @@ public class MovieCell extends ListCell<Movie> {
             detail.getStyleClass().add("text-white");
             genre.getStyleClass().add("text-white");
             genre.setStyle("-fx-font-style: italic");
+            people.getStyleClass().add("text-white");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout

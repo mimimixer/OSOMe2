@@ -57,13 +57,17 @@ public class MovieAPI {
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
+
         }
+
         return new ArrayList<>();
+
     }
 
     public static List<Movie> getAllMovies() {
         return getMovies(null, null, null, null);
     }
+
 
     //dummy function to get the String not Json
     public static String movieString(String query, String genre, String releaseYear, String ratingFrom) {

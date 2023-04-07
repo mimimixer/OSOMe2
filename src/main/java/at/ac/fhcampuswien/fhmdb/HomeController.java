@@ -156,9 +156,9 @@ public class HomeController implements Initializable {
         Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
         Object ratingFrom = ratingComboBox.getSelectionModel().getSelectedItem();
 
-        String genreStr ="No filter";
-        String releaseYearStr = "No filter";
-        String ratingStr = "0";
+        String genreStr = null;
+        String releaseYearStr = null;
+        String ratingStr = null;
 
         //NULL Handling cause i hate red text
         if (genre !=null){
