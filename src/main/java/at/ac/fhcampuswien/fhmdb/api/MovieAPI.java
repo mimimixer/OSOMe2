@@ -37,6 +37,34 @@ public class MovieAPI {
         }
         return url.toString();
     }
+    private static String buildURL(String id){
+        StringBuilder url = new StringBuilder(baseURL);
+        if(id != null){
+            url.append("/").append("id");
+        }
+        return url.toString();
+    }
+
+    public static Movie getSpecificMovie(String id) {
+        String url = buildURL(id);
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("User-Agent", "http.agent")
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        try (Response response = client.newCall(request).execute()) {
+            String responseBody = response.body().string();
+            Gson gson = new Gson();
+            Movie movie = gson.fromJson(responseBody, Movie.class);
+
+            return movie;
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+
+        }return null;
+    }
 
     public static List<Movie> getMovies(String query, String genre, String releaseYear, String ratingFrom) {
         String url = buildURL(query, genre, releaseYear, ratingFrom);
