@@ -63,8 +63,8 @@ public class MovieAPI {
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            return null;
-        }
+
+        }return null;
     }
 
     public static List<Movie> getMovies(String query, String genre, String releaseYear, String ratingFrom) {

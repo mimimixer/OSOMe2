@@ -24,6 +24,7 @@ import java.util.stream.IntStream;
 public class HomeController implements Initializable {
     @FXML
     public JFXButton searchBtn;
+    public JFXButton resetBtn;
 
     @FXML
     public TextField searchField;
@@ -152,14 +153,8 @@ public class HomeController implements Initializable {
 
     public void searchBtnClicked(ActionEvent actionEvent) {
 
-        if (idField != null){
+
             String id = idField.getText().trim().toLowerCase();
-            Movie movie = MovieAPI.getSpecificMovie(id);
-            observableMovies.clear();
-            observableMovies.add(movie);
-
-        } else {
-
             String searchQuery = searchField.getText().trim().toLowerCase();
             Object genre = genreComboBox.getSelectionModel().getSelectedItem();
             Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
@@ -181,6 +176,12 @@ public class HomeController implements Initializable {
                 ratingStr = ratingFrom.toString();
             }
 
+        if (!id.equals("")){
+            Movie movie = MovieAPI.getSpecificMovie(id);
+            observableMovies.clear();
+            observableMovies.add(movie);}
+
+        else {
 
             observableMovies.addAll(allMovies);
             List<Movie> movies = MovieAPI.getMovies(searchQuery, genreStr, releaseYearStr, ratingStr);
@@ -188,16 +189,16 @@ public class HomeController implements Initializable {
             observableMovies.addAll(movies);
 
             // DUMMY calling extra Functions
-            System.out.println(getLongestMovieTitle(movies));
+            /*System.out.println(getLongestMovieTitle(movies));
             System.out.println(getMostPopularActor(movies));
             System.out.println(countMoviesFrom(movies, "Quentin Tarantino"));
             System.out.println(getMoviesBetweenYears(movies, 2008, 2019));
-            System.out.println(getBusiestWriter(movies));
+            System.out.println(getBusiestWriter(movies));*/
         }
 
-        if(sortedState != SortedState.NONE) {
+        /*if(sortedState != SortedState.NONE) {
             sortMovies();
-        }
+        }*/
 
 
 
@@ -209,6 +210,21 @@ public class HomeController implements Initializable {
     public void sortBtnClicked(ActionEvent actionEvent) {
         sortMovies();
         //MovieAPI.movieString(null, null, null, null);
+    }
+
+    public void resetBtnClicked(ActionEvent actionEvent){
+        allMovies = MovieAPI.getAllMovies();
+        observableMovies.clear();
+        observableMovies.addAll(allMovies);
+
+        sortBtn.setText("Sort");
+        searchField.clear();
+        idField.clear();
+        genreComboBox.setValue(null);
+        ratingComboBox.setValue(null);
+        releaseYearComboBox.setValue(null);
+
+
     }
 
     String getMostPopularActor(List<Movie> movies) {
