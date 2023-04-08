@@ -100,6 +100,10 @@ public class HomeController implements Initializable {
     }
         System.out.println(ratingList.toString());
         ratingComboBox.getItems().add("No filter");  // add "no filter" to the combobox
+     /*   ArrayList<String> ratingStringList= new ArrayList<>();
+        for (int i = 0; i < ratingList.size(); i++) {
+            ratingStringList.set(i, "from " + ratingList.get(i));
+        }*/
         ratingComboBox.getItems().addAll(ratingList);    // add all genres to the combobox
         ratingComboBox.setPromptText("Filter by Rating");
 }

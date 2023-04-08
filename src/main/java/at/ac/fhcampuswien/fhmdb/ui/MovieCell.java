@@ -15,19 +15,18 @@ public class MovieCell extends ListCell<Movie> {
     private final Label id = new Label();
     private final Label title = new Label();
     private final Label genre = new Label();
-    private final Label releaseYear = new Label();
+    private final Label allNumbers = new Label(); //releaseYear
     private final Label detail = new Label();
     private final Label imgUrl = new Label();
-    private final Label lengthInMinutes = new Label();
+ //   private final Label lengthInMinutes = new Label();
     private final Label directors = new Label();
     private final Label writers = new Label();
     private final Label mainCast = new Label();
 
-    private final Label rating = new Label();
+  //  private final Label rating = new Label();
 
-    private final VBox layout = new VBox(id, title, releaseYear, lengthInMinutes, imgUrl,
-            detail, directors, writers, mainCast, rating, genre); //director, writers, mainCast,
-
+    private final VBox layout = new VBox(id, title,  imgUrl, allNumbers,
+            detail, directors, writers, mainCast, genre); //rating, releaseYear, lengthInMinutes,
     @Override
     protected void updateItem(Movie movie, boolean empty) {
         super.updateItem(movie, empty);
@@ -37,21 +36,23 @@ public class MovieCell extends ListCell<Movie> {
             setText(null);
         } else {
             this.getStyleClass().add("movie-cell");
-            id.setText("MovieID: " + movie.getId());
+            id.setText("MovieID: " + movie.getId()+"              "+(movie.getImgUrl()));
             title.setText(movie.getTitle());
             String genres = movie.getGenres()
                     .stream()
                     .map(Enum::toString)
                     .collect(Collectors.joining(", "));
             genre.setText(genres);
-            releaseYear.setText("release year: "+ String.valueOf(movie.getReleaseYear()));
+            allNumbers.setText("release year: "+ String.valueOf(movie.getReleaseYear())+"     Duration: "
+                    +String.valueOf(movie.getLengthInMinutes())+"     Rating: "+String.valueOf(movie.getRating()));
+            //     releaseYear.setText("release year: "+ String.valueOf(movie.getReleaseYear()));
             detail.setText(
                     movie.getDescription() != null
                             ? movie.getDescription()
                             : "No description available"
             );
-            imgUrl.setText(movie.getImgUrl());
-            lengthInMinutes.setText("Duration: "+String.valueOf(movie.getLengthInMinutes()));
+      //      imgUrl.setText(movie.getImgUrl());
+     //       lengthInMinutes.setText("Duration: "+String.valueOf(movie.getLengthInMinutes()));
             String director = movie.getDirectors()
                     .stream()
                     .collect(Collectors.joining(", "));
@@ -64,19 +65,21 @@ public class MovieCell extends ListCell<Movie> {
                     .stream()
                     .collect(Collectors.joining(", "));
             mainCast.setText("Cast: "+cast);
-            rating.setText("Rating: "+String.valueOf(movie.getRating()));
+      //      rating.setText("Rating: "+String.valueOf(movie.getRating()));
+
 
             // color scheme
             id.getStyleClass().add("text-white");
             title.getStyleClass().add("text-yellow");
-            releaseYear.getStyleClass().add("text-white");
-            lengthInMinutes.getStyleClass().add("text-white");
+            allNumbers.getStyleClass().add("text-white");
+        //releaseYear.getStyleClass().add("text-white");
+        //    lengthInMinutes.getStyleClass().add("text-white");
             directors.getStyleClass().add("text-white");
             detail.getStyleClass().add("text-white");
-            rating.getStyleClass().add("text-white");
+        //    rating.getStyleClass().add("text-white");
             writers.getStyleClass().add("text-white");
             mainCast.getStyleClass().add("text-white");
-            imgUrl.getStyleClass().add("text-black");
+        //    imgUrl.getStyleClass().add("text-black");
             genre.getStyleClass().add("text-white");
             genre.setStyle("-fx-font-style: italic");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
@@ -84,10 +87,11 @@ public class MovieCell extends ListCell<Movie> {
             // layout
             id.fontProperty().set(id.getFont().font(10));
             title.fontProperty().set(title.getFont().font(20));
-            detail.setMaxWidth(this.getScene().getWidth() - 30);
+            detail.setMaxWidth(this.getScene().getWidth() - 70);
             detail.setWrapText(true);
+            detail.fontProperty().set(detail.getFont().font(15));
             layout.setPadding(new Insets(10));
-            layout.spacingProperty().set(10);
+            layout.spacingProperty().set(15);
             layout.alignmentProperty().set(Pos.CENTER_LEFT);
             setGraphic(layout);
         }
