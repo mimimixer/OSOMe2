@@ -2,6 +2,7 @@ package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.SortedState;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
@@ -14,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -30,21 +32,34 @@ public class HomeController implements Initializable {
     public JFXComboBox releaseYearComboBox=new JFXComboBox<>();
     @FXML
     public JFXComboBox ratingComboBox=new JFXComboBox<>();
+ //   private static final String BASE = "http://prog2.fh-campuswien.ac.at/movies";
 
     @FXML
     public JFXButton sortBtn;
     public List<Movie> allMovies;
+    private static final String BASE = "http://prog2.fh-campuswien.ac.at/movies";
+
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     protected SortedState sortedState;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initializeState();
+        try {
+            initializeState();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         initializeLayout();
     }
 
-    public void initializeState() {
-        allMovies = Movie.initializeMovies();
+    public void initializeState() throws IOException {
+     //   allMovies = Movie.initializeMovies();
+        allMovies = MovieAPI.getDataBaseFromInternet(BASE);
+ //       String schaumamal=MovieAPI.getDataBaseFromInternet(BASE);
+ //       System.out.println(schaumamal);
+  //             String urlmitquery=MovieAPI.getDataBaseFromInternet(BASE);
+  //             System.out.println(urlmitquery);
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
