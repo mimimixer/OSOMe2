@@ -44,20 +44,7 @@ public class HomeController implements Initializable {
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     protected SortedState sortedState;
 
-
-    void printMovies(List<Movie> allMovies){
-        for (Movie m:allMovies){
-            System.out.println(m.getReleaseYear());
-            System.out.println(m.getId());
-            System.out.println(m.getImgUrl());
-            System.out.println(m.getLengthInMinutes());
-            System.out.println(m.getDirectors());
-            System.out.println(m.getWriters());
-            System.out.println(m.getMainCast());
-            System.out.println(m.getRating());
-        }
-    }
-
+//START UI
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -68,6 +55,7 @@ public class HomeController implements Initializable {
         initializeLayout();
     }
 
+    //prepare lists  for UI
     public void initializeState() throws IOException {
      //   allMovies = Movie.initializeMovies();
         allMovies = MovieAPI.getDataBaseFromInternet(BASE);
@@ -83,32 +71,29 @@ public class HomeController implements Initializable {
         sortedState = SortedState.NONE;
     }
 
+    //SET meaning of BUTTONS in UI
     public void initializeLayout() {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
         movieListView.setCellFactory(movieListView -> new MovieCell()); // apply custom cells to the listview
-
-
-        countMoviesFrom(observableMovies,"Frank Capra" );
-        getMoviesBetweenYears(observableMovies, 1995, 2000);
-        getLongestMovieTitle(observableMovies);
-        getMostPopularActor(observableMovies);
 
         Object[] genres = Genre.values();   // get all genres
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
-
+/*
         //https://stackoverflow.com/questions/27226795/adding-a-list-of-years-inside-a-jcombobox 4.4.23
         ArrayList<Integer> years_tmp = new ArrayList<Integer>();
+        years_tmp=getAllExistingReleaseYears();
         for(int years = Calendar.getInstance().get(Calendar.YEAR); years>= 1878; years--) {
             years_tmp.add(Integer.valueOf(years));
         }
+        */
         releaseYearComboBox.getItems().add("No filter");  // add "no filter" to the combobox
-        releaseYearComboBox.getItems().addAll(years_tmp);
+        releaseYearComboBox.getItems().addAll(getAllExistingReleaseYears(allMovies));
         releaseYearComboBox.setPromptText("Filter by Release Year");
 
         ArrayList<Double> ratingList = new ArrayList<Double>();
-        for(int i = 0; i<= 10; i++) {
+        for(int i = 9; i>=0; i--) {
         Double rate=0.0+i;
         System.out.println(rate);
         ratingList.add(rate);
@@ -119,9 +104,26 @@ public class HomeController implements Initializable {
         ratingComboBox.setPromptText("Filter by Rating");
 }
 
-    // sort movies based on sortedState
-    // by default sorted state is NONE
-    // afterwards it switches between ascending and descending
+    //SEARCH BUTTON
+    public void searchBtnClicked(ActionEvent actionEvent) {
+        String searchQuery = searchField.getText().trim().toLowerCase();
+        Object genre = genreComboBox.getSelectionModel().getSelectedItem();
+        applyAllFilters(searchQuery, genre);
+        if(sortedState != SortedState.NONE) {
+            sortMovies();
+        }
+    }
+
+    //SORT BUTTON
+    public void sortBtnClicked(ActionEvent actionEvent) {
+        sortMovies();
+    }
+
+    //SORT method - still valid
+    /* sort movies based on sortedState
+     by default sorted state is NONE
+     afterwards it switches between ascending and descending
+     */
     public void sortMovies() {
         if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
             observableMovies.sort(Comparator.comparing(Movie::getTitle));
@@ -132,6 +134,84 @@ public class HomeController implements Initializable {
         }
     }
 
+    //TESTPRINTER
+    void printMovies(List<Movie> allMovies){
+        for (Movie m:allMovies){
+            System.out.println(m.getReleaseYear());
+            System.out.println(m.getId());
+            System.out.println(m.getImgUrl());
+            System.out.println(m.getLengthInMinutes());
+            System.out.println(m.getDirectors());
+            System.out.println(m.getWriters());
+            System.out.println(m.getMainCast());
+            System.out.println(m.getRating());
+        }
+    }
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //Java Streams
+    public List<Integer>  getAllExistingReleaseYears(List<Movie> movies) {
+        List<Integer> allYears = movies.stream()
+                .map(movie -> movie.getReleaseYear())
+                .sorted(Comparator.reverseOrder())
+                .distinct()
+                .collect(Collectors.toList());
+    //    System.out.println(allYears);
+        return allYears;
+    }
+    void methodToTryStreams(){
+        countMoviesFrom(observableMovies,"Frank Capra" );
+        getMoviesBetweenYears(observableMovies, 1995, 2000);
+        getLongestMovieTitle(observableMovies);
+        getMostPopularActor(observableMovies);
+    }
+    public String  getMostPopularActor(List<Movie> movies) {
+        List<String> actors = movies.stream()
+                .map(movie -> movie.getMainCast())
+                .flatMap(movie -> movie.stream())
+                .collect(Collectors.toList());
+        //8.4.23 https://www.geeksforgeeks.org/stream-flatmap-java-examples/ and
+        // https://stackoverflow.com/questions/71051152/iterate-over-a-list-of-lists-and-check-for-a-condition-using-java-8
+        Map<String, Long> actorsMap = actors.stream()
+                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));//8.4.23 https://www.techiedelight.com/count-frequency-elements-list-java/
+        List<String> actor = actorsMap.entrySet().stream()
+                .max(Comparator.comparing(Map.Entry::getValue))
+                .stream().limit(1)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+//OMG this was hard! 8.4.23
+// https://www.tutorialspoint.com/java8/java8_streams.htm,
+// https://www.swtestacademy.com/java-streams-comparators/,
+// https://www.tutorialspoint.com/java-8-stream-terminal-operations
+        System.out.println(actor.toString());
+        return actor.toString();
+    }
+    public int getLongestMovieTitle(List<Movie> movies) {
+        var result = movies.stream()
+                .mapToInt(movie->movie.getTitle().length())
+                .max()
+                .stream().limit(1)
+                .sum();
+        System.out.println("the longest movie titel hast number of letters: "+result);
+        return result;
+    }
+    public List<Movie> getMoviesBetweenYears(List<Movie> movies, int yearStart, int yearEnd) {
+        var result = movies.stream()
+                .filter(movie -> movie.getReleaseYear()> yearStart)
+                .filter(movie -> movie.getReleaseYear()< yearEnd)
+                .collect(Collectors.toList());
+        System.out.println("the following movies were made between " +yearStart+" and "+yearEnd);
+        printMovies(result);
+        return result;
+    }
+    public long countMoviesFrom(List<Movie> movies, String director) {
+        var result = movies.stream()
+                .filter(movie -> movie.getDirectors().contains(director))
+                .count();
+        System.out.println("there are "+result+" movies of director "+director+" in the movie list");
+        return result;
+    }
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //queryFilter method - for staticList
     public List<Movie> filterByQuery(List<Movie> movies, String query){
         if(query == null || query.isEmpty()) return movies;
 
@@ -148,6 +228,7 @@ public class HomeController implements Initializable {
                 .toList();
     }
 
+    //genreFilter method - for staticList
     public List<Movie> filterByGenre(List<Movie> movies, Genre genre){
         if(genre == null) return movies;
 
@@ -161,6 +242,7 @@ public class HomeController implements Initializable {
                 .toList();
     }
 
+    //allFILTER methods query+genre - for staticList
     public void applyAllFilters(String searchQuery, Object genre) {
         List<Movie> filteredMovies = allMovies;
 
@@ -175,72 +257,4 @@ public class HomeController implements Initializable {
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
     }
-
-    public void searchBtnClicked(ActionEvent actionEvent) {
-        String searchQuery = searchField.getText().trim().toLowerCase();
-        Object genre = genreComboBox.getSelectionModel().getSelectedItem();
-
-        applyAllFilters(searchQuery, genre);
-
-        if(sortedState != SortedState.NONE) {
-            sortMovies();
-        }
-    }
-    public void sortBtnClicked(ActionEvent actionEvent) {
-        sortMovies();
-    }
-
-    //Java Streams
-    public String  getMostPopularActor(List<Movie> movies) {
-        List<String> actors = movies.stream()
-                .map(movie -> movie.getMainCast())
-                .flatMap(movie -> movie.stream())
-                .collect(Collectors.toList());
-        //8.4.23 https://www.geeksforgeeks.org/stream-flatmap-java-examples/ and
-        // https://stackoverflow.com/questions/71051152/iterate-over-a-list-of-lists-and-check-for-a-condition-using-java-8
-        Map<String, Long> actorsMap = actors.stream()
-                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));//8.4.23 https://www.techiedelight.com/count-frequency-elements-list-java/
-       List<String> actor = actorsMap.entrySet().stream()
-               .max(Comparator.comparing(Map.Entry::getValue))
-               .stream().limit(1)
-               .map(Map.Entry::getKey)
-               .collect(Collectors.toList());
-//OMG this was hard! 8.4.23
-// https://www.tutorialspoint.com/java8/java8_streams.htm,
-// https://www.swtestacademy.com/java-streams-comparators/,
-// https://www.tutorialspoint.com/java-8-stream-terminal-operations
-
-        System.out.println(actor.toString());
-
-        return actor.toString();
-    }
-    public int getLongestMovieTitle(List<Movie> movies) {
-        var result = movies.stream()
-                .mapToInt(movie->movie.getTitle().length())
-                .max()
-                .stream().limit(1)
-                .sum();
-        System.out.println("the longest movie titel hast number of letters: "+result);
-        return result;
-    }
-
-    public List<Movie> getMoviesBetweenYears(List<Movie> movies, int yearStart, int yearEnd) {
-        var result = movies.stream()
-                .filter(movie -> movie.getReleaseYear()> yearStart)
-                .filter(movie -> movie.getReleaseYear()< yearEnd)
-                .collect(Collectors.toList());
-        System.out.println("the following movies were made between " +yearStart+" and "+yearEnd);
-        printMovies(result);
-        return result;
-    }
-
-    public long countMoviesFrom(List<Movie> movies, String director) {
-        var result = movies.stream()
-                .filter(movie -> movie.getDirectors().contains(director))
-                .count();
-        System.out.println("there are "+result+" movies of director "+director+" in the movie list");
-        return result;
-    }
-
-
 }

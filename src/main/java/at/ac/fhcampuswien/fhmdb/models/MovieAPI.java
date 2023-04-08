@@ -23,20 +23,18 @@ URL url= HttpUrl.parse("http://prog2.fh-campuswien.ac.at/movies").url(); //https
    private static OkHttpClient client = new OkHttpClient();
 /*
     public String buildUrl(String queryText, String chosenGenre, int chosenReleaseYear, int chosenRatingFrom) throws IOException, NullPointerException {
-
         HttpUrl urlWithQueryParameters = new HttpUrl.Builder()
                 .scheme("https")
                 .host("prog2.fh-campuswien.ac.at/movies")
                 //     .addPathSegment("movies")
                 //      .addPathSegment("v1")
-                .addQueryParameter(queryText, "w")
-                .addQueryParameter("auth_token", "71x23768234hgjwqguygqew")
-                .addQueryParameter("auth_token", "71x23768234hgjwqguygqew")
-                .addQueryParameter("auth_token", "71x23768234hgjwqguygqew")
-                .addQueryParameter("auth_token", "71x23768234hgjwqguygqew")
+                .addQueryParameter("query", queryText)
+                .addQueryParameter("genre", chosenGenre)
+                .addQueryParameter("releaseYear", Integer.toString(chosenReleaseYear))
+                .addQueryParameter("ratingFrom", Integer.toString(chosenRatingFrom))
                 .build();
 
-        System.out.println(httpUrl.toString());
+        System.out.println(buildUrl().toString());
 
         Request requesthttp = new Request.Builder()
                 .addHeader("accept", "application/json")
