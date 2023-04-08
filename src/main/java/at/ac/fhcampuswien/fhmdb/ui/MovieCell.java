@@ -25,7 +25,8 @@ public class MovieCell extends ListCell<Movie> {
 
     private final Label rating = new Label();
 
-    private final VBox layout = new VBox(title, detail, genre);
+    private final VBox layout = new VBox(id, title, releaseYear, lengthInMinutes, imgUrl,
+            detail, directors, writers, mainCast, rating, genre); //director, writers, mainCast,
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -36,44 +37,52 @@ public class MovieCell extends ListCell<Movie> {
             setText(null);
         } else {
             this.getStyleClass().add("movie-cell");
-            id.setText(movie.getId());
+            id.setText("MovieID: " + movie.getId());
             title.setText(movie.getTitle());
             String genres = movie.getGenres()
                     .stream()
                     .map(Enum::toString)
                     .collect(Collectors.joining(", "));
             genre.setText(genres);
-            releaseYear.setText(movie.getTitle());
+            releaseYear.setText("release year: "+ String.valueOf(movie.getReleaseYear()));
             detail.setText(
                     movie.getDescription() != null
                             ? movie.getDescription()
                             : "No description available"
             );
-            imgUrl.setText(movie.getTitle());
-            lengthInMinutes.setText(movie.getTitle());
-            String directors = movie.getDirectors()
+            imgUrl.setText(movie.getImgUrl());
+            lengthInMinutes.setText("Duration: "+String.valueOf(movie.getLengthInMinutes()));
+            String director = movie.getDirectors()
                     .stream()
                     .collect(Collectors.joining(", "));
-            String writers = movie.getWriters()
+            directors.setText("Directors: "+director);
+            String writer = movie.getWriters()
                     .stream()
                     .collect(Collectors.joining(", "));
-            String mainCast = movie.getMainCast()
+            writers.setText("Writers: "+writer);
+            String cast = movie.getMainCast()
                     .stream()
                     .collect(Collectors.joining(", "));
-            rating.setText(movie.getTitle());
+            mainCast.setText("Cast: "+cast);
+            rating.setText("Rating: "+String.valueOf(movie.getRating()));
 
             // color scheme
-            id.getStyleClass().add("text-blue");
+            id.getStyleClass().add("text-white");
             title.getStyleClass().add("text-yellow");
             releaseYear.getStyleClass().add("text-white");
             lengthInMinutes.getStyleClass().add("text-white");
+            directors.getStyleClass().add("text-white");
             detail.getStyleClass().add("text-white");
-            imgUrl.getStyleClass().add("text-orange");
+            rating.getStyleClass().add("text-white");
+            writers.getStyleClass().add("text-white");
+            mainCast.getStyleClass().add("text-white");
+            imgUrl.getStyleClass().add("text-black");
             genre.getStyleClass().add("text-white");
             genre.setStyle("-fx-font-style: italic");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout
+            id.fontProperty().set(id.getFont().font(10));
             title.fontProperty().set(title.getFont().font(20));
             detail.setMaxWidth(this.getScene().getWidth() - 30);
             detail.setWrapText(true);

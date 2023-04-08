@@ -18,6 +18,8 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
     @FXML
@@ -43,6 +45,19 @@ public class HomeController implements Initializable {
     protected SortedState sortedState;
 
 
+    void printMovies(List<Movie> allMovies){
+        for (Movie m:allMovies){
+            System.out.println(m.getReleaseYear());
+            System.out.println(m.getId());
+            System.out.println(m.getImgUrl());
+            System.out.println(m.getLengthInMinutes());
+            System.out.println(m.getDirectors());
+            System.out.println(m.getWriters());
+            System.out.println(m.getMainCast());
+            System.out.println(m.getRating());
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -56,7 +71,10 @@ public class HomeController implements Initializable {
     public void initializeState() throws IOException {
      //   allMovies = Movie.initializeMovies();
         allMovies = MovieAPI.getDataBaseFromInternet(BASE);
- //       String schaumamal=MovieAPI.getDataBaseFromInternet(BASE);
+      //  printMovies(allMovies);
+
+
+        //       String schaumamal=MovieAPI.getDataBaseFromInternet(BASE);
  //       System.out.println(schaumamal);
   //             String urlmitquery=MovieAPI.getDataBaseFromInternet(BASE);
   //             System.out.println(urlmitquery);
@@ -68,6 +86,12 @@ public class HomeController implements Initializable {
     public void initializeLayout() {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
         movieListView.setCellFactory(movieListView -> new MovieCell()); // apply custom cells to the listview
+
+
+        countMoviesFrom(observableMovies,"Frank Capra" );
+        getMoviesBetweenYears(observableMovies, 1995, 2000);
+        getLongestMovieTitle(observableMovies);
+        getMostPopularActor(observableMovies);
 
         Object[] genres = Genre.values();   // get all genres
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
@@ -85,15 +109,15 @@ public class HomeController implements Initializable {
 
         ArrayList<Double> ratingList = new ArrayList<Double>();
         for(int i = 0; i<= 10; i++) {
-            Double rate=0.0+i;
-            System.out.println(rate);
-            ratingList.add(rate);
-        }
+        Double rate=0.0+i;
+        System.out.println(rate);
+        ratingList.add(rate);
+    }
         System.out.println(ratingList.toString());
         ratingComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         ratingComboBox.getItems().addAll(ratingList);    // add all genres to the combobox
         ratingComboBox.setPromptText("Filter by Rating");
-    }
+}
 
     // sort movies based on sortedState
     // by default sorted state is NONE
@@ -165,4 +189,58 @@ public class HomeController implements Initializable {
     public void sortBtnClicked(ActionEvent actionEvent) {
         sortMovies();
     }
+
+    //Java Streams
+    public String  getMostPopularActor(List<Movie> movies) {
+        List<String> actors = movies.stream()
+                .map(movie -> movie.getMainCast())
+                .flatMap(movie -> movie.stream())
+                .collect(Collectors.toList());
+        //8.4.23 https://www.geeksforgeeks.org/stream-flatmap-java-examples/ and
+        // https://stackoverflow.com/questions/71051152/iterate-over-a-list-of-lists-and-check-for-a-condition-using-java-8
+        Map<String, Long> actorsMap = actors.stream()
+                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));//8.4.23 https://www.techiedelight.com/count-frequency-elements-list-java/
+       List<String> actor = actorsMap.entrySet().stream()
+               .max(Comparator.comparing(Map.Entry::getValue))
+               .stream().limit(1)
+               .map(Map.Entry::getKey)
+               .collect(Collectors.toList());
+//OMG this was hard! 8.4.23
+// https://www.tutorialspoint.com/java8/java8_streams.htm,
+// https://www.swtestacademy.com/java-streams-comparators/,
+// https://www.tutorialspoint.com/java-8-stream-terminal-operations
+
+        System.out.println(actor.toString());
+
+        return actor.toString();
+    }
+    public int getLongestMovieTitle(List<Movie> movies) {
+        var result = movies.stream()
+                .mapToInt(movie->movie.getTitle().length())
+                .max()
+                .stream().limit(1)
+                .sum();
+        System.out.println("the longest movie titel hast number of letters: "+result);
+        return result;
+    }
+
+    public List<Movie> getMoviesBetweenYears(List<Movie> movies, int yearStart, int yearEnd) {
+        var result = movies.stream()
+                .filter(movie -> movie.getReleaseYear()> yearStart)
+                .filter(movie -> movie.getReleaseYear()< yearEnd)
+                .collect(Collectors.toList());
+        System.out.println("the following movies were made between " +yearStart+" and "+yearEnd);
+        printMovies(result);
+        return result;
+    }
+
+    public long countMoviesFrom(List<Movie> movies, String director) {
+        var result = movies.stream()
+                .filter(movie -> movie.getDirectors().contains(director))
+                .count();
+        System.out.println("there are "+result+" movies of director "+director+" in the movie list");
+        return result;
+    }
+
+
 }

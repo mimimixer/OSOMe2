@@ -18,7 +18,6 @@ public class MovieAPI {
 URL url= HttpUrl.parse("http://prog2.fh-campuswien.ac.at/movies").url(); //https://stackoverflow.com/questions/39498767/build-url-in-java 4.4.23
 
   //  private static final String DELIMITER = "&";
-    private static ResourceBundle resourceBundle;
 
     //https://square.github.io/okhttp/#requirements 5.4.23
    private static OkHttpClient client = new OkHttpClient();
