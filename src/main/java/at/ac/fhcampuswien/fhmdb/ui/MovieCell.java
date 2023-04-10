@@ -20,9 +20,6 @@ public class MovieCell extends ListCell<Movie> {
     private final Label people = new Label();
     private final VBox layout = new VBox(title, detail ,people, genre);
 
-
-    private final VBox layout = new VBox(id, title,  imgUrl, allNumbers,
-            detail, directors, writers, mainCast, genre); //rating, releaseYear, lengthInMinutes,
     @Override
     protected void updateItem(Movie movie, boolean empty) {
         super.updateItem(movie, empty);
