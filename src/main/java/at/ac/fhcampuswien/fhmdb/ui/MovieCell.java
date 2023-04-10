@@ -33,7 +33,7 @@ public class MovieCell extends ListCell<Movie> {
 
         if (empty || movie == null) {
             setGraphic(null);
-            setText(null);
+         //   setText("No Movies found for this parameters. \n Please change query.");
         } else {
             this.getStyleClass().add("movie-cell");
             id.setText("MovieID: " + movie.getId()+"              "+(movie.getImgUrl()));

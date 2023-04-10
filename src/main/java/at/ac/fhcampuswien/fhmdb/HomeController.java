@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class HomeController implements Initializable {
     @FXML
@@ -87,6 +88,8 @@ public class HomeController implements Initializable {
     }
     public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating)throws NullPointerException {
         List<Movie> filteredMovies = allMovies;
+        filterDescriptionByQuery(filteredMovies, searchQuery);
+        List<Movie> finalSearchedList;
 
         if ((!searchQuery.isEmpty()) ||(genre != null && !genre.toString().equals("No filter"))||
                 (releaseYear != null && !releaseYear.toString().equals("No filter"))||
@@ -94,9 +97,6 @@ public class HomeController implements Initializable {
             String genres=null, year=null, rates=null;
             if (genre!=null) {
                  genres = genre.toString();
-       //          if (genre "No filter"){
-         //           genres=null;
-           //     }
             }
            if (releaseYear != null){
                year = releaseYear.toString();
@@ -104,12 +104,29 @@ public class HomeController implements Initializable {
            if (rating!=null){
                rates = rating.toString();
            }
-
             filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
+
+            if (!searchQuery.isEmpty()){
+                if((genre == null && !genre.toString().equals("No filter"))&&
+                        (releaseYear == null && !releaseYear.toString().equals("No filter"))&&
+                        (rating == null && !rating.toString().equals("No filter"))){
+                             filteredMovies = Stream.of(filteredMovies,filterDescriptionByQuery(allMovies, searchQuery))
+                                .flatMap(x->x.stream())
+                                .distinct()
+                                .collect(Collectors.toList());
+                }else{
+                            List<Movie> filteredMovies2 = MovieAPI.getThatMovieListDown(null,genres,year,rates);
+                        filteredMovies=Stream.of(filteredMovies,filterDescriptionByQuery(filteredMovies2, searchQuery))
+                                .flatMap(x->x.stream())
+                                .distinct()
+                                .collect(Collectors.toList());
+                }
+            }
         }
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
     }
+
 
     public void initializeLayout() {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
@@ -159,6 +176,20 @@ public class HomeController implements Initializable {
      by default sorted state is NONE
      afterwards it switches between ascending and descending
      */
+    public List<Movie> filterDescriptionByQuery(List<Movie> movies, String query){
+        if(query == null || query.isEmpty()) return movies;
+
+        if(movies == null) {
+            throw new IllegalArgumentException("movies must not be null");
+        }
+
+        return movies.stream()
+                .filter(Objects::nonNull)
+                .filter(movie ->
+                        movie.getDescription().toLowerCase().contains(query.toLowerCase())
+                )
+                .toList();
+    }
     public void sortMovies() {
         if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
             observableMovies.sort(Comparator.comparing(Movie::getTitle));
