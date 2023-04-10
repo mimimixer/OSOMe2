@@ -139,7 +139,7 @@ public class MovieAPI {
 
     public static Movie parseMovieToJson (String requestedDataByUrl){
         Movie outputMovie = new Gson().fromJson(requestedDataByUrl, Movie.class); //https://www.baeldung.com/jackson-vs-gson 6.4.23
-        List<Movie> listAllMovies= Arrays.asList(outputMovie); //https://www.geeksforgeeks.org/conversion-of-array-to-arraylist-in-java/ 6.4.23
+        //List<Movie> listAllMovies= Arrays.asList(outputMovie); //https://www.geeksforgeeks.org/conversion-of-array-to-arraylist-in-java/ 6.4.23
         return outputMovie;
     }
 
