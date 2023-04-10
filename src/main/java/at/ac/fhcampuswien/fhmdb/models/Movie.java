@@ -3,27 +3,35 @@ package at.ac.fhcampuswien.fhmdb.models;
 import java.util.List;
 
 public class Movie {
-    public final String title;
-    public final String description;
-    public final List<Genre> genres;
+    private final String id;
+    private final String title;
+    private final List<Genre> genres;
+    private final int releaseYear; //GET asks for releaseYear
+    private final String description;
+    private final String imgUrl;
+    private final int lengthInMinutes;
+    private final List<String> directors=new ArrayList<>();
+    private final List<String> writers=new ArrayList<>();
+    private final List<String> mainCast=new ArrayList<>();
+    private final double rating; //GET asks for ratingFrom
 
-    public final String id;
-    public final int releaseYear;
-    public final double rating;
-
-    public final List<String>  writers;
-    public final List<String> directors;
-    public final List<String> mainCast;
-    public final int lengthInMinutes;
-    public final String imgUrl;
-
-
+    public Movie(String title, String description, List<Genre> genres) {
+        this.id = "";
+        this.title = title;
+        this.description = description;
+        this.genres = genres;
+        this.releaseYear = 0;
+        this.imgUrl = "";
+        this.lengthInMinutes = 0;
+        //  this.directors = directors;
+        //  this.writers = writers;
+        //  this.mainCast = mainCast;
+        this.rating = 0;
+    }
 
     public Movie(String id, String title, String description, List<Genre> genres, int releaseYear, double rating,
                         List<String> writers, List<String> directors, List<String> mainCast,
-                        int lengthInMinutes, String imgUrl) {
-
-        this.id = id;
+                        int lengthInMinutes, String imgUrl) {        this.id = id;
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -34,8 +42,6 @@ public class Movie {
         this.mainCast = mainCast;
         this.lengthInMinutes  = lengthInMinutes;
         this.imgUrl = imgUrl;
-
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -51,51 +57,43 @@ public class Movie {
         return this.title.equals(other.title) && this.description.equals(other.description) && this.genres.equals(other.genres);
     }
 
+    public String getId(){
+        return id;
+    }
     public String getTitle() {
         return title;
     }
-
-    public String getDescription() {
-        return description;
-    }
-
     public List<Genre> getGenres() {
         return genres;
-    }
-
-    public  String getId(){
-        return id;
     }
     public int getReleaseYear(){
         return releaseYear;
     }
-
-    public double getRating(){return rating;}
-
-   public List<String> getDirectors() {
-        return directors;
+    public String getDescription() {
+        return description;
     }
-
-    public List<String> getMainCast() {
-        return mainCast;
-    }
-
-    public List<String> getWriters() {
-        return writers;
-    }
-
     public String getImgUrl() {
         return imgUrl;
     }
-
     public int getLengthInMinutes() {
         return lengthInMinutes;
+    }
+    public List<String> getDirectors() {
+        return directors;
+    }
+    public List<String> getWriters() {
+        return writers;
+    }
+    public List<String> getMainCast() {
+        return mainCast;
+    }
+    public double getRating() {
+        return rating;
     }
 
 
 
-
-    /*public static List<Movie> initializeMovies() {
+    public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
         movies.add(new Movie(
                 "Life Is Beautiful",
@@ -120,11 +118,11 @@ public class Movie {
 
         return movies;
     }
-}
 
 }
 
+}
 
-     */
+
 
 }
