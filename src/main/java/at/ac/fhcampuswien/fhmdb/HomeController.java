@@ -58,7 +58,7 @@ public class HomeController implements Initializable {
     //prepare lists  for UI
     public void initializeState() throws IOException {
      //   allMovies = Movie.initializeMovies();
-        allMovies = MovieAPI.getDataBaseFromInternet(BASE);
+        allMovies = MovieAPI.getAllMoviesDown(BASE);
       //  printMovies(allMovies);
 
 
@@ -72,6 +72,45 @@ public class HomeController implements Initializable {
     }
 
     //SET meaning of BUTTONS in UI
+    //SEARCH BUTTON
+
+    public void searchBtnClicked(ActionEvent actionEvent) {
+        String searchQuery = searchField.getText().trim().toLowerCase();
+        Object genre = genreComboBox.getSelectionModel().getSelectedItem();
+        Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
+        Object rating = ratingComboBox.getSelectionModel().selectedItemProperty().getValue();
+        applyFilters(searchQuery,genre,releaseYear,rating);
+      //  applyAllFilters(searchQuery, genre);
+        if(sortedState != SortedState.NONE) {
+            sortMovies();
+        }
+    }
+    public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating)throws NullPointerException {
+        List<Movie> filteredMovies = allMovies;
+
+        if ((!searchQuery.isEmpty()) ||(genre != null && !genre.toString().equals("No filter"))||
+                (releaseYear != null && !releaseYear.toString().equals("No filter"))||
+                (rating != null && !rating.toString().equals("No filter"))){
+            String genres=null, year=null, rates=null;
+            if (genre!=null) {
+                 genres = genre.toString();
+       //          if (genre "No filter"){
+         //           genres=null;
+           //     }
+            }
+           if (releaseYear != null){
+               year = releaseYear.toString();
+           }
+           if (rating!=null){
+               rates = rating.toString();
+           }
+
+            filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
+        }
+        observableMovies.clear();
+        observableMovies.addAll(filteredMovies);
+    }
+
     public void initializeLayout() {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
         movieListView.setCellFactory(movieListView -> new MovieCell()); // apply custom cells to the listview
@@ -89,33 +128,25 @@ public class HomeController implements Initializable {
         }
         */
         releaseYearComboBox.getItems().add("No filter");  // add "no filter" to the combobox
-        releaseYearComboBox.getItems().addAll(getAllExistingReleaseYears(allMovies));
+        releaseYearComboBox.getItems().addAll(getAllExistingReleaseYears(observableMovies));
         releaseYearComboBox.setPromptText("Filter by Release Year");
 
         ArrayList<Double> ratingList = new ArrayList<Double>();
-        for(int i = 9; i>=0; i--) {
-        Double rate=0.0+i;
-        System.out.println(rate);
-        ratingList.add(rate);
-    }
-        System.out.println(ratingList.toString());
+        for(int i = 19; i>0; i--) {
+            Double rate=0.5*i;
+            ratingList.add(rate);
+        }
+
+       // System.out.println(ratingList.toString());
         ratingComboBox.getItems().add("No filter");  // add "no filter" to the combobox
-     /*   ArrayList<String> ratingStringList= new ArrayList<>();
+ /*       ArrayList<String> ratingStringList= new ArrayList<>();
         for (int i = 0; i < ratingList.size(); i++) {
             ratingStringList.set(i, "from " + ratingList.get(i));
-        }*/
-        ratingComboBox.getItems().addAll(ratingList);    // add all genres to the combobox
-        ratingComboBox.setPromptText("Filter by Rating");
-}
-
-    //SEARCH BUTTON
-    public void searchBtnClicked(ActionEvent actionEvent) {
-        String searchQuery = searchField.getText().trim().toLowerCase();
-        Object genre = genreComboBox.getSelectionModel().getSelectedItem();
-        applyAllFilters(searchQuery, genre);
-        if(sortedState != SortedState.NONE) {
-            sortMovies();
+            System.out.println(ratingStringList.get(i));
         }
+        */
+        ratingComboBox.getItems().addAll(ratingList);    // add all genres to the combobox
+        ratingComboBox.setPromptText("Filter by Rating from .. up");
     }
 
     //SORT BUTTON
