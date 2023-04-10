@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
@@ -20,13 +21,21 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import java.util.stream.DoubleStream;
+
 
 public class HomeController implements Initializable {
     @FXML
     public JFXButton searchBtn;
+
+    @FXML
+    public JFXButton resetBtn;
     @FXML
     public TextField searchField;
+    
+    @FXML
+    public TextField idField;
     @FXML
     public JFXListView movieListView;
     @FXML
@@ -35,7 +44,11 @@ public class HomeController implements Initializable {
     public JFXComboBox releaseYearComboBox=new JFXComboBox<>();
     @FXML
     public JFXComboBox ratingComboBox=new JFXComboBox<>();
- //   private static final String BASE = "http://prog2.fh-campuswien.ac.at/movies";
+    @FXML
+    public JFXComboBox releaseYearComboBox;
+
+    @FXML
+    public JFXComboBox ratingComboBox;
 
     @FXML
     public JFXButton sortBtn;
@@ -61,12 +74,7 @@ public class HomeController implements Initializable {
      //   allMovies = Movie.initializeMovies();
         allMovies = MovieAPI.getAllMoviesDown(BASE);
       //  printMovies(allMovies);
-
-
-        //       String schaumamal=MovieAPI.getDataBaseFromInternet(BASE);
- //       System.out.println(schaumamal);
-  //             String urlmitquery=MovieAPI.getDataBaseFromInternet(BASE);
-  //             System.out.println(urlmitquery);
+      
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
@@ -76,11 +84,18 @@ public class HomeController implements Initializable {
     //SEARCH BUTTON
 
     public void searchBtnClicked(ActionEvent actionEvent) {
+        String id = idField.getText().trim().toLowerCase();
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
         Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
         Object rating = ratingComboBox.getSelectionModel().selectedItemProperty().getValue();
+        if (!id.equals("")){
+            Movie movie = MovieAPI.getSpecificMovie(id);
+            observableMovies.clear();
+            observableMovies.add(movie);
+        } else { 
         applyFilters(searchQuery,genre,releaseYear,rating);
+        }
       //  applyAllFilters(searchQuery, genre);
         if(sortedState != SortedState.NONE) {
             sortMovies();
@@ -136,46 +151,26 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
-/*
-        //https://stackoverflow.com/questions/27226795/adding-a-list-of-years-inside-a-jcombobox 4.4.23
-        ArrayList<Integer> years_tmp = new ArrayList<Integer>();
-        years_tmp=getAllExistingReleaseYears();
-        for(int years = Calendar.getInstance().get(Calendar.YEAR); years>= 1878; years--) {
-            years_tmp.add(Integer.valueOf(years));
-        }
-        */
-        releaseYearComboBox.getItems().add("No filter");  // add "no filter" to the combobox
+
+
+        releaseYearComboBox.getItems().add("No filter");
         releaseYearComboBox.getItems().addAll(getAllExistingReleaseYears(observableMovies));
         releaseYearComboBox.setPromptText("Filter by Release Year");
 
-        ArrayList<Double> ratingList = new ArrayList<Double>();
-        for(int i = 19; i>0; i--) {
-            Double rate=0.5*i;
-            ratingList.add(rate);
-        }
-
-       // System.out.println(ratingList.toString());
         ratingComboBox.getItems().add("No filter");  // add "no filter" to the combobox
- /*       ArrayList<String> ratingStringList= new ArrayList<>();
-        for (int i = 0; i < ratingList.size(); i++) {
-            ratingStringList.set(i, "from " + ratingList.get(i));
-            System.out.println(ratingStringList.get(i));
-        }
-        */
-        ratingComboBox.getItems().addAll(ratingList);    // add all genres to the combobox
+      //  IntStream.rangeClosed(0, 9).forEach(ratingComboBox.getItems()::add);
+               List<Double> values = DoubleStream.iterate(0, i -> i <= 9.5, i -> i + 0.5)
+                .boxed()
+                .collect(Collectors.toList());
+        ratingComboBox.getItems().addAll(values);
         ratingComboBox.setPromptText("Filter by Rating from .. up");
-    }
+
 
     //SORT BUTTON
     public void sortBtnClicked(ActionEvent actionEvent) {
         sortMovies();
     }
 
-    //SORT method - still valid
-    /* sort movies based on sortedState
-     by default sorted state is NONE
-     afterwards it switches between ascending and descending
-     */
     public List<Movie> filterDescriptionByQuery(List<Movie> movies, String query){
         if(query == null || query.isEmpty()) return movies;
 
@@ -190,6 +185,12 @@ public class HomeController implements Initializable {
                 )
                 .toList();
     }
+    
+    //SORT method - still valid
+    /* sort movies based on sortedState
+     by default sorted state is NONE
+     afterwards it switches between ascending and descending
+     */
     public void sortMovies() {
         if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
             observableMovies.sort(Comparator.comparing(Movie::getTitle));
@@ -216,20 +217,21 @@ public class HomeController implements Initializable {
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //Java Streams
     public List<Integer>  getAllExistingReleaseYears(List<Movie> movies) {
-        List<Integer> allYears = movies.stream()
-                .map(movie -> movie.getReleaseYear())
-                .sorted(Comparator.reverseOrder())
+       List<Integer> releaseYears = movies.stream()
+                .map(Movie::getReleaseYear)
                 .distinct()
+                .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
-    //    System.out.println(allYears);
-        return allYears;
+        return releaseYears;
     }
+    
     void methodToTryStreams(){
         countMoviesFrom(observableMovies,"Frank Capra" );
         getMoviesBetweenYears(observableMovies, 1995, 2000);
         getLongestMovieTitle(observableMovies);
         getMostPopularActor(observableMovies);
     }
+    
     public String  getMostPopularActor(List<Movie> movies) {
         List<String> actors = movies.stream()
                 .map(movie -> movie.getMainCast())
@@ -323,4 +325,30 @@ public class HomeController implements Initializable {
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
     }
-}
+
+    public void resetBtnClicked(ActionEvent actionEvent){
+        allMovies = MovieAPI.getAllMovies();
+        observableMovies.clear();
+        observableMovies.addAll(allMovies);
+
+        sortBtn.setText("Sort");
+        searchField.clear();
+        idField.clear();
+        genreComboBox.setValue(null);
+        ratingComboBox.setValue(null);
+        releaseYearComboBox.setValue(null);
+
+
+    }
+
+
+
+    String getBusiestWriter(List<Movie> movies){
+        return movies.stream()
+                .flatMap(movie -> movie.getWriters().stream())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey).orElse("");
+    }

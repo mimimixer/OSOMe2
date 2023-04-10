@@ -5,6 +5,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
@@ -15,15 +17,9 @@ public class MovieCell extends ListCell<Movie> {
     private final Label id = new Label();
     private final Label title = new Label();
     private final Label genre = new Label();
-    private final Label allNumbers = new Label(); //releaseYear
-    private final Label detail = new Label();
-    private final Label imgUrl = new Label();
- //   private final Label lengthInMinutes = new Label();
-    private final Label directors = new Label();
-    private final Label writers = new Label();
-    private final Label mainCast = new Label();
+    private final Label people = new Label();
+    private final VBox layout = new VBox(title, detail ,people, genre);
 
-  //  private final Label rating = new Label();
 
     private final VBox layout = new VBox(id, title,  imgUrl, allNumbers,
             detail, directors, writers, mainCast, genre); //rating, releaseYear, lengthInMinutes,
@@ -48,24 +44,18 @@ public class MovieCell extends ListCell<Movie> {
             //     releaseYear.setText("release year: "+ String.valueOf(movie.getReleaseYear()));
             detail.setText(
                     movie.getDescription() != null
-                            ? movie.getDescription()
-                            : "No description available"
-            );
-      //      imgUrl.setText(movie.getImgUrl());
-     //       lengthInMinutes.setText("Duration: "+String.valueOf(movie.getLengthInMinutes()));
-            String director = movie.getDirectors()
-                    .stream()
-                    .collect(Collectors.joining(", "));
-            directors.setText("Directors: "+director);
-            String writer = movie.getWriters()
-                    .stream()
-                    .collect(Collectors.joining(", "));
-            writers.setText("Writers: "+writer);
-            String cast = movie.getMainCast()
-                    .stream()
-                    .collect(Collectors.joining(", "));
-            mainCast.setText("Cast: "+cast);
-      //      rating.setText("Rating: "+String.valueOf(movie.getRating()));
+
+                            ? movie.getDescription() +"\n" + "Release year " + movie.getReleaseYear() + " Rated " + movie.getRating() + " Movie Length: " +movie.getLengthInMinutes() +" minutes"
+                            : "No description available" +"\n" + "Release year " + movie.getReleaseYear() + " Rated " + movie.getRating()+  " Movie Length: " +movie.getLengthInMinutes() +" minutes"
+             );
+            
+            String actors = String.join(", ", movie.getMainCast());
+            String writersstr = String.join(", ", movie.getWriters());
+            String directorsstr = String.join(", ", movie.getDirectors());
+            people.setText("Main Cast: " + actors +"\n" +
+                    "Writers: " + writersstr + "\n" +
+                    "Directors: " + directorsstr);
+
 
 
             // color scheme
@@ -82,6 +72,7 @@ public class MovieCell extends ListCell<Movie> {
         //    imgUrl.getStyleClass().add("text-black");
             genre.getStyleClass().add("text-white");
             genre.setStyle("-fx-font-style: italic");
+            people.getStyleClass().add("text-white");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout

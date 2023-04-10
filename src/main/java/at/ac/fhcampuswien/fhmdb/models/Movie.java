@@ -1,7 +1,5 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Movie {
@@ -17,7 +15,7 @@ public class Movie {
     private final List<String> mainCast=new ArrayList<>();
     private final double rating; //GET asks for ratingFrom
 
-    private Movie(String title, String description, List<Genre> genres) {
+    public Movie(String title, String description, List<Genre> genres) {
         this.id = "";
         this.title = title;
         this.description = description;
@@ -31,29 +29,29 @@ public class Movie {
         this.rating = 0;
     }
 
-    private Movie(String id, String title, String description, List<Genre> genres, int releaseYear, String imgUrl, int lengthInMinutes, List<String> directors, List<String> writers, List<String> mainCast, double rating) {
-        this.id = id;
+    public Movie(String id, String title, String description, List<Genre> genres, int releaseYear, double rating,
+                        List<String> writers, List<String> directors, List<String> mainCast,
+                        int lengthInMinutes, String imgUrl) {        this.id = id;
         this.title = title;
         this.description = description;
         this.genres = genres;
         this.releaseYear = releaseYear;
-        this.imgUrl = imgUrl;
-        this.lengthInMinutes = lengthInMinutes;
-    //    this.directors = directors;
-    //    this.writers = writers;
-    //    this.mainCast = mainCast;
         this.rating = rating;
-    }
+        this.writers = writers;
+        this.directors = directors;
+        this.mainCast = mainCast;
+        this.lengthInMinutes  = lengthInMinutes;
+        this.imgUrl = imgUrl;
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null) {
+        if (obj == null) {
             return false;
         }
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(!(obj instanceof Movie other)) {
+        if (!(obj instanceof Movie other)) {
             return false;
         }
         return this.title.equals(other.title) && this.description.equals(other.description) && this.genres.equals(other.genres);
@@ -94,6 +92,7 @@ public class Movie {
     }
 
 
+
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
         movies.add(new Movie(
@@ -119,5 +118,11 @@ public class Movie {
 
         return movies;
     }
+
+}
+
+}
+
+
 
 }
