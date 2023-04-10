@@ -1,6 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
-import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
+import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.SortedState;
@@ -179,9 +179,8 @@ public class HomeController implements Initializable {
         if (!id.equals("")){
             Movie movie = MovieAPI.getSpecificMovie(id);
             observableMovies.clear();
-            observableMovies.add(movie);}
-
-        else {
+            observableMovies.add(movie);
+        } else {
 
             observableMovies.addAll(allMovies);
             List<Movie> movies = MovieAPI.getMovies(searchQuery, genreStr, releaseYearStr, ratingStr);
@@ -199,8 +198,6 @@ public class HomeController implements Initializable {
         /*if(sortedState != SortedState.NONE) {
             sortMovies();
         }*/
-
-
 
 
 
@@ -227,39 +224,7 @@ public class HomeController implements Initializable {
 
     }
 
-    String getMostPopularActor(List<Movie> movies) {
-        return movies.stream()
-                .flatMap(movie -> movie.getMainCast().stream())
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse("");
 
-
-    }
-
-
-    int getLongestMovieTitle(List<Movie> movies){
-        return movies.stream()
-                .mapToInt(movie -> movie.getTitle().length())
-                .max()
-                .orElse(0);
-
-    }
-
-    long countMoviesFrom(List<Movie> movies, String director){
-        return movies.stream()
-                .filter(movie -> movie.getDirectors().contains(director))
-                .count();
-    }
-
-    List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear){
-        return movies.stream()
-                .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
-                .collect(Collectors.toList());
-    }
 
     String getBusiestWriter(List<Movie> movies){
         return movies.stream()
