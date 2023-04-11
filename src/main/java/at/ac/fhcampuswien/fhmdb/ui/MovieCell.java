@@ -16,14 +16,11 @@ import java.util.stream.Collectors;
 public class MovieCell extends ListCell<Movie> {
     private final Label id = new Label();
     private final Label title = new Label();
-    private final Label genre = new Label();
     private final Label detail = new Label();
+    private final Label genre = new Label();
     private final Label people = new Label();
     private final VBox layout = new VBox(title, detail ,people, genre);
 
-
-    //private final VBox layout = new VBox(id, title,  imgUrl, allNumbers,
-  //          detail, directors, writers, mainCast, genre); //rating, releaseYear, lengthInMinutes,
     @Override
     protected void updateItem(Movie movie, boolean empty) {
         super.updateItem(movie, empty);
@@ -33,14 +30,14 @@ public class MovieCell extends ListCell<Movie> {
          //   setText("No Movies found for this parameters. \n Please change query.");
         } else {
             this.getStyleClass().add("movie-cell");
-    //        id.setText("MovieID: " + movie.getId()+"              "+(movie.getImgUrl()));
+  //          id.setText("MovieID: " + movie.getId()+"              "+(movie.getImgUrl()));
             title.setText(movie.getTitle());
             String genres = movie.getGenres()
                     .stream()
                     .map(Enum::toString)
                     .collect(Collectors.joining(", "));
             genre.setText(genres);
-      //      allNumbers.setText("release year: "+ String.valueOf(movie.getReleaseYear())+"     Duration: "
+        //    allNumbers.setText("release year: "+ String.valueOf(movie.getReleaseYear())+"     Duration: "
         //            +String.valueOf(movie.getLengthInMinutes())+"     Rating: "+String.valueOf(movie.getRating()));
             //     releaseYear.setText("release year: "+ String.valueOf(movie.getReleaseYear()));
             detail.setText(
