@@ -18,7 +18,7 @@ public class MovieAPI {
     private static final String DELI = "&";
     private static OkHttpClient client = new OkHttpClient();
 
-    private static String makeURL(String query, String genre, String releaseYear, String ratingFrom) {
+    private static String makeUrl(String query, String genre, String releaseYear, String ratingFrom) {
         StringBuilder url = new StringBuilder(BASE);
 
         if ((query != null && !query.isEmpty()) || genre != null || releaseYear != null || ratingFrom != null) {
@@ -36,14 +36,14 @@ public class MovieAPI {
                 url.append("ratingFrom=").append(ratingFrom).append(DELI);
             }
         }
-        return url;
+        return url.toString();
     }
       private static String makeUrl(String id){
         StringBuilder url = new StringBuilder(BASE);
         if(id != null){
             url.append("/").append(id);
         }
-        return url;
+        return url.toString();
     }
 
     public static String requestUrl(String madeUrl){
@@ -62,16 +62,18 @@ public class MovieAPI {
         return null;
     }
 
-    public static Movie parseMovieToJson (String requestedDataByUrl){
-        Movie outputMovie = new Gson().fromJson(requestedDataByUrl, Movie.class); //https://www.baeldung.com/jackson-vs-gson 6.4.23
-     return Arrays.asList(outputMovie); //https://www.geeksforgeeks.org/conversion-of-array-to-arraylist-in-java/ 6.4.23
+    public static List<Movie> parseMovieListToJson (String requestedDataByUrl){
+        Movie[] outputMovie = new Gson().fromJson(requestedDataByUrl, Movie[].class);//https://www.baeldung.com/jackson-vs-gson 6.4.23
+        List<Movie> listAllMovies= Arrays.asList(outputMovie); //https://www.geeksforgeeks.org/conversion-of-array-to-arraylist-in-java/ 6.4.23
+        return listAllMovies;
     }
 
       public static Movie getThatMovieSpecificDown(String id){
         String newUrl = makeUrl(id);
         String getData = requestUrl(newUrl);
-        Movie parsedMovie=parseMovieToJson(getData);
-        return parsedMovie;
+          Movie movie = new Gson().fromJson(getData, Movie.class);
+     //     List<Movie> parsedMovie=parseMovieListToJson(getData);
+        return movie;
     }
 
 public static List<Movie> getAllMoviesDown(String BASE){
@@ -80,7 +82,7 @@ public static List<Movie> getAllMoviesDown(String BASE){
 
 public static List<Movie> getThatMovieListDown (String queryText, String chosenGenre,
                                                 String chosenReleaseYear, String chosenRatingFrom){
-        String newUrl = makeUrl( queryText, chosenGenre, chosenReleaseYear, chosenRatingFrom);
+        String newUrl = makeUrl(queryText, chosenGenre, chosenReleaseYear, chosenRatingFrom);
         String getData = requestUrl(newUrl);
         List<Movie> parsedMovielist=parseMovieListToJson(getData);
         return parsedMovielist;

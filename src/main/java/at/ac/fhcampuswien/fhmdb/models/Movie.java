@@ -1,6 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
-import java.util.List;
+import java.util.*;
 
 public class Movie {
     private final String id;
@@ -31,17 +31,19 @@ public class Movie {
 
     public Movie(String id, String title, String description, List<Genre> genres, int releaseYear, double rating,
                         List<String> writers, List<String> directors, List<String> mainCast,
-                        int lengthInMinutes, String imgUrl) {        this.id = id;
+                        int lengthInMinutes, String imgUrl) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.genres = genres;
         this.releaseYear = releaseYear;
         this.rating = rating;
-        this.writers = writers;
-        this.directors = directors;
-        this.mainCast = mainCast;
-        this.lengthInMinutes  = lengthInMinutes;
+      //  this.writers = writers;
+      //  this.directors = directors;
+     //   this.mainCast = mainCast;
+        this.lengthInMinutes = lengthInMinutes;
         this.imgUrl = imgUrl;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -121,8 +123,6 @@ public class Movie {
 
 }
 
-}
 
 
 
-}
