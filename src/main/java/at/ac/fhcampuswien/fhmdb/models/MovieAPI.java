@@ -38,10 +38,10 @@ public class MovieAPI {
         }
         return url.toString();
     }
-      private static String makeUrl(String id){
+    private static String makeUrl(String movieId){
         StringBuilder url = new StringBuilder(BASE);
-        if(id != null){
-            url.append("/").append(id);
+        if(movieId != null){
+            url.append("/").append(movieId);
         }
         return url.toString();
     }
@@ -68,17 +68,17 @@ public class MovieAPI {
         return listAllMovies;
     }
 
-      public static Movie getThatMovieSpecificDown(String id){
-        String newUrl = makeUrl(id);
+    public static Movie getThatMovieSpecificDown(String movieId){
+        String newUrl = makeUrl(movieId);
         String getData = requestUrl(newUrl);
           Movie movie = new Gson().fromJson(getData, Movie.class);
      //     List<Movie> parsedMovie=parseMovieListToJson(getData);
         return movie;
     }
 
-public static List<Movie> getAllMoviesDown(String BASE){
+    public static List<Movie> getAllMoviesDown(String BASE){
         return parseMovieListToJson(requestUrl(BASE));
-}
+    }
 
 public static List<Movie> getThatMovieListDown (String queryText, String chosenGenre,
                                                 String chosenReleaseYear, String chosenRatingFrom){

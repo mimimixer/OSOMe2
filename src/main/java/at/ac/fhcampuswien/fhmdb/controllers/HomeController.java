@@ -1,10 +1,9 @@
-package at.ac.fhcampuswien.fhmdb;
+package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
-import at.ac.fhcampuswien.fhmdb.models.Genre;
+import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
-import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
-import at.ac.fhcampuswien.fhmdb.models.SortedState;
+import at.ac.fhcampuswien.fhmdb.enums.SortedState;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -35,7 +34,7 @@ public class HomeController implements Initializable {
     public TextField searchField;
     
     @FXML
-    public TextField idField;
+    public TextField movieIdField;
     @FXML
     public JFXListView movieListView;
     @FXML
@@ -82,9 +81,17 @@ public class HomeController implements Initializable {
 
     //SET meaning of BUTTONS in UI
     //SEARCH BUTTON
-
+    public void sortMovies () {
+        if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
+            observableMovies.sort(Comparator.comparing(Movie::getTitle));
+            sortedState = SortedState.ASCENDING;
+        } else if (sortedState == SortedState.ASCENDING) {
+            observableMovies.sort(Comparator.comparing(Movie::getTitle).reversed());
+            sortedState = SortedState.DESCENDING;
+        }
+    }
     public void searchBtnClicked(ActionEvent actionEvent) {
-        String id = idField.getText().trim().toLowerCase();
+        String id = movieIdField.getText().trim().toLowerCase();
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
         Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
@@ -93,7 +100,7 @@ public class HomeController implements Initializable {
             Movie movie = MovieAPI.getThatMovieSpecificDown(id);
             observableMovies.clear();
             observableMovies.add(movie);
-        } else { 
+        } else {
         applyFilters(searchQuery,genre,releaseYear,rating);
         }
       //  applyAllFilters(searchQuery, genre);
@@ -101,6 +108,7 @@ public class HomeController implements Initializable {
             sortMovies();
         }
     }
+
     public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating)throws NullPointerException {
         List<Movie> filteredMovies = allMovies;
         filterDescriptionByQuery(filteredMovies, searchQuery);
@@ -137,6 +145,7 @@ public class HomeController implements Initializable {
                                 .collect(Collectors.toList());
                 }
             }*/        }
+
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
     }
@@ -165,8 +174,13 @@ public class HomeController implements Initializable {
         ratingComboBox.getItems().addAll(values);
         ratingComboBox.setPromptText("Filter by Rating from .. up");
 
+        countMoviesFrom(observableMovies, "Frank Capra");
+        getMoviesBetweenYears(observableMovies, 1995, 2000);
+        getLongestMovieTitle(observableMovies);
+        getMostPopularActor(observableMovies);
     }
-        //SORT BUTTON
+    //SORT BUTTON
+
         public void sortBtnClicked (ActionEvent actionEvent){
             sortMovies();
         }
@@ -186,27 +200,17 @@ public class HomeController implements Initializable {
                     .toList();
         }
 
-
-        //SORT method - still valid
+    //SORT method - still valid
     /* sort movies based on sortedState
      by default sorted state is NONE
      afterwards it switches between ascending and descending
      */
-        public void sortMovies () {
-            if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
-                observableMovies.sort(Comparator.comparing(Movie::getTitle));
-                sortedState = SortedState.ASCENDING;
-            } else if (sortedState == SortedState.ASCENDING) {
-                observableMovies.sort(Comparator.comparing(Movie::getTitle).reversed());
-                sortedState = SortedState.DESCENDING;
-            }
-        }
 
         //TESTPRINTER
         void printMovies (List < Movie > allMovies) {
             for (Movie m : allMovies) {
                 System.out.println(m.getReleaseYear());
-                System.out.println(m.getId());
+                System.out.println(m.getMovieId());
                 System.out.println(m.getImgUrl());
                 System.out.println(m.getLengthInMinutes());
                 System.out.println(m.getDirectors());
@@ -334,7 +338,7 @@ public class HomeController implements Initializable {
 
             sortBtn.setText("Sort");
             searchField.clear();
-            idField.clear();
+            movieIdField.clear();
             genreComboBox.setValue(null);
             ratingComboBox.setValue(null);
             releaseYearComboBox.setValue(null);

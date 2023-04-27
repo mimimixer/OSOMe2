@@ -1,9 +1,11 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
+import at.ac.fhcampuswien.fhmdb.enums.Genre;
+
 import java.util.*;
 
 public class Movie {
-    private final String id;
+    private final String movieId;
     private final String title;
     private final List<Genre> genres;
     private final int releaseYear; //GET asks for releaseYear
@@ -16,7 +18,7 @@ public class Movie {
     private final double rating; //GET asks for ratingFrom
 
     public Movie(String title, String description, List<Genre> genres) {
-        this.id = "";
+        this.movieId = "";
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -29,10 +31,10 @@ public class Movie {
         this.rating = 0;
     }
 
-    public Movie(String id, String title, String description, List<Genre> genres, int releaseYear, double rating,
-                        List<String> writers, List<String> directors, List<String> mainCast,
-                        int lengthInMinutes, String imgUrl) {
-        this.id = id;
+    public Movie(String movieId, String title, String description, List<Genre> genres, int releaseYear, double rating,
+                 List<String> writers, List<String> directors, List<String> mainCast,
+                 int lengthInMinutes, String imgUrl) {
+        this.movieId = movieId;
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -59,8 +61,8 @@ public class Movie {
         return this.title.equals(other.title) && this.description.equals(other.description) && this.genres.equals(other.genres);
     }
 
-    public String getId(){
-        return id;
+    public String getMovieId(){
+        return movieId;
     }
     public String getTitle() {
         return title;
