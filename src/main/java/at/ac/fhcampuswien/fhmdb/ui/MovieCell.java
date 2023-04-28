@@ -1,25 +1,48 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+
+import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 public class MovieCell extends ListCell<Movie> {
-    private final Label id = new Label();
+    private final Label apiID = new Label();
     private final Label title = new Label();
     private final Label detail = new Label();
     private final Label genre = new Label();
     private final Label people = new Label();
     private final VBox layout = new VBox(title, detail ,people, genre);
+
+
+
+    private final Button addMovieToWatchlistBtn=new Button("Add to Watchlist");
+    WatchlistRepository repository=new WatchlistRepository();
+
+    public MovieCell() {//ClickEventHandler addToWatchlistClicked
+        super();
+        addMovieToWatchlistBtn.getStyleClass().add("btn"); //new
+        addMovieToWatchlistBtn.setOnMouseClicked(mouseEvent -> {
+            try {
+                repository.addToWatchlist(getItem());
+            } catch (SQLException e) {
+                //throw new DatabaseException(e);
+                System.out.println("Put Fehlermeldung into the UI, not here!");
+                //  throw new DatabaseException(e); //new CustomException Data
+            }
+        });
+    }
+
+
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -57,7 +80,7 @@ public class MovieCell extends ListCell<Movie> {
 
 
             // color scheme
-            id.getStyleClass().add("text-white");
+            apiID.getStyleClass().add("text-white");
             title.getStyleClass().add("text-yellow");
        //     allNumbers.getStyleClass().add("text-white");
         //releaseYear.getStyleClass().add("text-white");
@@ -74,7 +97,7 @@ public class MovieCell extends ListCell<Movie> {
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout
-            id.fontProperty().set(id.getFont().font(10));
+            apiID.fontProperty().set(apiID.getFont().font(10));
             title.fontProperty().set(title.getFont().font(20));
             detail.setMaxWidth(this.getScene().getWidth() - 70);
             detail.setWrapText(true);

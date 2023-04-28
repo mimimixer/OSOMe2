@@ -5,7 +5,7 @@ import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import java.util.*;
 
 public class Movie {
-    private final String movieId;
+    private final String apiID;
     private final String title;
     private final List<Genre> genres;
     private final int releaseYear; //GET asks for releaseYear
@@ -18,7 +18,7 @@ public class Movie {
     private final double rating; //GET asks for ratingFrom
 
     public Movie(String title, String description, List<Genre> genres) {
-        this.movieId = "";
+        this.apiID = "";
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -31,10 +31,10 @@ public class Movie {
         this.rating = 0;
     }
 
-    public Movie(String movieId, String title, String description, List<Genre> genres, int releaseYear, double rating,
+    public Movie(String apiID, String title, String description, List<Genre> genres, int releaseYear, double rating,
                  List<String> writers, List<String> directors, List<String> mainCast,
                  int lengthInMinutes, String imgUrl) {
-        this.movieId = movieId;
+        this.apiID = apiID;
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -61,8 +61,8 @@ public class Movie {
         return this.title.equals(other.title) && this.description.equals(other.description) && this.genres.equals(other.genres);
     }
 
-    public String getMovieId(){
-        return movieId;
+    public String ApiID(){
+        return apiID;
     }
     public String getTitle() {
         return title;
@@ -94,8 +94,6 @@ public class Movie {
     public double getRating() {
         return rating;
     }
-
-
 
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();

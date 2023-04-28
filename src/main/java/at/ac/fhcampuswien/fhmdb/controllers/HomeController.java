@@ -1,10 +1,12 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
+import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.enums.SortedState;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import at.ac.fhcampuswien.fhmdb.ui.WatchlistCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -37,6 +39,9 @@ public class HomeController implements Initializable {
     public TextField movieIdField;
     @FXML
     public JFXListView movieListView;
+
+    public JFXListView watchListView;
+
     @FXML
     public JFXComboBox genreComboBox;
     @FXML
@@ -55,6 +60,8 @@ public class HomeController implements Initializable {
     private static final String BASE = "http://prog2.fh-campuswien.ac.at/movies";
 
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
+    protected ObservableList<WatchlistMovieEntity> watchlistMovies = FXCollections.observableArrayList();
+    public List<WatchlistMovieEntity> watchlistAll=new ArrayList<>();
     protected SortedState sortedState;
 
 //START UI
@@ -77,6 +84,10 @@ public class HomeController implements Initializable {
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
+
+        watchlistMovies.clear();
+        watchlistMovies.addAll(watchlistAll); // add all movies to the observable list
+        sortedState = SortedState.NONE;
     }
 
     //SET meaning of BUTTONS in UI
@@ -91,13 +102,13 @@ public class HomeController implements Initializable {
         }
     }
     public void searchBtnClicked(ActionEvent actionEvent) {
-        String id = movieIdField.getText().trim().toLowerCase();
+        String apiID = movieIdField.getText().trim().toLowerCase();
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
         Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
         Object rating = ratingComboBox.getSelectionModel().selectedItemProperty().getValue();
-        if (!id.equals("")){
-            Movie movie = MovieAPI.getThatMovieSpecificDown(id);
+        if (!apiID.equals("")){
+            Movie movie = MovieAPI.getThatMovieSpecificDown(apiID);
             observableMovies.clear();
             observableMovies.add(movie);
         } else {
@@ -155,6 +166,9 @@ public class HomeController implements Initializable {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
         movieListView.setCellFactory(movieListView -> new MovieCell()); // apply custom cells to the listview
 
+      //  watchListView.setItems(watchlistMovies);   // set the items of the listview to the observable list
+      //  watchListView.setCellFactory(watchListView -> new WatchlistCell()); // apply custom cells to the listview
+
         Object[] genres = Genre.values();   // get all genres
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
@@ -210,7 +224,7 @@ public class HomeController implements Initializable {
         void printMovies (List < Movie > allMovies) {
             for (Movie m : allMovies) {
                 System.out.println(m.getReleaseYear());
-                System.out.println(m.getMovieId());
+                System.out.println(m.ApiID());
                 System.out.println(m.getImgUrl());
                 System.out.println(m.getLengthInMinutes());
                 System.out.println(m.getDirectors());
@@ -356,4 +370,8 @@ public class HomeController implements Initializable {
                     .max(Map.Entry.comparingByValue())
                     .map(Map.Entry::getKey).orElse("");
         }
+
+    public void showWatchlistBtnClicked(ActionEvent actionEvent) {
+            // wechsel zur WacthlistAnsicht
     }
+}

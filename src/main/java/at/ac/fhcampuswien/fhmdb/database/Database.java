@@ -10,37 +10,34 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class Database {
+    //Deklarationen
     public static final String DB_URL = "jdbc:h2:file: ./db/moviesdb"; // "jdbc:h2:[file:][<path>]<databaseName>;
     public static final String username= "user";
     public static final String password ="pass";
 
+
+
     private static ConnectionSource connectionSource;
+    private Dao<WatchlistMovieEntity, Long> movieEntityDao; //needs getter
 
-    Dao<WatchlistMovieEntity, Long> movieEntityDao;
-
-    private static Database instance;
-
-    public void testDB() throws SQLException {
-        WatchlistMovieEntity watchlistMovie3 =new WatchlistMovieEntity("movieId123", "title", "description",  2023, 9.7,
-        75, "https://tinyurl.com/4mazab5c");
-        movieEntityDao.create(watchlistMovie3);
-    /*    List<WatchlistMovieEntity> l= movieEntityDao.queryForAll();
-        l.forEach(e -> {
-            System.out.println(e.toString());
-        });*/
+//laut Leons Video ist eine Database instance notwendig, und nämlich GENAU EINE!
+ private static Database instance;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //Required Methods
+    private static void createConnectionSource() throws SQLException {
+        connectionSource = new JdbcConnectionSource( DB_URL,  username, password);
     }
-
-    private Database(){
-        try {
-            createConnectionSource();
-            movieEntityDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
-            createTables();
-        }catch (SQLException e){
-            System.out.println("now we have that SQL Exception");
-            System.out.println(e.getMessage());
-            System.out.println(e.getSQLState());
-        }
+    public ConnectionSource getConnectionSource() {
+        return this.connectionSource;
     }
+    public static void createTables() throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, WatchlistMovieEntity.class);
+    }
+    public Dao<WatchlistMovieEntity, Long> getMovieEntityDao() {
+        return this.movieEntityDao;
+    }
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //Additional Methods and Constructors
 
     //neue Database erstellen wenn es noch keine gibt - SINGLETON Pattern!
     public static Database getDatabase() {
@@ -51,15 +48,29 @@ public class Database {
         return instance;
     }
 
-    public static void createTables() throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, WatchlistMovieEntity.class);
+    //Constructor
+    private Database(){
+        try {
+            createConnectionSource();
+            movieEntityDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
+            createTables();
+        }catch (SQLException e){ //Here we actually need Custom Databaseexception
+            System.out.println("now we have that SQL Exception");
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+        }
     }
 
-    private static void createConnectionSource() throws SQLException {
-    connectionSource = new JdbcConnectionSource( DB_URL,  username, password);
-}
 
-
+    public void testDB() throws SQLException {
+        WatchlistMovieEntity watchlistMovie3 = new WatchlistMovieEntity("movieId123");
+        movieEntityDao.create(watchlistMovie3);
+    }
+    /*    List<WatchlistMovieEntity> l= movieEntityDao.queryForAll();
+        l.forEach(e -> {
+            System.out.println(e.toString());
+        });
+    }
 
 /*
     Dao<Account, String> accountDao =

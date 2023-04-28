@@ -27,12 +27,12 @@
       <children>
          <JFXButton fx:id="sortBtn" onAction="#sortBtnClicked" styleClass="background-yellow" stylesheets="@styles.css" text="Sort" />
          <TextField fx:id="searchField" prefHeight="25.0" prefWidth="170.0" promptText="Search FHMDb" />
-         <TextField fx:id="movieIdField" prefHeight="25.0" prefWidth="170.0" promptText="Search with ID" />
          <JFXComboBox fx:id="genreComboBox" focusColor="#f5c518" styleClass="filter-combo-box" stylesheets="@styles.css" />
          <JFXComboBox fx:id="releaseYearComboBox" focusColor="#f5c518" styleClass="filter-combo-box" stylesheets="@styles.css" />
          <JFXComboBox fx:id="ratingComboBox" focusColor="#f5c518" styleClass="filter-combo-box" stylesheets="@styles.css" />
          <JFXButton fx:id="searchBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Filter" onAction="#searchBtnClicked"/>
          <JFXButton fx:id="resetBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Reset" onAction="#resetBtnClicked"/>
+         <JFXButton fx:id="showWatchlistBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Show Watchlist" onAction="#showWatchlistBtnClicked"/>
       </children>
       <VBox.margin>
          <Insets />
