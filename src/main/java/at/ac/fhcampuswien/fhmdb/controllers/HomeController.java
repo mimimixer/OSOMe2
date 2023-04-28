@@ -1,12 +1,11 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
-import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
-import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
+import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.enums.SortedState;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
-import at.ac.fhcampuswien.fhmdb.ui.WatchlistCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -70,7 +69,9 @@ public class HomeController implements Initializable {
         try {
             initializeState();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println();
+            System.out.println();
+            System.out.println("what now");
         }
         initializeLayout();
     }
@@ -94,10 +95,10 @@ public class HomeController implements Initializable {
     //SEARCH BUTTON
     public void sortMovies () {
         if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
-            observableMovies.sort(Comparator.comparing(Movie::getTitle));
+            observableMovies.sort(Comparator.comparing(Movie::getMovieTitle));
             sortedState = SortedState.ASCENDING;
         } else if (sortedState == SortedState.ASCENDING) {
-            observableMovies.sort(Comparator.comparing(Movie::getTitle).reversed());
+            observableMovies.sort(Comparator.comparing(Movie::getMovieTitle).reversed());
             sortedState = SortedState.DESCENDING;
         }
     }
@@ -274,7 +275,7 @@ public class HomeController implements Initializable {
         }
         public int getLongestMovieTitle (List < Movie > movies) {
             var result = movies.stream()
-                    .mapToInt(movie -> movie.getTitle().length())
+                    .mapToInt(movie -> movie.getMovieTitle().length())
                     .max()
                     .stream().limit(1)
                     .sum();
@@ -309,7 +310,7 @@ public class HomeController implements Initializable {
             return movies.stream()
                     .filter(Objects::nonNull)
                     .filter(movie ->
-                            movie.getTitle().toLowerCase().contains(query.toLowerCase()) ||
+                            movie.getMovieTitle().toLowerCase().contains(query.toLowerCase()) ||
                                     movie.getDescription().toLowerCase().contains(query.toLowerCase())
                     )
                     .toList();

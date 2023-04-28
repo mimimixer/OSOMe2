@@ -4,18 +4,18 @@ import at.ac.fhcampuswien.fhmdb.enums.Genre;
 
 import java.util.*;
 
-public class Movie {
-    private final String apiID;
-    private final String title;
-    private final List<Genre> genres;
-    private final int releaseYear; //GET asks for releaseYear
-    private final String description;
-    private final String imgUrl;
-    private final int lengthInMinutes;
-    private final List<String> directors=new ArrayList<>();
-    private final List<String> writers=new ArrayList<>();
-    private final List<String> mainCast=new ArrayList<>();
-    private final double rating; //GET asks for ratingFrom
+public class Movie{
+    private  String apiID;
+    private  String title;
+    private  List<Genre> genres;
+    private  int releaseYear; //GET asks for releaseYear
+    private  String description;
+    private  String imgUrl;
+    private  int lengthInMinutes;
+    private  List<String> directors=new ArrayList<>();
+    private  List<String> writers=new ArrayList<>();
+    private  List<String> mainCast=new ArrayList<>();
+    private  double rating; //GET asks for ratingFrom
 
     public Movie(String title, String description, List<Genre> genres) {
         this.apiID = "";
@@ -30,7 +30,8 @@ public class Movie {
         //  this.mainCast = mainCast;
         this.rating = 0;
     }
-
+public Movie(){
+}
     public Movie(String apiID, String title, String description, List<Genre> genres, int releaseYear, double rating,
                  List<String> writers, List<String> directors, List<String> mainCast,
                  int lengthInMinutes, String imgUrl) {
@@ -58,13 +59,13 @@ public class Movie {
         if (!(obj instanceof Movie other)) {
             return false;
         }
-        return this.title.equals(other.title) && this.description.equals(other.description) && this.genres.equals(other.genres);
+        return this.title.equals(other.getMovieTitle()) && this.description.equals(other.getDescription()) && this.genres.equals(other.getGenres());
     }
 
     public String ApiID(){
         return apiID;
     }
-    public String getTitle() {
+    public String getMovieTitle() {
         return title;
     }
     public List<Genre> getGenres() {

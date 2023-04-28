@@ -1,8 +1,36 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
+import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import javafx.scene.control.ToggleButton;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class WatchlistController {
+
+    WatchlistRepository movieRepo;
+
+    public void initialize() {
+        System.out.println("WatchlistController initialized");
+
+        movieRepo = new WatchlistRepository();
+        List<WatchlistMovieEntity> watchlistMovieEntityList = new ArrayList<>();
+
+        try {
+            watchlistMovieEntityList = movieRepo.getAllMoviesFromWatchlist();
+        } catch (SQLException e) {
+            // throw new DatabaseException(e);
+        }
+        for (WatchlistMovieEntity chosen : watchlistMovieEntityList) {
+            System.out.println(chosen);
+        }
+
+    }
+
+
+
     ClickEventHandler clickedItem;
     ToggleButton addRemoveFromWatchlistBtn=new ToggleButton();
     private final ClickEventHandler onAddToWatchlistClicked = () -> {
