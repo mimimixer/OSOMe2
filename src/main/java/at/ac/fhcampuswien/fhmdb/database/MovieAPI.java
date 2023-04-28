@@ -1,6 +1,6 @@
-package at.ac.fhcampuswien.fhmdb.database;
+package at.ac.fhcampuswien.fhmdb.models;
 
-import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.exeptions.MovieApiExeptions;
 import com.google.gson.Gson;
 
 import okhttp3.HttpUrl;
@@ -69,22 +69,36 @@ public class MovieAPI {
         return listAllMovies;
     }
 
-    public static Movie getThatMovieSpecificDown(String movieId){
+    public static Movie getThatMovieSpecificDown(String movieId) throws MovieApiExeptions{
         String newUrl = makeUrl(movieId);
         String getData = requestUrl(newUrl);
-          Movie movie = new Gson().fromJson(getData, Movie.class);
+        if (getData == null){
+            throw new MovieApiExeptions("Failed to retrieve movie data");
+        }
+         // Movie movie = new Gson().fromJson(getData, Movie.class);
      //     List<Movie> parsedMovie=parseMovieListToJson(getData);
-        return movie;
+        return new Gson().fromJson(getData, Movie.class);
+        //return movie;
     }
 
-    public static List<Movie> getAllMoviesDown(String BASE){
-        return parseMovieListToJson(requestUrl(BASE));
+    public static List<Movie> getAllMoviesDown(String BASE) throws MovieApiExeptions{
+        String data = requestUrl(BASE);
+        if (data == null){
+            throw new MovieApiExeptions("Failed to retrieve movie data");
+        }
+        return parseMovieListToJson(data);
     }
 
-public static List<Movie> getThatMovieListDown (String queryText, String chosenGenre,
-                                                String chosenReleaseYear, String chosenRatingFrom){
+public static List<Movie> getThatMovieListDown
+        (String queryText, String chosenGenre,
+        String chosenReleaseYear, String chosenRatingFrom) throws MovieApiExeptions {
+
         String newUrl = makeUrl(queryText, chosenGenre, chosenReleaseYear, chosenRatingFrom);
         String getData = requestUrl(newUrl);
+        //exeptions
+        if(getData == null){
+            throw new MovieApiExeptions("Failed to retrieve movie data");
+        }
         List<Movie> parsedMovielist=parseMovieListToJson(getData);
         return parsedMovielist;
         }

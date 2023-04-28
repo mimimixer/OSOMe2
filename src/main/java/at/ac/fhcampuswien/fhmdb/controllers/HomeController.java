@@ -1,7 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
-import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
-import at.ac.fhcampuswien.fhmdb.database.MovieAPI;
+import at.ac.fhcampuswien.fhmdb.exeptions.MovieApiExeptions;
+import at.ac.fhcampuswien.fhmdb.models.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.enums.SortedState;
@@ -38,9 +38,6 @@ public class HomeController implements Initializable {
     public TextField movieIdField;
     @FXML
     public JFXListView movieListView;
-
-    public JFXListView watchListView;
-
     @FXML
     public JFXComboBox genreComboBox;
     @FXML
@@ -59,8 +56,6 @@ public class HomeController implements Initializable {
     private static final String BASE = "http://prog2.fh-campuswien.ac.at/movies";
 
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
-    protected ObservableList<WatchlistMovieEntity> watchlistMovies = FXCollections.observableArrayList();
-    public List<WatchlistMovieEntity> watchlistAll=new ArrayList<>();
     protected SortedState sortedState;
 
 //START UI
@@ -69,9 +64,7 @@ public class HomeController implements Initializable {
         try {
             initializeState();
         } catch (IOException e) {
-            System.out.println();
-            System.out.println();
-            System.out.println("what now");
+            throw new RuntimeException(e);
         }
         initializeLayout();
     }
@@ -79,15 +72,15 @@ public class HomeController implements Initializable {
     //prepare lists  for UI
     public void initializeState() throws IOException {
      //   allMovies = Movie.initializeMovies();
-        allMovies = MovieAPI.getAllMoviesDown(BASE);
-      //  printMovies(allMovies);
+        try {
+            allMovies = MovieAPI.getAllMoviesDown(BASE);
+        } catch (MovieApiExeptions e) {
+            throw new RuntimeException(e);
+        }
+        //  printMovies(allMovies);
       
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
-        sortedState = SortedState.NONE;
-
-        watchlistMovies.clear();
-        watchlistMovies.addAll(watchlistAll); // add all movies to the observable list
         sortedState = SortedState.NONE;
     }
 
@@ -95,21 +88,26 @@ public class HomeController implements Initializable {
     //SEARCH BUTTON
     public void sortMovies () {
         if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
-            observableMovies.sort(Comparator.comparing(Movie::getMovieTitle));
+            observableMovies.sort(Comparator.comparing(Movie::getTitle));
             sortedState = SortedState.ASCENDING;
         } else if (sortedState == SortedState.ASCENDING) {
-            observableMovies.sort(Comparator.comparing(Movie::getMovieTitle).reversed());
+            observableMovies.sort(Comparator.comparing(Movie::getTitle).reversed());
             sortedState = SortedState.DESCENDING;
         }
     }
     public void searchBtnClicked(ActionEvent actionEvent) {
-        String apiID = movieIdField.getText().trim().toLowerCase();
+        String id = movieIdField.getText().trim().toLowerCase();
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
         Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
         Object rating = ratingComboBox.getSelectionModel().selectedItemProperty().getValue();
-        if (!apiID.equals("")){
-            Movie movie = MovieAPI.getThatMovieSpecificDown(apiID);
+        if (!id.equals("")){
+            Movie movie = null;
+            try {
+                movie = MovieAPI.getThatMovieSpecificDown(id);
+            } catch (MovieApiExeptions e) {
+                throw new RuntimeException(e);
+            }
             observableMovies.clear();
             observableMovies.add(movie);
         } else {
@@ -139,7 +137,18 @@ public class HomeController implements Initializable {
            if (rating!=null){
                rates = rating.toString();
            }
-            filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
+            try {
+
+                applyFilters("searchQuery", null, "releaseYear", "rating");
+            } catch (NullPointerException e) {
+
+                System.out.println("Error: Parameter 'genre' cannot be null");
+            }
+            /*try {
+                filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
+            } catch (MovieApiExeptions e) {
+                throw new RuntimeException(e);
+            }*/
 
          /*   if (!searchQuery.isEmpty()){
                 if((genre == null && !genre.toString().equals("No filter"))&&
@@ -166,9 +175,6 @@ public class HomeController implements Initializable {
     public void initializeLayout() {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
         movieListView.setCellFactory(movieListView -> new MovieCell()); // apply custom cells to the listview
-
-      //  watchListView.setItems(watchlistMovies);   // set the items of the listview to the observable list
-      //  watchListView.setCellFactory(watchListView -> new WatchlistCell()); // apply custom cells to the listview
 
         Object[] genres = Genre.values();   // get all genres
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
@@ -225,7 +231,7 @@ public class HomeController implements Initializable {
         void printMovies (List < Movie > allMovies) {
             for (Movie m : allMovies) {
                 System.out.println(m.getReleaseYear());
-                System.out.println(m.ApiID());
+                System.out.println(m.getMovieId());
                 System.out.println(m.getImgUrl());
                 System.out.println(m.getLengthInMinutes());
                 System.out.println(m.getDirectors());
@@ -275,7 +281,7 @@ public class HomeController implements Initializable {
         }
         public int getLongestMovieTitle (List < Movie > movies) {
             var result = movies.stream()
-                    .mapToInt(movie -> movie.getMovieTitle().length())
+                    .mapToInt(movie -> movie.getTitle().length())
                     .max()
                     .stream().limit(1)
                     .sum();
@@ -310,7 +316,7 @@ public class HomeController implements Initializable {
             return movies.stream()
                     .filter(Objects::nonNull)
                     .filter(movie ->
-                            movie.getMovieTitle().toLowerCase().contains(query.toLowerCase()) ||
+                            movie.getTitle().toLowerCase().contains(query.toLowerCase()) ||
                                     movie.getDescription().toLowerCase().contains(query.toLowerCase())
                     )
                     .toList();
@@ -347,7 +353,11 @@ public class HomeController implements Initializable {
         }
 
         public void resetBtnClicked (ActionEvent actionEvent){
-            allMovies = MovieAPI.getAllMoviesDown(BASE);
+            try {
+                allMovies = MovieAPI.getAllMoviesDown(BASE);
+            } catch (MovieApiExeptions e) {
+                throw new RuntimeException(e);
+            }
             observableMovies.clear();
             observableMovies.addAll(allMovies);
 
@@ -371,8 +381,4 @@ public class HomeController implements Initializable {
                     .max(Map.Entry.comparingByValue())
                     .map(Map.Entry::getKey).orElse("");
         }
-
-    public void showWatchlistBtnClicked(ActionEvent actionEvent) {
-            // wechsel zur WacthlistAnsicht
     }
-}
