@@ -1,6 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
-import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;

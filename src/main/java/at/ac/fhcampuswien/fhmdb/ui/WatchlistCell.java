@@ -1,6 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
-import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
