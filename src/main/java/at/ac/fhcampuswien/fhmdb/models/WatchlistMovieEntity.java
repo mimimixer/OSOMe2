@@ -110,16 +110,16 @@ public WatchlistMovieEntity(){
     }*/
 
     //lets do another moviegetter...
-    private String watchlistMovieToString(WatchlistMovieEntity watchlistMovie){
+    public String watchlistMovieToString(){
         StringBuilder concaty=new StringBuilder();
-        concaty.append(watchlistMovie.getApiID()+ " ,");
-        concaty.append(watchlistMovie.getMovieTitle()+ " ,");
-        concaty.append(watchlistMovie.getGenres()+ " ,");
-        concaty.append(watchlistMovie.getReleaseYear()+ " ,");
-        concaty.append(watchlistMovie.getDescription()+ " ,");
-        concaty.append(watchlistMovie.getImgUrl()+ " ,");
-        concaty.append(watchlistMovie.getLengthInMinutes()+ " ,");
-        concaty.append(watchlistMovie.getRating());
+        concaty.append(this.getApiID()+ " ,");
+        concaty.append(this.getMovieTitle()+ " ,");
+        concaty.append(this.getGenres()+ " ,");
+        concaty.append(this.getReleaseYear()+ " ,");
+        concaty.append(this.getDescription()+ " ,");
+        concaty.append(this.getImgUrl()+ " ,");
+        concaty.append(this.getLengthInMinutes()+ " ,");
+        concaty.append(this.getRating());
         return concaty.toString();
     }
 }
