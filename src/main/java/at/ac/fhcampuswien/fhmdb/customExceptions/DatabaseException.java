@@ -1,11 +1,28 @@
 package at.ac.fhcampuswien.fhmdb.customExceptions;
 
-public class DatabaseException extends Exception{
+public class DatabaseException {
 
-    public DatabaseException (){
-        System.out.println("empty DatabaseException initiated");
+    public  static class ConnectionEcxeption extends Exception{
+        public ConnectionEcxeption(String message){
+            super(message);
+        }
     }
-    public DatabaseException (Exception e){
+
+    public static class TableCreationException extends Exception{
+        public TableCreationException(String message){
+            super(message);
+
+        }
+
+    }
+
+    public static class DaoCreationException extends Exception{
+        public DaoCreationException(String message){
+            super(message);
+
+        }
+    }
+    public DatabaseException(Exception e) {
         System.out.println("not empty DatabaseException initiated");
         System.out.println("please print me out on UI Screen");
 
