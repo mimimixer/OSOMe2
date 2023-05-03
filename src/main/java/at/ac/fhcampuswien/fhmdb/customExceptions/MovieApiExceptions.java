@@ -1,10 +1,11 @@
 package at.ac.fhcampuswien.fhmdb.customExceptions;
 
-public class MovieApiException extends Exception{
-    public MovieApiException (){
-        System.out.println("empty MovieApiException initiated");
+public class MovieApiExceptions extends Exception{
+    public MovieApiExceptions(String message){
+        super(message);
     }
-    public MovieApiException (Exception e){
+
+    public void MovieApiException (Exception e){
         System.out.println("not empty MovieApiException initiated");
         System.out.println("please print me out on UI Screen");
     }
@@ -19,5 +20,4 @@ public class MovieApiException extends Exception{
     //eventuell dort thows-MethodSignature einfügen? oder doch umgekehrt(einfach check beim abrufen)?
 
     //ACHTUNGACHTUNG: AUSGABE FEHLERMELDUNG AN UI
-
 }

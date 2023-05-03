@@ -1,15 +1,12 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
-import at.ac.fhcampuswien.fhmdb.exeptions.MovieApiExeptions;
+import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiExceptions;
 import com.google.gson.Gson;
 
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,11 +66,11 @@ public class MovieAPI {
         return listAllMovies;
     }
 
-    public static Movie getThatMovieSpecificDown(String movieId) throws MovieApiExeptions{
+    public static Movie getThatMovieSpecificDown(String movieId) throws MovieApiExceptions {
         String newUrl = makeUrl(movieId);
         String getData = requestUrl(newUrl);
         if (getData == null){
-            throw new MovieApiExeptions("Failed to retrieve movie data");
+            throw new MovieApiExceptions("Failed to retrieve movie data");
         }
          // Movie movie = new Gson().fromJson(getData, Movie.class);
      //     List<Movie> parsedMovie=parseMovieListToJson(getData);
@@ -81,23 +78,23 @@ public class MovieAPI {
         //return movie;
     }
 
-    public static List<Movie> getAllMoviesDown(String BASE) throws MovieApiExeptions{
+    public static List<Movie> getAllMoviesDown(String BASE) throws MovieApiExceptions {
         String data = requestUrl(BASE);
         if (data == null){
-            throw new MovieApiExeptions("Failed to retrieve movie data");
+            throw new MovieApiExceptions("Failed to retrieve movie data");
         }
         return parseMovieListToJson(data);
     }
 
 public static List<Movie> getThatMovieListDown
         (String queryText, String chosenGenre,
-        String chosenReleaseYear, String chosenRatingFrom) throws MovieApiExeptions {
+        String chosenReleaseYear, String chosenRatingFrom) throws MovieApiExceptions {
 
         String newUrl = makeUrl(queryText, chosenGenre, chosenReleaseYear, chosenRatingFrom);
         String getData = requestUrl(newUrl);
         //exeptions
         if(getData == null){
-            throw new MovieApiExeptions("Failed to retrieve movie data");
+            throw new MovieApiExceptions("Failed to retrieve movie data");
         }
         List<Movie> parsedMovielist=parseMovieListToJson(getData);
         return parsedMovielist;
