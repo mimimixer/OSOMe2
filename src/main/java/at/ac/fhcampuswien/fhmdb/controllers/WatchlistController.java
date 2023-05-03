@@ -24,7 +24,7 @@ public class WatchlistController {
             // throw new DatabaseException(e);
         }
         for (WatchlistMovieEntity chosen : watchlistMovieEntityList) {
-            System.out.println(chosen);
+            System.out.println(chosen.watchlistMovieToString());
         }
 
     }

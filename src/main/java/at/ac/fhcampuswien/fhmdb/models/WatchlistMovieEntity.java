@@ -1,7 +1,6 @@
-package at.ac.fhcampuswien.fhmdb.database;
+package at.ac.fhcampuswien.fhmdb.models;
 
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
-import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -10,7 +9,7 @@ import java.util.stream.Collectors;
 
 @DatabaseTable(tableName = "watchlist")
 
-public class WatchlistMovieEntity {
+public class WatchlistMovieEntity{
     //Declarations
     @DatabaseField(generatedId = true)
     private long id;
@@ -81,7 +80,7 @@ public WatchlistMovieEntity(){
     public String getApiID(){
         return apiID;
     }
-    public String getTitle() {
+    public String getMovieTitle() {
         return title;
     }
     public String getGenres() {
@@ -101,5 +100,26 @@ public WatchlistMovieEntity(){
     }
     public double getRating() {
         return rating;
+    }
+
+    /* well we cannot do it because we would trash our beautiful genresToString Method
+    @Override
+    public String toString(){
+        String s="";
+        return s;
+    }*/
+
+    //lets do another moviegetter...
+    public String watchlistMovieToString(){
+        StringBuilder concaty=new StringBuilder();
+        concaty.append(this.getApiID()+ " ,");
+        concaty.append(this.getMovieTitle()+ " ,");
+        concaty.append(this.getGenres()+ " ,");
+        concaty.append(this.getReleaseYear()+ " ,");
+        concaty.append(this.getDescription()+ " ,");
+        concaty.append(this.getImgUrl()+ " ,");
+        concaty.append(this.getLengthInMinutes()+ " ,");
+        concaty.append(this.getRating());
+        return concaty.toString();
     }
 }

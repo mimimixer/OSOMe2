@@ -38,3 +38,8 @@
     -fx-background-color: white;
     -fx-text-fill: #ffffff;
 }
+
+.toggle-button{
+    -fx-base: salmon;
+    -fx-text-fill: bold;
+}
