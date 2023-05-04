@@ -174,6 +174,7 @@ public class HomeController implements Initializable {
                 }
             }*/        }
 
+
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
     }
