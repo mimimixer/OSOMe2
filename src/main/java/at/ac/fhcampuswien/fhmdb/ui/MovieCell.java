@@ -36,25 +36,20 @@ public class MovieCell extends ListCell<Movie> {
     private boolean collapsed = false;
 
 
-
+/*
     WatchlistRepository repository = new WatchlistRepository();
 
     public MovieCell() {//ClickEventHandler addToWatchlistClicked
         super();
-
         detailsBtn.getStyleClass().add("btn"); //new
         detailsBtn.setOnMouseClicked(mouseEvent -> {
             if(Objects.equals(detailsBtn.getText(), "Show Details")){
                 detailsBtn.setText("Hide Details");
                 baseInfoBox.getChildren().add(moreInfoBox);
-
             }else{
                 detailsBtn.setText("Show Details");
                 baseInfoBox.getChildren().remove(moreInfoBox);
-
-
             }
-
         });
 
         addMovieToWatchlistBtn.getStyleClass().add("btn"); //new
@@ -68,7 +63,7 @@ public class MovieCell extends ListCell<Movie> {
             }
         });
     }
-
+*/
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {

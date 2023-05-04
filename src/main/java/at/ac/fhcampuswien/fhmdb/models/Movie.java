@@ -59,7 +59,7 @@ public Movie(){
         if (!(obj instanceof Movie other)) {
             return false;
         }
-        return this.title.equals(other.getMovieTitle()) && this.description.equals(other.getDescription()) && this.genres.equals(other.getGenres());
+        return this.title.equals(other.title) && this.description.equals(other.description) && this.genres.equals(other.genres);
     }
 
     public String ApiID(){

@@ -1,6 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
-import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -86,9 +86,9 @@ public class HomeController implements Initializable {
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
 
-        watchlistMovies.clear();
-        watchlistMovies.addAll(watchlistAll); // add all movies to the observable list
-        sortedState = SortedState.NONE;
+    //    watchlistMovies.clear();
+     //   watchlistMovies.addAll(watchlistAll); // add all movies to the observable list
+     //   sortedState = SortedState.NONE;
     }
 
     //SET meaning of BUTTONS in UI
@@ -102,23 +102,39 @@ public class HomeController implements Initializable {
             sortedState = SortedState.DESCENDING;
         }
     }
+    //von Leon hinzugefügt
+    // sort movies based on sortedState
+    // by default sorted state is NONE
+    // afterwards it switches between ascending and descending
+    public void sortMovies(SortedState sortDirection) {
+        if (sortDirection == SortedState.ASCENDING) {
+            observableMovies.sort(Comparator.comparing(Movie::getMovieTitle));
+            sortedState = SortedState.ASCENDING;
+        } else {
+            observableMovies.sort(Comparator.comparing(Movie::getMovieTitle).reversed());
+            sortedState = SortedState.DESCENDING;
+        }
+    }
     public void searchBtnClicked(ActionEvent actionEvent) {
-        String apiID = movieIdField.getText().trim().toLowerCase();
+     //   String apiID = movieIdField.getText().trim().toLowerCase();
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
         Object releaseYear = releaseYearComboBox.getSelectionModel().getSelectedItem();
         Object rating = ratingComboBox.getSelectionModel().selectedItemProperty().getValue();
-        if (!apiID.equals("")){
+      /*  if (!apiID.equals("")){
             Movie movie = MovieAPI.getThatMovieSpecificDown(apiID);
             observableMovies.clear();
             observableMovies.add(movie);
-        } else {
+        } else {*/
         applyFilters(searchQuery,genre,releaseYear,rating);
-        }
+       // }
       //  applyAllFilters(searchQuery, genre);
-        if(sortedState != SortedState.NONE) {
+      /*  if(sortedState != SortedState.NONE) {
             sortMovies();
         }
+        korrigiert durch Leon */
+        sortMovies(sortedState);
+
     }
 
     public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating)throws NullPointerException {
