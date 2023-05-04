@@ -48,7 +48,7 @@ public WatchlistMovieEntity(){
 //here the constructur with only one argument
     public WatchlistMovieEntity(String apiID) {    //well, worth a shot? it caused problems in Database:
         this.apiID = apiID;                        //either a movie without parameters, or one with ALL
-        this.title = "this.getTitle()";              //parameters, but how do I convert the List<Genres>
+        this.title = this.getTitle();              //parameters, but how do I convert the List<Genres>
         this.description = "this.getDescription()";  //into String genres? would need a parser beforehand!
       //  List<Movie> genresList=this.getGenres(); //cannot parse in parameter declaration
         this.genres = "genresToString()";
@@ -80,7 +80,7 @@ public WatchlistMovieEntity(){
     public String getApiID(){
         return apiID;
     }
-    public String getMovieTitle() {
+    public String getTitle() {
         return title;
     }
     public String getGenres() {
@@ -113,7 +113,7 @@ public WatchlistMovieEntity(){
     public String watchlistMovieToString(){
         StringBuilder concaty=new StringBuilder();
         concaty.append(this.getApiID()+ " ,");
-        concaty.append(this.getMovieTitle()+ " ,");
+        concaty.append(this.getTitle()+ " ,");
         concaty.append(this.getGenres()+ " ,");
         concaty.append(this.getReleaseYear()+ " ,");
         concaty.append(this.getDescription()+ " ,");

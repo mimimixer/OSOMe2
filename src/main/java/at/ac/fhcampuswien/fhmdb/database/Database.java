@@ -15,13 +15,15 @@ public class Database {
     public static final String username= "user";
     public static final String password ="pass";
 
-
-
     private static ConnectionSource connectionSource;
     private Dao<WatchlistMovieEntity, Long> movieEntityDao; //needs getter
 
 //laut Leons Video ist eine Database instance notwendig, und nämlich GENAU EINE!
  private static Database instance;
+ //nicht vergessen: database h2, user+pass angeben, jdbc:h2:file: ./db/moviesdb und
+ // UNBEDINGT!!!!! embedded auswählen, nicht remote oder sonstwas!
+ // und am ende deactivate clicken (roter punkt) und dann refresh!
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //Required Methods
     private static void createConnectionSource() throws SQLException {
