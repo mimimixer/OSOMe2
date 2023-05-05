@@ -5,7 +5,7 @@ import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import java.util.*;
 
 public class Movie{
-    private  String apiID;
+    private  String id;
     private  String title;
     private  List<Genre> genres;
     private  int releaseYear; //GET asks for releaseYear
@@ -18,7 +18,7 @@ public class Movie{
     private  double rating; //GET asks for ratingFrom
 
     public Movie(String title, String description, List<Genre> genres) {
-        this.apiID = "";
+        this.id = "";
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -31,9 +31,9 @@ public class Movie{
         this.rating = 0;
     }
 
-    public Movie(String apiID, String title, String description, List<Genre> genres, int releaseYear, double rating,
+    public Movie(String id, String title, String description, List<Genre> genres, int releaseYear, double rating,
                  int lengthInMinutes, String imgUrl) {
-        this.apiID = apiID;
+        this.id = id;
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -45,10 +45,10 @@ public class Movie{
         this.lengthInMinutes = lengthInMinutes;
         this.imgUrl = imgUrl;
     }
-    public Movie(String apiID, String title, String description, List<Genre> genres, int releaseYear, double rating,
+    public Movie(String id, String title, String description, List<Genre> genres, int releaseYear, double rating,
                  List<String> writers, List<String> directors, List<String> mainCast,
                  int lengthInMinutes, String imgUrl) {
-        this.apiID = apiID;
+        this.id = id;
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -76,7 +76,7 @@ public class Movie{
     }
 
     public String ApiID(){
-        return apiID;
+        return id;
     }
     public String getMovieTitle() {
         return title;

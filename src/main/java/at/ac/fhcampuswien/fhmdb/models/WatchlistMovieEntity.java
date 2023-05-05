@@ -14,7 +14,7 @@ public class WatchlistMovieEntity{
     //Declarations
     @DatabaseField(generatedId = true)
     private long id;
-    @DatabaseField
+    @DatabaseField(uniqueIndex = true)
     private String apiID; //there should be a GET that asks for the MovieId
     @DatabaseField
     private  String title;

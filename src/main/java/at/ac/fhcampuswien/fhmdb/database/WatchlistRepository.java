@@ -3,6 +3,7 @@ package at.ac.fhcampuswien.fhmdb.database;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,10 +17,18 @@ public class WatchlistRepository {
     //Required Methods
 
     public void removeFromWatchlist(Movie movie) throws SQLException {
-        movieEntityDao.delete(chosenMovie(movie));
+        //movieEntityDao.delete(chosenMovie(movie));
+
+        try {
+            DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = movieEntityDao.deleteBuilder();
+            deleteBuilder.where().eq("apiID", movie.ApiID());
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    //This is the Method List<WatchlistEntity>getAll() but we changed the name for better Comprehensiveness
+        //This is the Method List<WatchlistEntity>getAll() but we changed the name for better Comprehensiveness
     public List<WatchlistMovieEntity> getAllMoviesFromWatchlist() throws SQLException {
 
         return movieEntityDao.queryForAll();

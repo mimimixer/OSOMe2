@@ -43,3 +43,10 @@
     -fx-base: salmon;
     -fx-text-fill: bold;
 }
+
+.ui-alert{
+    -fx-background-color: #f5c518;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2px;
+
+}

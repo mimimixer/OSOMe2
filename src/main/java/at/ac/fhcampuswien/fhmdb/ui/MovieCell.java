@@ -4,11 +4,14 @@ import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.enums.WatchlistState;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.ui.UIAlert;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -18,8 +21,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class MovieCell extends ListCell<Movie> {
@@ -32,13 +37,13 @@ public class MovieCell extends ListCell<Movie> {
     private final Label people = new Label();
 
     private Button detailsBtn = new Button("Show Details");
-    private Button watchlistBtn = new Button("Add to Watchlist");
+    private Button watchlistBtn = new Button("");
     private VBox baseInfoBox = new VBox(title, movieDescription, genre);
     private final VBox buttonsBox = new VBox(detailsBtn, watchlistBtn);
     //private final VBox layout = new VBox(title, detail ,people, genre, showDetailsBtn, addMovieToWatchlistBtn);
     private HBox layout = new HBox(baseInfoBox, buttonsBox);
     //private VBox moreInfoBox = new VBox(moreInfo);
-    private WatchlistState watchlistState = WatchlistState.NONE;
+    private WatchlistState watchlistState;
 
     WatchlistRepository repository = new WatchlistRepository();
 
@@ -72,16 +77,24 @@ public class MovieCell extends ListCell<Movie> {
 
         });
 
-        watchlistBtn.setText(isWatchlistcell? "Remove from Watchlist" : "Add to Watchlist");
+
+
+
+        watchlistBtn.setText(isWatchlistcell? "REMOVE FROM LIST" : "ADD TO LIST");
         watchlistBtn.setOnMouseClicked(mouseEvent -> {
-            if(!isWatchlistcell){
+
+            if(!isWatchlistcell) {
+
                 try {
                     repository.addToWatchlist(getItem());
                     watchlistState = WatchlistState.ADDED;
-                    watchlistBtn.setText("In Watchlist");
+                    UIAlert.showInfoAlert("Successfully added " + title.getText() +" to watchlist");
+
+
 
                 } catch (SQLException e) {
                     //throw new DatabaseException(e);
+                    UIAlert.showErrorAlert("Failed to add movie");
                     System.out.println("Put Fehlermeldung into the UI, not here!");
                     //  throw new DatabaseException(e); //new CustomException Data
                 }
@@ -94,6 +107,7 @@ public class MovieCell extends ListCell<Movie> {
                     Parent root = FXMLLoader.load(fxmlLoader.getLocation());
                     Scene scene = watchlistBtn.getScene();
                     scene.setRoot(root);
+                    watchlistState = WatchlistState.NONE;
 
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
