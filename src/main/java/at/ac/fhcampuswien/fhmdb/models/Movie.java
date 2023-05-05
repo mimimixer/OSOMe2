@@ -39,9 +39,9 @@ public class Movie{
         this.genres = genres;
         this.releaseYear = releaseYear;
         this.rating = rating;
-        this.writers = getWriters();
-        this.directors = getDirectors();
-        this.mainCast = getMainCast();
+        //this.writers = getWriters();
+        //this.directors = getDirectors();
+        //this.mainCast = getMainCast();
         this.lengthInMinutes = lengthInMinutes;
         this.imgUrl = imgUrl;
     }
@@ -54,9 +54,9 @@ public class Movie{
         this.genres = genres;
         this.releaseYear = releaseYear;
         this.rating = rating;
-      //  this.writers = writers;
-      //  this.directors = directors;
-     //   this.mainCast = mainCast;
+       this.writers = writers;
+        this.directors = directors;
+        this.mainCast = mainCast;
         this.lengthInMinutes = lengthInMinutes;
         this.imgUrl = imgUrl;
     }

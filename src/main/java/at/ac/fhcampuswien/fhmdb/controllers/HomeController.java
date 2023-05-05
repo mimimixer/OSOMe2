@@ -68,6 +68,7 @@ public class HomeController implements Initializable {
     public JFXButton sortBtn;
     public List<Movie> allMovies;
     private static final String BASE = "http://prog2.fh-campuswien.ac.at/movies";
+    public JFXButton showWatchlistBtn;
 
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     protected ObservableList<WatchlistMovieEntity> watchlistMovies = FXCollections.observableArrayList();

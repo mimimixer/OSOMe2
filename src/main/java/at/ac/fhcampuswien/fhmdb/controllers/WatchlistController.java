@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -74,7 +75,7 @@ public class WatchlistController {
 
 
         movieRepo = new WatchlistRepository();
-        List<WatchlistMovieEntity> watchlist;
+        List<WatchlistMovieEntity> watchlist = new ArrayList<>();
 
 
         try {
@@ -84,10 +85,14 @@ public class WatchlistController {
             throw new RuntimeException();
         }
 
-        observableMovies = (ObservableList<Movie>) watchlist.stream().map(WatchlistMovieEntity::watchlistEntityToMovie).toList();
+        ObservableList<Movie> movies = FXCollections.observableArrayList(
+                watchlist.stream()
+                        .map(WatchlistMovieEntity::watchlistEntityToMovie)
+                        .collect(Collectors.toList())
+        );
 
-        watchlistView.setItems(observableMovies);
-        watchlistView.setCellFactory(listView -> new MovieCell(true));
+        watchlistView.setItems(movies);
+        watchlistView.setCellFactory(movieListView-> new MovieCell(true));
 
 
 
