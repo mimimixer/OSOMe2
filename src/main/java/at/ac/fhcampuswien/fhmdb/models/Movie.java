@@ -25,13 +25,26 @@ public class Movie{
         this.releaseYear = 0;
         this.imgUrl = "";
         this.lengthInMinutes = 0;
-        //  this.directors = directors;
-        //  this.writers = writers;
-        //  this.mainCast = mainCast;
+        this.directors = directors;
+        this.writers = writers;
+        this.mainCast = mainCast;
         this.rating = 0;
     }
-public Movie(){
-}
+
+    public Movie(String apiID, String title, String description, List<Genre> genres, int releaseYear, double rating,
+                 int lengthInMinutes, String imgUrl) {
+        this.apiID = apiID;
+        this.title = title;
+        this.description = description;
+        this.genres = genres;
+        this.releaseYear = releaseYear;
+        this.rating = rating;
+        this.writers = getWriters();
+        this.directors = getDirectors();
+        this.mainCast = getMainCast();
+        this.lengthInMinutes = lengthInMinutes;
+        this.imgUrl = imgUrl;
+    }
     public Movie(String apiID, String title, String description, List<Genre> genres, int releaseYear, double rating,
                  List<String> writers, List<String> directors, List<String> mainCast,
                  int lengthInMinutes, String imgUrl) {

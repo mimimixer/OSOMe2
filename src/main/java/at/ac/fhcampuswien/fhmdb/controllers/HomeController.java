@@ -1,7 +1,9 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
-import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
+import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.database.MovieAPI;
+import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.enums.SortedState;
@@ -13,8 +15,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,6 +38,9 @@ public class HomeController implements Initializable {
     public JFXButton searchBtn;
 
     @FXML
+    public VBox box;
+
+    @FXML
     public JFXButton resetBtn;
     @FXML
     public TextField searchField;
@@ -39,7 +50,7 @@ public class HomeController implements Initializable {
     @FXML
     public JFXListView movieListView;
 
-    public JFXListView watchListView;
+    //public JFXListView watchListView;
 
     @FXML
     public JFXComboBox genreComboBox;
@@ -182,7 +193,7 @@ public class HomeController implements Initializable {
 
     public void initializeLayout() {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
-        movieListView.setCellFactory(movieListView -> new MovieCell()); // apply custom cells to the listview
+        movieListView.setCellFactory(movieListView -> new MovieCell(false)); // apply custom cells to the listview
 
       //  watchListView.setItems(watchlistMovies);   // set the items of the listview to the observable list
       //  watchListView.setCellFactory(watchListView -> new WatchlistCell()); // apply custom cells to the listview
@@ -389,7 +400,26 @@ public class HomeController implements Initializable {
                     .map(Map.Entry::getKey).orElse("");
         }
 
-    public void showWatchlistBtnClicked(ActionEvent actionEvent) {
-            // wechsel zur WacthlistAnsicht
-    }
-}
+        public void showWatchlistBtnClicked(){
+
+            loadWatchlistView();
+
+        }
+
+
+        public void loadWatchlistView() {
+            FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
+                try{
+                    Scene scene = new Scene(fxmlLoader.load(), 1000, 620);
+                    Stage stage = (Stage)box.getScene().getWindow();
+                    stage.setScene(scene);
+
+                } catch (IOException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("An error has occurred.");
+                    alert.setContentText("Error while loading.");
+                }
+            }
+
+        }

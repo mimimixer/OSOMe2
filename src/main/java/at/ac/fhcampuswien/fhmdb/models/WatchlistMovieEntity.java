@@ -4,6 +4,7 @@ import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,6 +78,7 @@ public WatchlistMovieEntity(){
         this.imgUrl = imgUrl;
     }
 
+    public long getId(){return id;}
     public String getApiID(){
         return apiID;
     }
@@ -102,6 +104,45 @@ public WatchlistMovieEntity(){
         return rating;
     }
 
+    //SETTER METHODS
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setApiID(String apiID) {
+        this.apiID = apiID;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setGenres(String genres) {
+        this.genres = genres;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public void setLengthInMinutes(int lengthInMinutes) {
+        this.lengthInMinutes = lengthInMinutes;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+
     /* well we cannot do it because we would trash our beautiful genresToString Method
     @Override
     public String toString(){
@@ -121,5 +162,13 @@ public WatchlistMovieEntity(){
         concaty.append(this.getLengthInMinutes()+ " ,");
         concaty.append(this.getRating());
         return concaty.toString();
+    }
+
+    public Movie watchlistEntityToMovie() {
+
+        List<Genre> genres = Arrays.stream(this.genres.split(","))
+                .map(Genre::valueOf)
+                .collect(Collectors.toList());
+        return new Movie(apiID, title, description, genres, releaseYear, rating, lengthInMinutes, imgUrl);
     }
 }

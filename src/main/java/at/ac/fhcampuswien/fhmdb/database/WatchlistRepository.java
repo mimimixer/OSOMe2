@@ -21,21 +21,32 @@ public class WatchlistRepository {
 
     //This is the Method List<WatchlistEntity>getAll() but we changed the name for better Comprehensiveness
     public List<WatchlistMovieEntity> getAllMoviesFromWatchlist() throws SQLException {
+
         return movieEntityDao.queryForAll();
 
     } //fehlt bei dieser Methode noch was? bitte überprüfen
 
     public void addToWatchlist(Movie movie) throws SQLException {
+        String title = movie.getMovieTitle();
         movieEntityDao.create(chosenMovie(movie));
+
+        System.out.println("Added " + title + "to Watchlist");
     }
     public void addToWatchlist(WatchlistMovieEntity movie) throws SQLException {
         movieEntityDao.create(chosenMovie(movie));
     }
+
+    private WatchlistMovieEntity movieToEntity(Movie movie)
+    {
+        return new WatchlistMovieEntity(movie.ApiID(), movie.getMovieTitle(), movie.getDescription(), movie.getGenres(), movie.getReleaseYear(), movie.getRating(), movie.getLengthInMinutes(), movie.getImgUrl());
+    }
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //Additional Methods and Constructors
 
     private WatchlistMovieEntity chosenMovie(Movie movie){
-        return new WatchlistMovieEntity();
+        return movieToEntity(movie);
+
     }
     private WatchlistMovieEntity chosenMovie(WatchlistMovieEntity movie){
         return new WatchlistMovieEntity();
@@ -43,4 +54,6 @@ public class WatchlistRepository {
     public WatchlistRepository(){
         this.movieEntityDao=Database.getDatabase().getMovieEntityDao();
     }
+
+
 }

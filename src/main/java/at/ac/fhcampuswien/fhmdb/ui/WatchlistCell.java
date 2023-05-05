@@ -17,13 +17,13 @@ public class WatchlistCell extends ListCell<WatchlistMovieEntity> {
     private final Button showWatchlistBtn=new Button("Show Watchlist");
 
     private boolean collapsedDetails = true;
-    WatchlistRepository repository=new WatchlistRepository();
+    WatchlistRepository repository= new WatchlistRepository();
 
 
     //new
     public WatchlistCell() {//ClickEventHandler addToWatchlistClicked
         super();
-        addMovieToWatchlistBtn.getStyleClass().add("btn"); //new
+        /*addMovieToWatchlistBtn.getStyleClass().add("btn"); //new
         addMovieToWatchlistBtn.setOnMouseClicked(mouseEvent -> {
             try {
                 repository.addToWatchlist(getItem());
@@ -31,7 +31,7 @@ public class WatchlistCell extends ListCell<WatchlistMovieEntity> {
                 System.out.println("Put Fehlermeldung into the UI, not here!");
               //  throw new DatabaseException(e); //new CustomException Data
             }
-        });
+        });*/
     }
 /*  Die Controller Klasse(n) fungieren als Schicht zwischen dem UI-Layer und dem Data-Layer.
     Folglich sind diese nur um jeweils eine Click-Funktion zu erweitern. So soll beim Klick auf

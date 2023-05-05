@@ -11,7 +11,7 @@ import java.sql.SQLException;
 
 public class Database {
     //Deklarationen
-    public static final String DB_URL = "jdbc:h2:file: ./db/moviesdb"; // "jdbc:h2:[file:][<path>]<databaseName>;
+    public static final String DB_URL = "jdbc:h2:file:./db/moviesdb"; // "jdbc:h2:[file:][<path>]<databaseName>;
     public static final String username= "user";
     public static final String password ="pass";
 
@@ -44,7 +44,7 @@ public class Database {
     //neue Database erstellen wenn es noch keine gibt - SINGLETON Pattern!
     public static Database getDatabase() {
         if (instance == null) {
-            instance=new Database();
+            instance= new Database();
         }
         System.out.println(instance);
         return instance;

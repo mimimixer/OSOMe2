@@ -1,9 +1,14 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.enums.WatchlistState;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -13,8 +18,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MovieCell extends ListCell<Movie> {
@@ -27,43 +32,79 @@ public class MovieCell extends ListCell<Movie> {
     private final Label people = new Label();
 
     private Button detailsBtn = new Button("Show Details");
-    private final Button addMovieToWatchlistBtn = new Button("Add to Watchlist");
+    private Button watchlistBtn = new Button("Add to Watchlist");
     private VBox baseInfoBox = new VBox(title, movieDescription, genre);
-    private final VBox buttonsBox = new VBox(detailsBtn, addMovieToWatchlistBtn);
+    private final VBox buttonsBox = new VBox(detailsBtn, watchlistBtn);
     //private final VBox layout = new VBox(title, detail ,people, genre, showDetailsBtn, addMovieToWatchlistBtn);
     private HBox layout = new HBox(baseInfoBox, buttonsBox);
-    private final VBox moreInfoBox = new VBox(moreInfo, people);
-    private boolean collapsed = false;
+    //private VBox moreInfoBox = new VBox(moreInfo);
+    private WatchlistState watchlistState = WatchlistState.NONE;
 
-
-/*
     WatchlistRepository repository = new WatchlistRepository();
 
-    public MovieCell() {//ClickEventHandler addToWatchlistClicked
+    private boolean hiddenDetails = true;
+    private final boolean isWatchlistcell;
+
+
+    public MovieCell(boolean isWatchlistcell) {//ClickEventHandler addToWatchlistClicked
         super();
+        this.isWatchlistcell = isWatchlistcell;
+
         detailsBtn.getStyleClass().add("btn"); //new
         detailsBtn.setOnMouseClicked(mouseEvent -> {
-            if(Objects.equals(detailsBtn.getText(), "Show Details")){
+            System.out.println(watchlistState);
+            if(hiddenDetails){
+                hiddenDetails = false;
                 detailsBtn.setText("Hide Details");
-                baseInfoBox.getChildren().add(moreInfoBox);
+                if (!isWatchlistcell){
+                    baseInfoBox.getChildren().add(moreInfo);
+                    baseInfoBox.getChildren().add(people);
+                }else{
+                    baseInfoBox.getChildren().add(moreInfo);
+                }
+
             }else{
+                hiddenDetails = true;
                 detailsBtn.setText("Show Details");
-                baseInfoBox.getChildren().remove(moreInfoBox);
+                baseInfoBox.getChildren().remove(moreInfo);
+                baseInfoBox.getChildren().remove(people);
             }
+
         });
 
-        addMovieToWatchlistBtn.getStyleClass().add("btn"); //new
-        addMovieToWatchlistBtn.setOnMouseClicked(mouseEvent -> {
-            try {
-                repository.addToWatchlist(getItem());
-            } catch (SQLException e) {
-                //throw new DatabaseException(e);
-                System.out.println("Put Fehlermeldung into the UI, not here!");
-                //  throw new DatabaseException(e); //new CustomException Data
+        watchlistBtn.setText(isWatchlistcell? "Remove from Watchlist" : "Add to Watchlist");
+        watchlistBtn.setOnMouseClicked(mouseEvent -> {
+            if(!isWatchlistcell){
+                try {
+                    repository.addToWatchlist(getItem());
+                    watchlistState = WatchlistState.ADDED;
+                    watchlistBtn.setText("In Watchlist");
+
+                } catch (SQLException e) {
+                    //throw new DatabaseException(e);
+                    System.out.println("Put Fehlermeldung into the UI, not here!");
+                    //  throw new DatabaseException(e); //new CustomException Data
+                }
             }
+
+            else {
+                try{
+                    repository.removeFromWatchlist(getItem());
+                    FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
+                    Parent root = FXMLLoader.load(fxmlLoader.getLocation());
+                    Scene scene = watchlistBtn.getScene();
+                    scene.setRoot(root);
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
         });
     }
-*/
+
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -104,7 +145,7 @@ public class MovieCell extends ListCell<Movie> {
             // color scheme
             apiID.getStyleClass().add("text-white");
             title.getStyleClass().add("text-yellow");
-            addMovieToWatchlistBtn.getStyleClass().add("background-yellow");
+            watchlistBtn.getStyleClass().add("background-yellow");
             detailsBtn.getStyleClass().add("background-yellow");
             //     allNumbers.getStyleClass().add("text-white");
             //releaseYear.getStyleClass().add("text-white");
@@ -129,7 +170,7 @@ public class MovieCell extends ListCell<Movie> {
             movieDescription.fontProperty().set(movieDescription.getFont().font(15));
             buttonsBox.setAlignment(Pos.TOP_RIGHT);
             detailsBtn.setPrefWidth(130);
-            addMovieToWatchlistBtn.setPrefWidth(130);
+            watchlistBtn.setPrefWidth(130);
             buttonsBox.spacingProperty().set(15);
             baseInfoBox.setPrefWidth(800);
             layout.setPadding(new Insets(10));
@@ -138,10 +179,10 @@ public class MovieCell extends ListCell<Movie> {
             setGraphic(layout);
 
 
-
         }
 
 
     }
+
 }
 
