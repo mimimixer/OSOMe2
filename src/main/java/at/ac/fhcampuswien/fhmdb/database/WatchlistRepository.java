@@ -22,6 +22,7 @@ public class WatchlistRepository {
         try {
             DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = movieEntityDao.deleteBuilder();
             deleteBuilder.where().eq("apiID", movie.ApiID());
+            deleteBuilder.delete();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
