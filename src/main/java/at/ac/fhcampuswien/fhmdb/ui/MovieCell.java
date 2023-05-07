@@ -106,8 +106,9 @@ public class MovieCell extends ListCell<Movie> {
                     scene.setRoot(root);
                     watchlistState = WatchlistState.NONE;
 
-                } catch (IOException | DatabaseException e) {
-                    throw new RuntimeException(e);
+                } catch (DatabaseException | IOException e) {
+                    UIAlert.showErrorAlert("Failed to add movie");
+                    System.out.println("Put Fehlermeldung into the UI, not here!");
                 }
             }
 
