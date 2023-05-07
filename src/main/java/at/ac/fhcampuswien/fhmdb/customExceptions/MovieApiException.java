@@ -7,7 +7,7 @@ public class MovieApiException extends Exception{
     }
 
     public MovieApiException (){
-        System.out.println("empty MovieApiException initiated");
+        System.out.println("An empty MovieApiException was thrown");
     }
     public MovieApiException (Exception e){
         System.out.println("not empty MovieApiException initiated");
