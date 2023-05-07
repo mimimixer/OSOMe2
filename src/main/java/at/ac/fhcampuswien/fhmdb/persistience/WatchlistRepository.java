@@ -25,7 +25,7 @@ public class WatchlistRepository {
             deleteBuilder.delete();
 
         } catch (SQLException e) {
-            throw new DatabaseException("could not remove movie "+movie.getMovieTitle()+"from watchlist");
+            throw new DatabaseException("unable to delete movie "+movie.getMovieTitle()+"from watchlist");
         }
     }
 
