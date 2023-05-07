@@ -91,8 +91,12 @@ public class HomeController implements Initializable {
     //prepare lists  for UI
     public void initializeState() throws IOException {
      //   allMovies = Movie.initializeMovies();
-        allMovies = MovieAPI.getAllMoviesDown(BASE);
-      //  printMovies(allMovies);
+        try {
+            allMovies = MovieAPI.getAllMoviesDown(BASE);
+        } catch (MovieApiException e) {
+            System.out.println("Error while executing request: " + e.getMessage());;
+        }
+        //  printMovies(allMovies);
       
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
@@ -167,7 +171,11 @@ public class HomeController implements Initializable {
            if (rating!=null){
                rates = rating.toString();
            }
-            filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
+            try {
+                filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
+            } catch (MovieApiException e) {
+                throw new RuntimeException(e);
+            }
 
          /*   if (!searchQuery.isEmpty()){
                 if((genre == null && !genre.toString().equals("No filter"))&&
@@ -375,7 +383,7 @@ public class HomeController implements Initializable {
             observableMovies.addAll(filteredMovies);
         }
 
-        public void resetBtnClicked (ActionEvent actionEvent){
+        public void resetBtnClicked (ActionEvent actionEvent) throws MovieApiException{
             allMovies = MovieAPI.getAllMoviesDown(BASE);
             observableMovies.clear();
             observableMovies.addAll(allMovies);

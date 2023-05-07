@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import javafx.scene.control.Button;
@@ -21,7 +22,7 @@ public class WatchlistCell extends ListCell<WatchlistMovieEntity> {
 
 
     //new
-    public WatchlistCell() {//ClickEventHandler addToWatchlistClicked
+    public WatchlistCell() throws DatabaseException {//ClickEventHandler addToWatchlistClicked
         super();
         /*addMovieToWatchlistBtn.getStyleClass().add("btn"); //new
         addMovieToWatchlistBtn.setOnMouseClicked(mouseEvent -> {

@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
+import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
@@ -69,7 +70,7 @@ public class WatchlistController {
     }
 
 
-    public void initialize() {
+    public void initialize() throws DatabaseException {
 
         System.out.println("WatchlistController initialized");
 
@@ -98,13 +99,27 @@ public class WatchlistController {
 
     }
 
-    public void initializeLayout(ObservableList<Movie>movies){
+    public void initializeLayout(ObservableList<Movie>movies) throws DatabaseException{
         //movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
         //movieListView.setCellFactory(movieListView -> new MovieCell(false)); // apply custom cells to the listview
+        try {
+            watchlistView.setItems(movies);
+            watchlistView.setCellFactory(watchlistView -> new MovieCell(true));
+        } catch (Exception e) {
+            throw new DatabaseException("Error initializing watchlist layout", e);
+        }
 
+        /*
         watchlistView.setItems(movies);
-        watchlistView.setCellFactory(watchlistView -> new MovieCell(true));
+        watchlistView.setCellFactory(watchlistView -> {
+            try {
+                return new MovieCell(true);
+            } catch (DatabaseException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
+        */
     }
 
     }

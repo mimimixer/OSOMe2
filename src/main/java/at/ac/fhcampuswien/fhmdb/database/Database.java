@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
+import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -42,7 +43,7 @@ public class Database {
     //Additional Methods and Constructors
 
     //neue Database erstellen wenn es noch keine gibt - SINGLETON Pattern!
-    public static Database getDatabase() {
+    public static Database getDatabase() throws DatabaseException{
         if (instance == null) {
             instance= new Database();
         }
@@ -51,22 +52,29 @@ public class Database {
     }
 
     //Constructor
-    private Database(){
+    private Database() throws DatabaseException{
         try {
             createConnectionSource();
             movieEntityDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
             createTables();
         }catch (SQLException e){ //Here we actually need Custom Databaseexception
+            throw new DatabaseException("Failed to initialize database", e);
+            /*
             System.out.println("now we have that SQL Exception");
             System.out.println(e.getMessage());
             System.out.println(e.getSQLState());
+             */
         }
     }
 
 
-    public void testDB() throws SQLException {
-        WatchlistMovieEntity watchlistMovie3 = new WatchlistMovieEntity("movieId123");
-        movieEntityDao.create(watchlistMovie3);
+    public void testDB() throws DatabaseException {
+        try {
+            WatchlistMovieEntity watchlistMovie3 = new WatchlistMovieEntity("movieId123");
+            movieEntityDao.create(watchlistMovie3);
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to create movie entity", e);
+        }
     }
     /*    List<WatchlistMovieEntity> l= movieEntityDao.queryForAll();
         l.forEach(e -> {

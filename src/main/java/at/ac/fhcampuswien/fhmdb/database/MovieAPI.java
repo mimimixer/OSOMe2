@@ -1,8 +1,10 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
+import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.Gson;
 
+import com.google.gson.JsonParseException;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -47,7 +49,7 @@ public class MovieAPI {
         return url.toString();
     }
 
-    public static String requestUrl(String madeUrl){
+    public static String requestUrl(String madeUrl) throws MovieApiException {
         System.out.println("lets make the request @ " +madeUrl);
         Request requesthttp = new Request.Builder()
                 //   .addHeader("accept", "application/json")
@@ -56,11 +58,11 @@ public class MovieAPI {
                 .build();
         try(Response response = client.newCall(requesthttp).execute()){
             return response.body().string();
-        }catch (Exception ex){
-            System.out.println("GET MovieDataBase did not work out");
-            ex.printStackTrace();
+        }catch (IOException ex){
+            throw new MovieApiException("Error while executing request: " + ex.getMessage());
+            //System.out.println("GET MovieDataBase did not work out");
+            //ex.printStackTrace();
         }
-        return null;
     }
 
     public static List<Movie> parseMovieListToJson (String requestedDataByUrl){
@@ -71,21 +73,31 @@ public class MovieAPI {
 
     public static Movie getThatMovieSpecificDown(String movieId){
         String newUrl = makeUrl(movieId);
-        String getData = requestUrl(newUrl);
-          Movie movie = new Gson().fromJson(getData, Movie.class);
+        String getData = null;
+        try {
+            getData = requestUrl(newUrl);
+        } catch (NullPointerException | MovieApiException ex) {
+            System.err.println("Caught a NullPointerException: " + ex.getMessage());
+        }
+        Movie movie = new Gson().fromJson(getData, Movie.class);
      //     List<Movie> parsedMovie=parseMovieListToJson(getData);
         return movie;
     }
 
-    public static List<Movie> getAllMoviesDown(String BASE){
+    public static List<Movie> getAllMoviesDown(String BASE) throws MovieApiException {
         return parseMovieListToJson(requestUrl(BASE));
     }
 
 public static List<Movie> getThatMovieListDown (String queryText, String chosenGenre,
-                                                String chosenReleaseYear, String chosenRatingFrom){
+                                                String chosenReleaseYear, String chosenRatingFrom) throws MovieApiException {
         String newUrl = makeUrl(queryText, chosenGenre, chosenReleaseYear, chosenRatingFrom);
-        String getData = requestUrl(newUrl);
+        String getData = null;
+        try {
+             getData = requestUrl(newUrl);
+        }catch (MovieApiException e) {
+            throw new MovieApiException(e);
+        }
         List<Movie> parsedMovielist=parseMovieListToJson(getData);
-        return parsedMovielist;
+            return parsedMovielist;
         }
 }

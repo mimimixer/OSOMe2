@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
+import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import com.j256.ormlite.dao.Dao;
@@ -61,8 +62,8 @@ public class WatchlistRepository {
     private WatchlistMovieEntity chosenMovie(WatchlistMovieEntity movie){
         return new WatchlistMovieEntity();
     }
-    public WatchlistRepository(){
-        this.movieEntityDao=Database.getDatabase().getMovieEntityDao();
+    public WatchlistRepository() throws DatabaseException{
+        this.movieEntityDao = Database.getDatabase().getMovieEntityDao();
     }
 
 

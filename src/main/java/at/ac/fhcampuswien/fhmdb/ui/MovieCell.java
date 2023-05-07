@@ -1,7 +1,9 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
+import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+//import at.ac.fhcampuswien.fhmdb.enums.WatchlistState;
 import at.ac.fhcampuswien.fhmdb.enums.WatchlistState;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
@@ -51,7 +53,7 @@ public class MovieCell extends ListCell<Movie> {
     private final boolean isWatchlistcell;
 
 
-    public MovieCell(boolean isWatchlistcell) {//ClickEventHandler addToWatchlistClicked
+    public MovieCell(boolean isWatchlistcell) throws DatabaseException {//ClickEventHandler addToWatchlistClicked
         super();
         this.isWatchlistcell = isWatchlistcell;
 

@@ -1,6 +1,10 @@
 package at.ac.fhcampuswien.fhmdb.customExceptions;
 
 public class MovieApiException extends Exception{
+    public MovieApiException(String message) {
+        super(message);
+    }
+
     public MovieApiException (){
         System.out.println("empty MovieApiException initiated");
     }
