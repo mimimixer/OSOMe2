@@ -23,11 +23,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -79,10 +81,20 @@ public class HomeController implements Initializable {
     public List<WatchlistMovieEntity> watchlistAll=new ArrayList<>();
     protected SortedState sortedState;
 
-    WatchlistRepository repository = new WatchlistRepository();
+        WatchlistRepository repository;
 
 
-    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {  repository.addToWatchlist((Movie) clickedItem);
+
+    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {
+        try{
+            repository = new WatchlistRepository();
+            repository.addToWatchlist((Movie) clickedItem);
+            UIAlert.showConfirmationAlert(((Movie) clickedItem).getMovieTitle()+" has been added to your watchlist.");
+        }catch (DatabaseException e){
+            System.out.println("Error while executing request: " + e.getMessage());;
+            UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n"+
+                    "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");
+        }
 
     };
 
@@ -103,13 +115,13 @@ public class HomeController implements Initializable {
     }
 
     //prepare lists  for UI
-    public void initializeState() throws IOException, DatabaseException {
+    public void initializeState() throws IOException, DatabaseException, SQLException {
      //   allMovies = Movie.initializeMovies();
         try {
             allMovies = MovieAPI.getAllMoviesDown(BASE);
         } catch (MovieApiException e) {
             System.out.println("Error while executing request: " + e.getMessage());;
-            UIAlert.showErrorAlert(" There is an error making the request. \n Try checking your internet connection. \n Or check out your saved movies instead");
+            UIAlert.showInfoAlert(" There is an error downloading the movie list. \n Check your internet connection. \n\n In the meantime we will show your saved movies");
 
             WatchlistRepository movieRepo = new WatchlistRepository();
             List<WatchlistMovieEntity> watchlist;
@@ -190,7 +202,7 @@ public class HomeController implements Initializable {
 
     }
 
-    public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating)throws NullPointerException, MovieApiException {
+    public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating)throws MovieApiException {
         List<Movie> filteredMovies = allMovies;
         filterDescriptionByQuery(filteredMovies, searchQuery);
         List<Movie> finalSearchedList;
@@ -212,7 +224,7 @@ public class HomeController implements Initializable {
                 filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
             } catch (MovieApiException e) {
                 showInfoAlert(e.message);
-                throw new MovieApiException(e);
+                throw new MovieApiException(e.message);
             }
 
          /*   if (!searchQuery.isEmpty()){
@@ -306,7 +318,7 @@ public class HomeController implements Initializable {
         void printMovies (List < Movie > allMovies) {
             for (Movie m : allMovies) {
                 System.out.println(m.getReleaseYear());
-                System.out.println(m.ApiID());
+                System.out.println(m.getApiID());
                 System.out.println(m.getImgUrl());
                 System.out.println(m.getLengthInMinutes());
                 System.out.println(m.getDirectors());
@@ -428,23 +440,25 @@ public class HomeController implements Initializable {
         }
 
         public void resetBtnClicked (ActionEvent actionEvent) throws MovieApiException{
+
             try {
                 allMovies = MovieAPI.getAllMoviesDown(BASE);
-            }catch(MovieApiException e){
-                showInfoAlert(e.message);
-                throw new MovieApiException(e.message);
+            } catch (MovieApiException e) {
+                System.out.println("Error while executing request: " + e.getMessage());
+                ;
+                UIAlert.showInfoAlert(" There is an error downloading the movie list. \n Check your internet connection. \n\n In the meantime we will show your saved movies");
+
+                observableMovies.clear();
+                observableMovies.addAll(allMovies);
+
+                sortBtn.setText("Sort");
+                searchField.clear();
+                movieIdField.clear();
+                genreComboBox.setValue(null);
+                ratingComboBox.setValue(null);
+                releaseYearComboBox.setValue(null);
+
             }
-            observableMovies.clear();
-            observableMovies.addAll(allMovies);
-
-            sortBtn.setText("Sort");
-            searchField.clear();
-            movieIdField.clear();
-            genreComboBox.setValue(null);
-            ratingComboBox.setValue(null);
-            releaseYearComboBox.setValue(null);
-
-
         }
 
 
@@ -459,9 +473,7 @@ public class HomeController implements Initializable {
         }
 
         public void showWatchlistBtnClicked(){
-
             loadWatchlistView();
-
         }
 
 
@@ -479,5 +491,4 @@ public class HomeController implements Initializable {
                     alert.setContentText("Error while loading.");
                 }
             }
-
         }

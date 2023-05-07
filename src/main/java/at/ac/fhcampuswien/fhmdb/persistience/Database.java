@@ -33,8 +33,12 @@ public class Database {
     public ConnectionSource getConnectionSource() {
         return this.connectionSource;
     }
-    public static void createTables() throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, WatchlistMovieEntity.class);
+    public static void createTables() throws DatabaseException {
+        try {
+            TableUtils.createTableIfNotExists(connectionSource, WatchlistMovieEntity.class);
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
     }
     public Dao<WatchlistMovieEntity, Long> getMovieEntityDao() {
         return this.movieEntityDao;
@@ -57,7 +61,7 @@ public class Database {
             createConnectionSource();
             movieEntityDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
             createTables();
-        }catch (SQLException e){ //Here we actually need Custom Databaseexception
+        }catch (Exception e){ //Here we actually need Custom Databaseexception
             throw new DatabaseException("Failed to initialize database", e);
             /*
             System.out.println("now we have that SQL Exception");

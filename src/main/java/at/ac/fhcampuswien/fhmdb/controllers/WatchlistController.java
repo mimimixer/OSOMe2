@@ -6,6 +6,7 @@ import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import at.ac.fhcampuswien.fhmdb.ui.UIAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
@@ -55,7 +56,6 @@ public class WatchlistController {
 
     public void returnBtnClicked() throws IOException {
         loadHomeView();
-
     }
 
     public void loadHomeView() {
@@ -78,10 +78,8 @@ public class WatchlistController {
 
         System.out.println("WatchlistController initialized");
 
-
         movieRepo = new WatchlistRepository();
         List<WatchlistMovieEntity> watchlist = new ArrayList<>();
-
 
         try {
             watchlist = movieRepo.getAllMoviesFromWatchlist();
@@ -96,6 +94,8 @@ public class WatchlistController {
                         .map(WatchlistMovieEntity::watchlistEntityToMovie)
                         .collect(Collectors.toList())
         );
+
+
 
         watchlistView.setItems(movies);
         watchlistView.setCellFactory(movieListView-> {

@@ -21,7 +21,7 @@ public class WatchlistRepository {
         //movieEntityDao.delete(chosenMovie(movie));
         try {
             DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = movieEntityDao.deleteBuilder();
-            deleteBuilder.where().eq("apiID", movie.ApiID());
+            deleteBuilder.where().eq("apiID", movie.getApiID());
             deleteBuilder.delete();
 
         } catch (SQLException e) {
@@ -58,7 +58,7 @@ public class WatchlistRepository {
 
     private WatchlistMovieEntity movieToEntity(Movie movie)
     {
-        return new WatchlistMovieEntity(movie.ApiID(), movie.getMovieTitle(), movie.getDescription(), movie.getGenres(), movie.getReleaseYear(), movie.getRating(), movie.getLengthInMinutes(), movie.getImgUrl());
+        return new WatchlistMovieEntity(movie.getApiID(), movie.getMovieTitle(), movie.getDescription(), movie.getGenres(), movie.getReleaseYear(), movie.getRating(), movie.getLengthInMinutes(), movie.getImgUrl());
     }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

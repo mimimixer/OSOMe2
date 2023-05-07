@@ -45,8 +45,22 @@ public class WatchlistMovieEntity{
 public WatchlistMovieEntity(){
  //ORM lite needs a no-arg constructor
 }
+    public WatchlistMovieEntity(Movie movie){
+        this.apiID = movie.getApiID();                        //either a movie without parameters, or one with ALL
+        this.title = movie.getMovieTitle();              //parameters, but how do I convert the List<Genres>
+        this.description = movie.getDescription();  //into String genres? would need a parser beforehand!
+        //  List<Movie> genresList=this.getGenres(); //cannot parse in parameter declaration
+        this.genres = genresToString(movie.getGenres());
+        this.releaseYear = movie.getReleaseYear();
+        this.rating = movie.getRating();
+        //  this.writers = writers;
+        //  this.directors = directors;
+        //   this.mainCast = mainCast;
+        this.lengthInMinutes = movie.getLengthInMinutes();
+        this.imgUrl = this.getImgUrl();
+    }
 
-//here the constructur with only one argument
+//here the constructor with only one argument
     public WatchlistMovieEntity(String apiID) {    //well, worth a shot? it caused problems in Database:
         this.apiID = apiID;                        //either a movie without parameters, or one with ALL
         this.title = this.getTitle();              //parameters, but how do I convert the List<Genres>
@@ -62,7 +76,7 @@ public WatchlistMovieEntity(){
         this.imgUrl = "this.getImgUrl()";
     }
 
- //here the constructor with all arguments
+ //here the constructor with all arguments, would make more sense to just use Movie as parameter
     public WatchlistMovieEntity(String apiID, String title, String description, List<Genre> genres, int releaseYear, double rating,
                                 int lengthInMinutes, String imgUrl) {
         this.apiID = apiID;
@@ -165,7 +179,6 @@ public WatchlistMovieEntity(){
     }
 
     public Movie watchlistEntityToMovie() {
-
         List<Genre> genres = Arrays.stream(this.genres.split(","))
                 .map(Genre::valueOf)
                 .collect(Collectors.toList());

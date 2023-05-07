@@ -44,7 +44,7 @@ public class MovieCell extends ListCell<Movie> {
     //private VBox moreInfoBox = new VBox(moreInfo);
     private WatchlistState watchlistState;
 
-    WatchlistRepository repository = new WatchlistRepository();
+   // WatchlistRepository repository = new WatchlistRepository();
 
     private boolean hiddenDetails = true;
     private final boolean isWatchlistcell;
@@ -56,7 +56,7 @@ public class MovieCell extends ListCell<Movie> {
     public MovieCell(boolean isWatchlistcell, ClickEventHandler addToWatchListClicked) throws DatabaseException {//ClickEventHandler addToWatchlistClicked
         super();
         this.isWatchlistcell = isWatchlistcell;
-        WatchlistRepository repository = new WatchlistRepository();
+   //     WatchlistRepository repository = new WatchlistRepository();
 
         detailsBtn.getStyleClass().add("btn"); //new
         detailsBtn.setOnMouseClicked(mouseEvent -> {

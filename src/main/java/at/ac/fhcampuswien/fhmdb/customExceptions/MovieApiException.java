@@ -9,7 +9,7 @@ public class MovieApiException extends Exception{
     public MovieApiException (){
         System.out.println("An empty MovieApiException was thrown");
     }
-    public MovieApiException (Exception e){
+   /* public MovieApiException (Exception e){
         System.out.println("not empty MovieApiException initiated");
         System.out.println("please print me out on UI Screen");
     }
@@ -24,5 +24,5 @@ public class MovieApiException extends Exception{
     //eventuell dort thows-MethodSignature einfügen? oder doch umgekehrt(einfach check beim abrufen)?
 
     //ACHTUNGACHTUNG: AUSGABE FEHLERMELDUNG AN UI
-
+    */
 }
