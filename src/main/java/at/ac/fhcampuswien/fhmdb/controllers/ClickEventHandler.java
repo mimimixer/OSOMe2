@@ -1,5 +1,9 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
-public interface ClickEventHandler {
-    void onclick (); //should be void onClick(T t)
+import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
+
+import java.io.IOException;
+
+public interface ClickEventHandler<T> {
+    void onclick (T t) throws DatabaseException, IOException; //should be void onClick(T t)
 }

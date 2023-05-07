@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
+import at.ac.fhcampuswien.fhmdb.controllers.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 //import at.ac.fhcampuswien.fhmdb.enums.WatchlistState;
@@ -22,6 +23,7 @@ import javafx.scene.paint.Color;
 
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 public class MovieCell extends ListCell<Movie> {
@@ -48,9 +50,13 @@ public class MovieCell extends ListCell<Movie> {
     private final boolean isWatchlistcell;
 
 
-    public MovieCell(boolean isWatchlistcell) throws DatabaseException {//ClickEventHandler addToWatchlistClicked
+
+
+
+    public MovieCell(boolean isWatchlistcell, ClickEventHandler addToWatchListClicked) throws DatabaseException {//ClickEventHandler addToWatchlistClicked
         super();
         this.isWatchlistcell = isWatchlistcell;
+        WatchlistRepository repository = new WatchlistRepository();
 
         detailsBtn.getStyleClass().add("btn"); //new
         detailsBtn.setOnMouseClicked(mouseEvent -> {
@@ -78,6 +84,21 @@ public class MovieCell extends ListCell<Movie> {
 
 
         watchlistBtn.setText(isWatchlistcell? "REMOVE FROM LIST" : "ADD TO LIST");
+
+        watchlistBtn.setText(isWatchlistcell? "REMOVE FROM LIST" : "ADD TO LIST");
+
+        watchlistBtn.setOnMouseClicked(mouseEvent-> {
+            try {
+                addToWatchListClicked.onclick(getItem());
+            } catch (DatabaseException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+        /*
         watchlistBtn.setOnMouseClicked(mouseEvent -> {
 
             if(!isWatchlistcell) {
@@ -112,7 +133,7 @@ public class MovieCell extends ListCell<Movie> {
                 }
             }
 
-        });
+        });*/
     }
 
 

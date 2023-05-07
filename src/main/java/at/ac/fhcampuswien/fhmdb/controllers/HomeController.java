@@ -1,13 +1,16 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
+import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.persistience.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.enums.SortedState;
+import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import at.ac.fhcampuswien.fhmdb.ui.UIAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -76,7 +79,17 @@ public class HomeController implements Initializable {
     public List<WatchlistMovieEntity> watchlistAll=new ArrayList<>();
     protected SortedState sortedState;
 
-//START UI
+    WatchlistRepository repository = new WatchlistRepository();
+
+
+    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {  repository.addToWatchlist((Movie) clickedItem);
+
+    };
+
+    public HomeController() throws DatabaseException {
+    }
+
+    //START UI
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -90,12 +103,28 @@ public class HomeController implements Initializable {
     }
 
     //prepare lists  for UI
-    public void initializeState() throws IOException {
+    public void initializeState() throws IOException, DatabaseException {
      //   allMovies = Movie.initializeMovies();
         try {
             allMovies = MovieAPI.getAllMoviesDown(BASE);
         } catch (MovieApiException e) {
             System.out.println("Error while executing request: " + e.getMessage());;
+            UIAlert.showErrorAlert(" There is an error making the request. \n Try checking your internet connection. \n Or check out your saved movies instead");
+
+            WatchlistRepository movieRepo = new WatchlistRepository();
+            List<WatchlistMovieEntity> watchlist;
+            try {
+                watchlist = movieRepo.getAllMoviesFromWatchlist();
+            } catch (Exception ex) {
+                showInfoAlert(e.getMessage());
+                throw new DatabaseException();
+            }
+
+            allMovies = watchlist.stream()
+                            .map(WatchlistMovieEntity::watchlistEntityToMovie)
+                            .collect(Collectors.toList()
+            );
+
         }
         //  printMovies(allMovies);
       
@@ -132,7 +161,7 @@ public class HomeController implements Initializable {
             sortedState = SortedState.DESCENDING;
         }
     }
-    public void searchBtnClicked(ActionEvent actionEvent) {
+    public void searchBtnClicked(ActionEvent actionEvent) throws MovieApiException {
      //   String apiID = movieIdField.getText().trim().toLowerCase();
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
@@ -143,14 +172,21 @@ public class HomeController implements Initializable {
             observableMovies.clear();
             observableMovies.add(movie);
         } else {*/
-        applyFilters(searchQuery,genre,releaseYear,rating);
+        try{
+            applyFilters(searchQuery,genre,releaseYear,rating);
+            sortMovies(sortedState);
+        }catch(MovieApiException e){
+            throw new MovieApiException("Error in Connection");
+        }
+
+
        // }
       //  applyAllFilters(searchQuery, genre);
       /*  if(sortedState != SortedState.NONE) {
             sortMovies();
         }
         korrigiert durch Leon */
-        sortMovies(sortedState);
+
 
     }
 
@@ -204,7 +240,13 @@ public class HomeController implements Initializable {
 
     public void initializeLayout() {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
-        movieListView.setCellFactory(movieListView -> new MovieCell(false)); // apply custom cells to the listview
+        movieListView.setCellFactory(movieListView -> {
+            try {
+                return new MovieCell(false, onAddToWatchlistClicked);
+            } catch (DatabaseException e) {
+                throw new RuntimeException(e);
+            }
+        }); // apply custom cells to the listview
 
       //  watchListView.setItems(watchlistMovies);   // set the items of the listview to the observable list
       //  watchListView.setCellFactory(watchListView -> new WatchlistCell()); // apply custom cells to the listview

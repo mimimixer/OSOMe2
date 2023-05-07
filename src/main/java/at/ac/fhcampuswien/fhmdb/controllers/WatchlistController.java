@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.VBox;
@@ -40,6 +41,16 @@ public class WatchlistController {
     WatchlistRepository movieRepo;
 
     ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
+
+    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem)->{ movieRepo.removeFromWatchlist((Movie) clickedItem);
+        FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
+        Parent root = FXMLLoader.load(fxmlLoader.getLocation());
+        Scene scene = box.getScene();
+        scene.setRoot(root);
+
+    };
+
+
 
 
     public void returnBtnClicked() throws IOException {
@@ -87,7 +98,13 @@ public class WatchlistController {
         );
 
         watchlistView.setItems(movies);
-        watchlistView.setCellFactory(movieListView-> new MovieCell());
+        watchlistView.setCellFactory(movieListView-> {
+            try {
+                return new MovieCell(true, onAddToWatchlistClicked);
+            } catch (DatabaseException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
 
 
@@ -98,7 +115,13 @@ public class WatchlistController {
         //movieListView.setCellFactory(movieListView -> new MovieCell(false)); // apply custom cells to the listview
         try {
             watchlistView.setItems(movies);
-            watchlistView.setCellFactory(watchlistView -> new MovieCell(true));
+            watchlistView.setCellFactory(watchlistView -> {
+                try {
+                    return new MovieCell(true,onAddToWatchlistClicked );
+                } catch (DatabaseException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         } catch (Exception e) {
             throw new DatabaseException("Error initializing watchlist layout", e);
         }
