@@ -1,4 +1,4 @@
-package at.ac.fhcampuswien.fhmdb.database;
+package at.ac.fhcampuswien.fhmdb.persistience;
 
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -17,34 +17,43 @@ public class WatchlistRepository {
 
     //Required Methods
 
-    public void removeFromWatchlist(Movie movie) throws SQLException {
+    public void removeFromWatchlist(Movie movie) throws DatabaseException{
         //movieEntityDao.delete(chosenMovie(movie));
-
         try {
             DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = movieEntityDao.deleteBuilder();
             deleteBuilder.where().eq("apiID", movie.ApiID());
             deleteBuilder.delete();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("could not remove movie "+movie.getMovieTitle()+"from watchlist");
         }
     }
 
         //This is the Method List<WatchlistEntity>getAll() but we changed the name for better Comprehensiveness
-    public List<WatchlistMovieEntity> getAllMoviesFromWatchlist() throws SQLException {
-
-        return movieEntityDao.queryForAll();
-
+    public List<WatchlistMovieEntity> getAllMoviesFromWatchlist() throws DatabaseException {
+        try {
+            return movieEntityDao.queryForAll();
+        }catch (SQLException e){
+            throw new DatabaseException("could not get the Watchlist ");
+        }
     } //fehlt bei dieser Methode noch was? bitte überprüfen
 
-    public void addToWatchlist(Movie movie) throws SQLException {
+    public void addToWatchlist(Movie movie) throws DatabaseException{
         String title = movie.getMovieTitle();
-        movieEntityDao.create(chosenMovie(movie));
+        try{
+            movieEntityDao.create(chosenMovie(movie));
+        }catch(SQLException e){
+            throw new DatabaseException();
+        }
 
         System.out.println("Added " + title + "to Watchlist");
     }
-    public void addToWatchlist(WatchlistMovieEntity movie) throws SQLException {
-        movieEntityDao.create(chosenMovie(movie));
+    public void addToWatchlist(WatchlistMovieEntity movie) throws DatabaseException {
+        try{
+            movieEntityDao.create(chosenMovie(movie));
+        }catch(SQLException e){
+            throw new DatabaseException();
+        }
     }
 
     private WatchlistMovieEntity movieToEntity(Movie movie)

@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.customExceptions;
 
 public class MovieApiException extends Exception{
+    public String message;
     public MovieApiException(String message) {
         super(message);
     }

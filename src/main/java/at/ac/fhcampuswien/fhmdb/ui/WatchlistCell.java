@@ -2,11 +2,9 @@ package at.ac.fhcampuswien.fhmdb.ui;
 
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
-import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
-
-import java.sql.SQLException;
 
 public class WatchlistCell extends ListCell<WatchlistMovieEntity> {
 

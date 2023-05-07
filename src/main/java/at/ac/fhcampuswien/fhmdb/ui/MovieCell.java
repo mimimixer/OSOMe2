@@ -2,18 +2,15 @@ package at.ac.fhcampuswien.fhmdb.ui;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
-import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 //import at.ac.fhcampuswien.fhmdb.enums.WatchlistState;
 import at.ac.fhcampuswien.fhmdb.enums.WatchlistState;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
-import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
-import at.ac.fhcampuswien.fhmdb.ui.UIAlert;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -25,8 +22,6 @@ import javafx.scene.paint.Color;
 
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class MovieCell extends ListCell<Movie> {
@@ -94,7 +89,7 @@ public class MovieCell extends ListCell<Movie> {
 
 
 
-                } catch (SQLException e) {
+                } catch (DatabaseException e) {
                     //throw new DatabaseException(e);
                     UIAlert.showErrorAlert("Failed to add movie");
                     System.out.println("Put Fehlermeldung into the UI, not here!");
@@ -111,9 +106,7 @@ public class MovieCell extends ListCell<Movie> {
                     scene.setRoot(root);
                     watchlistState = WatchlistState.NONE;
 
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
+                } catch (IOException | DatabaseException e) {
                     throw new RuntimeException(e);
                 }
             }

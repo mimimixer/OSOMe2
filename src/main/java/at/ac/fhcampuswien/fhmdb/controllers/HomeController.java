@@ -2,7 +2,7 @@ package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
-import at.ac.fhcampuswien.fhmdb.database.MovieAPI;
+import at.ac.fhcampuswien.fhmdb.persistience.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -20,7 +20,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -31,6 +30,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import java.util.stream.DoubleStream;
+
+import static at.ac.fhcampuswien.fhmdb.ui.UIAlert.showInfoAlert;
 
 
 public class HomeController implements Initializable {
@@ -80,7 +81,7 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             initializeState();
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println();
             System.out.println();
             System.out.println("what now");
@@ -153,7 +154,7 @@ public class HomeController implements Initializable {
 
     }
 
-    public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating)throws NullPointerException {
+    public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating)throws NullPointerException, MovieApiException {
         List<Movie> filteredMovies = allMovies;
         filterDescriptionByQuery(filteredMovies, searchQuery);
         List<Movie> finalSearchedList;
@@ -174,7 +175,8 @@ public class HomeController implements Initializable {
             try {
                 filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
             } catch (MovieApiException e) {
-                throw new RuntimeException(e);
+                showInfoAlert(e.message);
+                throw new MovieApiException(e);
             }
 
          /*   if (!searchQuery.isEmpty()){
@@ -384,7 +386,12 @@ public class HomeController implements Initializable {
         }
 
         public void resetBtnClicked (ActionEvent actionEvent) throws MovieApiException{
-            allMovies = MovieAPI.getAllMoviesDown(BASE);
+            try {
+                allMovies = MovieAPI.getAllMoviesDown(BASE);
+            }catch(MovieApiException e){
+                showInfoAlert(e.message);
+                throw new MovieApiException(e.message);
+            }
             observableMovies.clear();
             observableMovies.addAll(allMovies);
 

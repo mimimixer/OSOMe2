@@ -4,32 +4,25 @@ import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
-import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
-import at.ac.fhcampuswien.fhmdb.ui.WatchlistCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+import static at.ac.fhcampuswien.fhmdb.ui.UIAlert.showInfoAlert;
 
 public class WatchlistController {
 
@@ -82,8 +75,9 @@ public class WatchlistController {
         try {
             watchlist = movieRepo.getAllMoviesFromWatchlist();
 
-        } catch (SQLException e) {
-            throw new RuntimeException();
+        } catch (Exception e) {
+            showInfoAlert(e.getMessage());
+            throw new DatabaseException();
         }
 
         ObservableList<Movie> movies = FXCollections.observableArrayList(
@@ -93,7 +87,7 @@ public class WatchlistController {
         );
 
         watchlistView.setItems(movies);
-        watchlistView.setCellFactory(movieListView-> new MovieCell(true));
+        watchlistView.setCellFactory(movieListView-> new MovieCell());
 
 
 
