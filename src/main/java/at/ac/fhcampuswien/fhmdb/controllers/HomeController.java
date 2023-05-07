@@ -83,6 +83,8 @@ public class HomeController implements Initializable {
 
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {  repository.addToWatchlist((Movie) clickedItem);
+        String title = ((Movie) clickedItem).getMovieTitle();
+        UIAlert.showInfoAlert(title + " added to your watchlist.");
 
     };
 

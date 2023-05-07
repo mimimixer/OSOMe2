@@ -6,6 +6,7 @@ import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import at.ac.fhcampuswien.fhmdb.ui.UIAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
@@ -47,6 +48,9 @@ public class WatchlistController {
         Parent root = FXMLLoader.load(fxmlLoader.getLocation());
         Scene scene = box.getScene();
         scene.setRoot(root);
+        String title = ((Movie) clickedItem).getMovieTitle();
+
+        UIAlert.showInfoAlert(title + " removed from watchlist");
 
     };
 
