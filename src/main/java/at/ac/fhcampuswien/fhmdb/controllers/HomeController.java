@@ -23,13 +23,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -98,8 +96,8 @@ public class HomeController implements Initializable {
 
     };
 
-    public HomeController() throws DatabaseException {
-    }
+    //public HomeController() throws DatabaseException {
+    //}
 
     //START UI
     @Override
@@ -115,7 +113,7 @@ public class HomeController implements Initializable {
     }
 
     //prepare lists  for UI
-    public void initializeState() throws IOException, DatabaseException, SQLException {
+    public void initializeState() throws IOException, DatabaseException {
      //   allMovies = Movie.initializeMovies();
         try {
             allMovies = MovieAPI.getAllMoviesDown(BASE);
@@ -128,7 +126,7 @@ public class HomeController implements Initializable {
             try {
                 watchlist = movieRepo.getAllMoviesFromWatchlist();
             } catch (Exception ex) {
-                showInfoAlert(e.getMessage());
+                showInfoAlert(ex.getMessage());
                 throw new DatabaseException();
             }
 
@@ -173,7 +171,7 @@ public class HomeController implements Initializable {
             sortedState = SortedState.DESCENDING;
         }
     }
-    public void searchBtnClicked(ActionEvent actionEvent) throws MovieApiException {
+    public void searchBtnClicked(ActionEvent actionEvent)  {
      //   String apiID = movieIdField.getText().trim().toLowerCase();
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
@@ -440,7 +438,6 @@ public class HomeController implements Initializable {
         }
 
         public void resetBtnClicked (ActionEvent actionEvent) throws MovieApiException{
-
             try {
                 allMovies = MovieAPI.getAllMoviesDown(BASE);
             } catch (MovieApiException e) {
@@ -451,12 +448,12 @@ public class HomeController implements Initializable {
                 observableMovies.clear();
                 observableMovies.addAll(allMovies);
 
-                sortBtn.setText("Sort");
-                searchField.clear();
-                movieIdField.clear();
-                genreComboBox.setValue(null);
-                ratingComboBox.setValue(null);
-                releaseYearComboBox.setValue(null);
+            sortBtn.setText("Sort");
+            searchField.clear();
+            movieIdField.clear();
+            genreComboBox.setValue(null);
+            ratingComboBox.setValue(null);
+            releaseYearComboBox.setValue(null);
 
             }
         }

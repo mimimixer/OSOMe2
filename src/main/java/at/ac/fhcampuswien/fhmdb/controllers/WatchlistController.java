@@ -43,11 +43,21 @@ public class WatchlistController {
 
     ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem)->{ movieRepo.removeFromWatchlist((Movie) clickedItem);
+    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem)->{
+
+        try{
+            movieRepo.removeFromWatchlist((Movie) clickedItem);
+
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
         Parent root = FXMLLoader.load(fxmlLoader.getLocation());
         Scene scene = box.getScene();
         scene.setRoot(root);
+        String title = ((Movie) clickedItem).getMovieTitle();
+        UIAlert.showInfoAlert(title + " removed from watchlist");
+        } catch (DatabaseException e){
+            UIAlert.showErrorAlert("Error while deleting movie from watchlist");
+        }
+
 
     };
 
@@ -84,6 +94,8 @@ public class WatchlistController {
         try {
             watchlist = movieRepo.getAllMoviesFromWatchlist();
 
+        watchlist = movieRepo.getAllMoviesFromWatchlist();
+
         } catch (Exception e) {
             showInfoAlert(e.getMessage());
             throw new DatabaseException();
@@ -94,8 +106,6 @@ public class WatchlistController {
                         .map(WatchlistMovieEntity::watchlistEntityToMovie)
                         .collect(Collectors.toList())
         );
-
-
 
         watchlistView.setItems(movies);
         watchlistView.setCellFactory(movieListView-> {
