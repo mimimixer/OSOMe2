@@ -79,17 +79,24 @@ public class HomeController implements Initializable {
     public List<WatchlistMovieEntity> watchlistAll=new ArrayList<>();
     protected SortedState sortedState;
 
-    WatchlistRepository repository = new WatchlistRepository();
+   // WatchlistRepository repository = new WatchlistRepository();
 
 
-    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {  repository.addToWatchlist((Movie) clickedItem);
+    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {
         String title = ((Movie) clickedItem).getMovieTitle();
+        WatchlistRepository repository = new WatchlistRepository();
+        try{
+            repository.addToWatchlist((Movie) clickedItem);
         UIAlert.showInfoAlert(title + " added to your watchlist.");
+        }catch (DatabaseException e){
+            UIAlert.showInfoAlert("Couldn't add movie to watchlist, are you sure it's not already in there?");
+        }
+
 
     };
 
-    public HomeController() throws DatabaseException {
-    }
+    //public HomeController() throws DatabaseException {
+    //}
 
     //START UI
     @Override
@@ -111,14 +118,14 @@ public class HomeController implements Initializable {
             allMovies = MovieAPI.getAllMoviesDown(BASE);
         } catch (MovieApiException e) {
             System.out.println("Error while executing request: " + e.getMessage());;
-            UIAlert.showErrorAlert(" There is an error making the request. \n Try checking your internet connection. \n Or check out your saved movies instead");
+            UIAlert.showInfoAlert(" There is an error making the request. \n Try checking your internet connection. \n Or check out your saved movies instead");
 
             WatchlistRepository movieRepo = new WatchlistRepository();
             List<WatchlistMovieEntity> watchlist;
             try {
                 watchlist = movieRepo.getAllMoviesFromWatchlist();
             } catch (Exception ex) {
-                showInfoAlert(e.getMessage());
+                showInfoAlert(ex.getMessage());
                 throw new DatabaseException();
             }
 
@@ -163,7 +170,7 @@ public class HomeController implements Initializable {
             sortedState = SortedState.DESCENDING;
         }
     }
-    public void searchBtnClicked(ActionEvent actionEvent) throws MovieApiException {
+    public void searchBtnClicked(ActionEvent actionEvent)  {
      //   String apiID = movieIdField.getText().trim().toLowerCase();
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
@@ -178,7 +185,9 @@ public class HomeController implements Initializable {
             applyFilters(searchQuery,genre,releaseYear,rating);
             sortMovies(sortedState);
         }catch(MovieApiException e){
-            throw new MovieApiException("Error in Connection");
+            //throw new MovieApiException("Error in Connection");
+            UIAlert.showInfoAlert(" Something went wrong. \n Please check your internet connection. " );
+
         }
 
 
@@ -213,7 +222,7 @@ public class HomeController implements Initializable {
             try {
                 filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
             } catch (MovieApiException e) {
-                showInfoAlert(e.message);
+                //showInfoAlert(e.message);
                 throw new MovieApiException(e);
             }
 

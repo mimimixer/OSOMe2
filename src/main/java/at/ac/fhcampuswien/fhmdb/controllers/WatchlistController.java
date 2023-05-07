@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,14 +44,21 @@ public class WatchlistController {
 
     ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem)->{ movieRepo.removeFromWatchlist((Movie) clickedItem);
+    private final ClickEventHandler onAddToWatchlistClicked = (clickedItem)->{
+
+        try{
+            movieRepo.removeFromWatchlist((Movie) clickedItem);
+
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
         Parent root = FXMLLoader.load(fxmlLoader.getLocation());
         Scene scene = box.getScene();
         scene.setRoot(root);
         String title = ((Movie) clickedItem).getMovieTitle();
-
         UIAlert.showInfoAlert(title + " removed from watchlist");
+        } catch (DatabaseException e){
+            UIAlert.showErrorAlert("Error while deleting movie from watchlist");
+        }
+
 
     };
 
@@ -87,13 +95,7 @@ public class WatchlistController {
         List<WatchlistMovieEntity> watchlist = new ArrayList<>();
 
 
-        try {
-            watchlist = movieRepo.getAllMoviesFromWatchlist();
-
-        } catch (Exception e) {
-            showInfoAlert(e.getMessage());
-            throw new DatabaseException();
-        }
+        watchlist = movieRepo.getAllMoviesFromWatchlist();
 
         ObservableList<Movie> movies = FXCollections.observableArrayList(
                 watchlist.stream()
@@ -126,8 +128,8 @@ public class WatchlistController {
                     throw new RuntimeException(e);
                 }
             });
-        } catch (Exception e) {
-            throw new DatabaseException("Error initializing watchlist layout", e);
+        } catch (RuntimeException rte) {
+            throw new DatabaseException("Error initializing watchlist layout", rte);
         }
 
         /*
