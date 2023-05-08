@@ -16,16 +16,61 @@ public class UIAlert{
     }
 
     public static void showInfoAlert(String message) {
-        showAlert(AlertType.INFORMATION, "Something went wrong!",  message);
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("INFORMATION");
+        alert.setHeaderText("Something went wrong!");
+        alert.setContentText(message);
+
+        DialogPane dialogPane = alert.getDialogPane();
+
+        // Apply styles to the dialog pane
+
+        //dialogPane.getStylesheets().add("path/to/styles.css");
+        dialogPane.getStyleClass().add("ui-alert");
+        dialogPane.setBackground(new Background(new BackgroundFill(Color.web("#FFC0CB"), null, null)));
+
+        alert.showAndWait();
     }
+
+    public static void showDoneAlert(String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("INFORMATION");
+        alert.setHeaderText("YAY");
+        alert.setContentText(message);
+
+        DialogPane dialogPane = alert.getDialogPane();
+
+        // Apply styles to the dialog pane
+
+        //dialogPane.getStylesheets().add("path/to/styles.css");
+        dialogPane.getStyleClass().add("ui-alert");
+        dialogPane.setBackground(new Background(new BackgroundFill(Color.web("#93DFB8"), null, null)));
+
+        alert.showAndWait();
+    }
+
 
     public static void showWarningAlert(String message) {
         showAlert(AlertType.WARNING, "Warning", message);
     }
 
     public static void showConfirmationAlert(String message) {
-        showAlert(AlertType.CONFIRMATION, "Confirmation", message);
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("YAY");
+        alert.setContentText(message);
+
+        DialogPane dialogPane = alert.getDialogPane();
+
+        // Apply styles to the dialog pane
+
+        //dialogPane.getStylesheets().add("path/to/styles.css");
+        dialogPane.getStyleClass().add("ui-alert");
+        dialogPane.setBackground(new Background(new BackgroundFill(Color.web("#FEDF00"), null, null)));
+
+        alert.showAndWait();
     }
+
 
     public static void showAlert(AlertType type, String title, String message) {
         Alert alert = new Alert(type);
