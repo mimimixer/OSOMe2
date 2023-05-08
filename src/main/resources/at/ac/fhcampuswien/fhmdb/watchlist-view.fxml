@@ -11,7 +11,7 @@
 
 
 
-   <VBox fx:id="box" prefHeight="620.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controllers.WatchlistController" >
+   <VBox fx:id="box" prefHeight="620.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controllers.WatchlistController" >
          <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="347.0" spacing="20.0" style="-fx-background-color: black;">
             <padding>
                <Insets bottom="7.0" left="10.0" top="7.0" />

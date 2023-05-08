@@ -71,7 +71,7 @@ public class WatchlistController {
     public void loadHomeView() {
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
         try {
-            Scene scene = new Scene(fxmlLoader.load(), 1000, 620);
+            Scene scene = new Scene(fxmlLoader.load(), 880, 620);
             Stage stage = (Stage) box.getScene().getWindow();
             stage.setScene(scene);
 
