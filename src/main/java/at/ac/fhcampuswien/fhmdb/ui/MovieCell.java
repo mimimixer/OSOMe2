@@ -34,6 +34,7 @@ public class MovieCell extends ListCell<Movie> {
     private final Label moreInfo = new Label();
     private final Label genre = new Label();
     private final Label people = new Label();
+    private final Label imgURL = new Label();
 
     private Button detailsBtn = new Button("Show Details");
     private Button watchlistBtn = new Button("");
@@ -67,8 +68,10 @@ public class MovieCell extends ListCell<Movie> {
                 if (!isWatchlistcell){
                     baseInfoBox.getChildren().add(moreInfo);
                     baseInfoBox.getChildren().add(people);
+                    baseInfoBox.getChildren().add(imgURL);
                 }else{
                     baseInfoBox.getChildren().add(moreInfo);
+                    baseInfoBox.getChildren().add(imgURL);
                 }
 
             }else{
@@ -76,6 +79,7 @@ public class MovieCell extends ListCell<Movie> {
                 detailsBtn.setText("Show Details");
                 baseInfoBox.getChildren().remove(moreInfo);
                 baseInfoBox.getChildren().remove(people);
+                baseInfoBox.getChildren().remove(imgURL);
             }
 
         });
@@ -83,9 +87,9 @@ public class MovieCell extends ListCell<Movie> {
 
 
 
-        watchlistBtn.setText(isWatchlistcell? "REMOVE FROM LIST" : "ADD TO LIST");
+       // watchlistBtn.setText(isWatchlistcell? "REMOVE FROM LIST" : "ADD TO LIST");
 
-        watchlistBtn.setText(isWatchlistcell? "REMOVE FROM LIST" : "ADD TO LIST");
+        watchlistBtn.setText(isWatchlistcell? "Remove" : "Add to List");
 
         watchlistBtn.setOnMouseClicked(mouseEvent-> {
             try {
@@ -171,6 +175,7 @@ public class MovieCell extends ListCell<Movie> {
             people.setText("Main Cast: " + actors + "\n" +
                     "Writers: " + writersstr + "\n" +
                     "Directors: " + directorsstr);
+            imgURL.setText(movie.getImgUrl());
 
 
             // color scheme
@@ -191,6 +196,7 @@ public class MovieCell extends ListCell<Movie> {
             genre.getStyleClass().add("text-white");
             genre.setStyle("-fx-font-style: italic");
             people.getStyleClass().add("text-white");
+            imgURL.getStyleClass().add("text-white");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout
@@ -200,10 +206,10 @@ public class MovieCell extends ListCell<Movie> {
             movieDescription.setWrapText(true);
             movieDescription.fontProperty().set(movieDescription.getFont().font(15));
             buttonsBox.setAlignment(Pos.TOP_RIGHT);
-            detailsBtn.setPrefWidth(130);
-            watchlistBtn.setPrefWidth(130);
+            detailsBtn.setPrefWidth(100);
+            watchlistBtn.setPrefWidth(100);
             buttonsBox.spacingProperty().set(15);
-            baseInfoBox.setPrefWidth(800);
+            baseInfoBox.setPrefWidth(720);
             layout.setPadding(new Insets(10));
             layout.spacingProperty().set(15);
             layout.alignmentProperty().set(Pos.CENTER_LEFT);

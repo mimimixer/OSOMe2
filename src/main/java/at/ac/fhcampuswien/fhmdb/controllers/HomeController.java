@@ -186,7 +186,7 @@ public class HomeController implements Initializable {
             applyFilters(searchQuery,genre,releaseYear,rating);
             sortMovies(sortedState);
         }catch(MovieApiException e){
-            throw new MovieApiException("Error in Connection");
+            //throw new MovieApiException("Error in Connection");
         }
 
 
@@ -221,7 +221,7 @@ public class HomeController implements Initializable {
             try {
                 filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
             } catch (MovieApiException e) {
-                showInfoAlert(e.message);
+                showInfoAlert("Cannot apply filter right now, please check your connection");
                 throw new MovieApiException(e.message);
             }
 
@@ -477,7 +477,7 @@ public class HomeController implements Initializable {
         public void loadWatchlistView() {
             FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
                 try{
-                    Scene scene = new Scene(fxmlLoader.load(), 1000, 620);
+                    Scene scene = new Scene(fxmlLoader.load(), 880, 620);
                     Stage stage = (Stage)box.getScene().getWindow();
                     stage.setScene(scene);
 
