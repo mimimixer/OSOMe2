@@ -9,7 +9,11 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import java.sql.SQLException;
 import java.util.List;
 
-public class WatchlistRepository {
+public class WatchlistRepository { // die DAO-KLasse
+                                  /* The Data Access Object (DAO) pattern is a structural pattern that allows us to
+                                  isolate the application/business layer from the persistence layer (usually a relational
+                                  database but could be any other persistence mechanism) using an abstract API.
+                                    */
     //Declarations
     Dao<WatchlistMovieEntity, Long> movieEntityDao;
 
@@ -43,11 +47,15 @@ public class WatchlistRepository {
         try{
             movieEntityDao.create(chosenMovie(movie));
         }catch(SQLException e){
-            throw new DatabaseException();
+            throw new DatabaseException("add");
         }
-
         System.out.println("Added " + title + "to Watchlist");
     }
+
+    /*
+    methode angelegt, weil es steht in der Angabe. vermutlich ein copy-paste Fehler, da es Button bei einem Movie steht,
+    und ein Movie eben zu einer WatchlistEntity transformiert werden soll, da nur letztere in die Database gespeichert werden können
+
     public void addToWatchlist(WatchlistMovieEntity movie) throws DatabaseException {
         try{
             movieEntityDao.create(chosenMovie(movie));
@@ -55,6 +63,7 @@ public class WatchlistRepository {
             throw new DatabaseException();
         }
     }
+        */
 
     private WatchlistMovieEntity movieToEntity(Movie movie)
     {
@@ -65,12 +74,15 @@ public class WatchlistRepository {
     //Additional Methods and Constructors
 
     private WatchlistMovieEntity chosenMovie(Movie movie){
-        return movieToEntity(movie);
+        return new WatchlistMovieEntity(movie);
 
     }
+    /*das macht doch auch kein Sinn - ich krieg eine WLE erzeuge eine neue und schicke sie raus?
     private WatchlistMovieEntity chosenMovie(WatchlistMovieEntity movie){
         return new WatchlistMovieEntity();
     }
+
+     */
     public WatchlistRepository() throws DatabaseException{
         this.movieEntityDao = Database.getDatabase().getMovieEntityDao();
     }

@@ -88,12 +88,19 @@ public class HomeController implements Initializable {
             repository = new WatchlistRepository();
             repository.addToWatchlist((Movie) clickedItem);
             UIAlert.showConfirmationAlert(((Movie) clickedItem).getMovieTitle()+" has been added to your watchlist.");
-        }catch (DatabaseException e){
-            System.out.println("Error while executing request: " + e.getMessage());;
-            UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n"+
-                    "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");
+        }catch (DatabaseException e) {
+            String eMessage = e.getMessage();
+            if (eMessage != null) {
+                if (eMessage.equals("add")) {
+                    System.out.println("Error while executing request: movie might already be on watchlist " + e.getMessage());
+                    UIAlert.showDoneAlert(((Movie) clickedItem).getMovieTitle() + " already on your watchlist!");
+                }
+            } else {
+                System.out.println("Error while executing request: " + e.getMessage());
+                UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n" +
+                        "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");
+            }
         }
-
     };
 
     //public HomeController() throws DatabaseException {
@@ -113,7 +120,7 @@ public class HomeController implements Initializable {
     }
 
     //prepare lists  for UI
-    public void initializeState() throws IOException, DatabaseException {
+    public void initializeState() throws  DatabaseException {
      //   allMovies = Movie.initializeMovies();
         try {
             allMovies = MovieAPI.getAllMoviesDown(BASE);
@@ -125,8 +132,8 @@ public class HomeController implements Initializable {
             List<WatchlistMovieEntity> watchlist;
             try {
                 watchlist = movieRepo.getAllMoviesFromWatchlist();
-            } catch (Exception ex) {
-                showInfoAlert(ex.getMessage());
+            } catch (DatabaseException ex) {
+                showInfoAlert("cannto show your watchlist either"+ex.getMessage());
                 throw new DatabaseException();
             }
 
@@ -182,15 +189,11 @@ public class HomeController implements Initializable {
             observableMovies.clear();
             observableMovies.add(movie);
         } else {*/
-        try{
-            applyFilters(searchQuery,genre,releaseYear,rating);
-            sortMovies(sortedState);
-        }catch(MovieApiException e){
-            //throw new MovieApiException("Error in Connection");
-        }
+        applyFilters(searchQuery,genre,releaseYear,rating);
+        sortMovies(sortedState);
 
 
-       // }
+        // }
       //  applyAllFilters(searchQuery, genre);
       /*  if(sortedState != SortedState.NONE) {
             sortMovies();
@@ -200,7 +203,7 @@ public class HomeController implements Initializable {
 
     }
 
-    public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating)throws MovieApiException {
+    public void applyFilters(String searchQuery, Object genre, Object releaseYear, Object rating) {
         List<Movie> filteredMovies = allMovies;
         filterDescriptionByQuery(filteredMovies, searchQuery);
         List<Movie> finalSearchedList;
@@ -222,7 +225,7 @@ public class HomeController implements Initializable {
                 filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
             } catch (MovieApiException e) {
                 showInfoAlert("Cannot apply filter right now, please check your connection");
-                throw new MovieApiException(e.message);
+
             }
 
          /*   if (!searchQuery.isEmpty()){
@@ -251,11 +254,9 @@ public class HomeController implements Initializable {
     public void initializeLayout() {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
         movieListView.setCellFactory(movieListView -> {
-            try {
+
                 return new MovieCell(false, onAddToWatchlistClicked);
-            } catch (DatabaseException e) {
-                throw new RuntimeException(e);
-            }
+
         }); // apply custom cells to the listview
 
       //  watchListView.setItems(watchlistMovies);   // set the items of the listview to the observable list
@@ -437,12 +438,12 @@ public class HomeController implements Initializable {
             observableMovies.addAll(filteredMovies);
         }
 
-        public void resetBtnClicked (ActionEvent actionEvent) throws MovieApiException{
+        public void resetBtnClicked (ActionEvent actionEvent){
             try {
                 allMovies = MovieAPI.getAllMoviesDown(BASE);
             } catch (MovieApiException e) {
                 System.out.println("Error while executing request: " + e.getMessage());
-                ;
+
                 UIAlert.showInfoAlert(" There is an error downloading the movie list. \n Check your internet connection. \n\n In the meantime we will show your saved movies");
 
                 observableMovies.clear();

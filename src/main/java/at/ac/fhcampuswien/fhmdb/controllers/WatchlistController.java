@@ -53,8 +53,9 @@ public class WatchlistController {
         Scene scene = box.getScene();
         scene.setRoot(root);
         String title = ((Movie) clickedItem).getMovieTitle();
-        UIAlert.showInfoAlert(title + " removed from watchlist");
+        UIAlert.showConfirmationAlert(title + " removed from watchlist");
         } catch (DatabaseException e){
+
             UIAlert.showErrorAlert("Error while deleting movie from watchlist");
         }
 
@@ -84,21 +85,22 @@ public class WatchlistController {
     }
 
 
-    public void initialize() throws DatabaseException {
+    public void initialize()  {
 
         System.out.println("WatchlistController initialized");
 
-        movieRepo = new WatchlistRepository();
         List<WatchlistMovieEntity> watchlist = new ArrayList<>();
 
         try {
+            movieRepo = new WatchlistRepository();
             watchlist = movieRepo.getAllMoviesFromWatchlist();
 
         watchlist = movieRepo.getAllMoviesFromWatchlist();
 
         } catch (Exception e) {
-            showInfoAlert(e.getMessage());
-            throw new DatabaseException();
+            System.out.println("Some databaseError " + e.getMessage());
+            UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n" +
+                    "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");
         }
 
         ObservableList<Movie> movies = FXCollections.observableArrayList(
@@ -109,11 +111,7 @@ public class WatchlistController {
 
         watchlistView.setItems(movies);
         watchlistView.setCellFactory(movieListView-> {
-            try {
-                return new MovieCell(true, onAddToWatchlistClicked);
-            } catch (DatabaseException e) {
-                throw new RuntimeException(e);
-            }
+            return new MovieCell(true, onAddToWatchlistClicked);
         });
 
 
@@ -126,13 +124,14 @@ public class WatchlistController {
         try {
             watchlistView.setItems(movies);
             watchlistView.setCellFactory(watchlistView -> {
-                try {
+
                     return new MovieCell(true,onAddToWatchlistClicked );
-                } catch (DatabaseException e) {
-                    throw new RuntimeException(e);
-                }
+
             });
         } catch (Exception e) {
+            System.out.println("Error initializing watchlist layout" + e.getMessage());
+            UIAlert.showInfoAlert("Error initializing watchlist layout");
+
             throw new DatabaseException("Error initializing watchlist layout", e);
         }
 

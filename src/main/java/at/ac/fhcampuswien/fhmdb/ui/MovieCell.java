@@ -54,7 +54,7 @@ public class MovieCell extends ListCell<Movie> {
 
 
 
-    public MovieCell(boolean isWatchlistcell, ClickEventHandler addToWatchListClicked) throws DatabaseException {//ClickEventHandler addToWatchlistClicked
+    public MovieCell(boolean isWatchlistcell, ClickEventHandler addToWatchListClicked) {//ClickEventHandler addToWatchlistClicked
         super();
         this.isWatchlistcell = isWatchlistcell;
    //     WatchlistRepository repository = new WatchlistRepository();
@@ -94,10 +94,10 @@ public class MovieCell extends ListCell<Movie> {
         watchlistBtn.setOnMouseClicked(mouseEvent-> {
             try {
                 addToWatchListClicked.onclick(getItem());
-            } catch (DatabaseException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (DatabaseException |IOException e) {
+                System.out.println("Some databaseError " + e.getMessage());
+                UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n" +
+                        "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");
             }
         });
 
