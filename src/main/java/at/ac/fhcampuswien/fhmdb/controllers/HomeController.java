@@ -94,6 +94,10 @@ public class HomeController implements Initializable {
                 if (eMessage.equals("add")) {
                     System.out.println("Error while executing request: movie might already be on watchlist " + e.getMessage());
                     UIAlert.showDoneAlert(((Movie) clickedItem).getMovieTitle() + " already on your watchlist!");
+                } else {
+                    System.out.println("Error while executing request: " + e.getMessage());
+                    UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n" +
+                            "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");
                 }
             } else {
                 System.out.println("Error while executing request: " + e.getMessage());
