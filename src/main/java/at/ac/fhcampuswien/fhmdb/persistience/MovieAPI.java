@@ -1,51 +1,78 @@
 package at.ac.fhcampuswien.fhmdb.persistience;
 
+import at.ac.fhcampuswien.fhmdb.persistience.URLBuilder;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+
 import com.google.gson.Gson;
 
 import com.google.gson.JsonParseException;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
 public class MovieAPI {
 
-    private static final String BASE = "http://prog2.fh-campuswien.ac.at/movies";
+
+
+    private static final String BASE = "http://prog2.fh-campuswien.ac.at";
+  //  private static final String scheme="http";
+    private static final String path = "/movies";
+
     private static final String DELI = "&";
     private static OkHttpClient client = new OkHttpClient();
 
-    private static String makeUrl(String query, String genre, String releaseYear, String ratingFrom) {
-        StringBuilder url = new StringBuilder(BASE);
-
-        if ((query != null && !query.isEmpty()) || genre != null || releaseYear != null || ratingFrom != null) {
-            url.append("?");
-            if (query != null && !query.isEmpty()) {
-                url.append("query=").append(query).append(DELI);
-            }
-            if (genre != null && !genre.equals("No filter")) {
-                url.append("genre=").append(genre).append(DELI);
-            }
-            if (releaseYear != null && !releaseYear.equals("No filter")) {
-                url.append("releaseYear=").append(releaseYear).append(DELI);
-            }
-            if (ratingFrom != null) {
-                url.append("ratingFrom=").append(ratingFrom).append(DELI);
-            }
-        }
-        return url.toString();
+ /*   private static String makeUrl(String query, String genre, String releaseYear, String ratingFrom) {
+        HttpUrl httpUrl = new HttpUrl.Builder()
+                .scheme(scheme)
+                .host(BASE)
+                .addPathSegment(path)
+               // if(query!=null&&!query.isEmpty()){
+                .addQueryParameter("query", query)
+                .addQueryParameter("genre", genre)
+                .addQueryParameter("releaseYear", releaseYear)
+                .addQueryParameter("ratingFrom", ratingFrom)
+                .build();
+        String url=httpUrl.toString();
+        //String url;
+          URLBuilder builder=new URLBuilder();
+    String url=builder
+            .setHost(BASE)
+            .setPath(path)
+            .setQuery(query)
+            .setGenre(genre)
+            .setReleaseYear(releaseYear)
+            .setRatingFrom(ratingFrom)
+            .build();
+    System.out.println(url);
+    return url;
     }
+
+
+
     private static String makeUrl(String movieId){
+
+        URLBuilder builder=new URLBuilder();
+        String url=builder
+                .setHost(BASE)
+                .setPath(path)
+                .setMovieID(movieId)
+                .build();
+        System.out.println(url);
+        return url;
+
+        /*
         StringBuilder url = new StringBuilder(BASE);
         if(movieId != null){
             url.append("/").append(movieId);
         }
         return url.toString();
-    }
+
+
+    }*/
 
     public static String requestUrl(String madeUrl) throws IOException {
         System.out.println("lets make the request @ " +madeUrl);
@@ -90,7 +117,7 @@ public class MovieAPI {
         }
     }
 
-    public static List<Movie> getThatMovieListDown (String queryText, String chosenGenre,
+  /*  public static List<Movie> getThatMovieListDown (String queryText, String chosenGenre,
                                                     String chosenReleaseYear, String chosenRatingFrom) throws MovieApiException {
         String newUrl = makeUrl(queryText, chosenGenre, chosenReleaseYear, chosenRatingFrom);
         String getData = null;
@@ -101,5 +128,5 @@ public class MovieAPI {
         }catch (IOException|JsonParseException e) {
             throw new MovieApiException("Error while executing request: " + e.getMessage());
         }
-    }
+    }*/
 }

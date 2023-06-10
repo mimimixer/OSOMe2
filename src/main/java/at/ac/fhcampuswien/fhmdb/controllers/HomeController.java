@@ -1,6 +1,8 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
+import at.ac.fhcampuswien.fhmdb.persistience.URLBuilder;
+
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.persistience.MovieAPI;
@@ -80,8 +82,6 @@ public class HomeController implements Initializable {
     protected SortedState sortedState;
 
         WatchlistRepository repository;
-
-
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {
         try{
@@ -226,7 +226,17 @@ public class HomeController implements Initializable {
                rates = rating.toString();
            }
             try {
-                filteredMovies = MovieAPI.getThatMovieListDown(searchQuery,genres,year,rates);
+                URLBuilder urlWithQuery=new URLBuilder();
+                String url=urlWithQuery
+                        .setHost(BASE)
+                       // .setPath(path)
+                        .setQuery(searchQuery)
+                        .setGenre(genres)
+                        .setReleaseYear(year)
+                        .setRatingFrom(rates)
+                        .build();
+               // System.out.println(url);
+                filteredMovies = MovieAPI.getAllMoviesDown(url);
             } catch (MovieApiException e) {
                 showInfoAlert("Cannot apply filter right now, please check your connection");
 
@@ -285,10 +295,10 @@ public class HomeController implements Initializable {
         ratingComboBox.getItems().addAll(values);
         ratingComboBox.setPromptText("Filter by Rating from .. up");
 
-        countMoviesFrom(observableMovies, "Frank Capra");
+      /*  countMoviesFrom(observableMovies, "Frank Capra");
         getMoviesBetweenYears(observableMovies, 1995, 2000);
         getLongestMovieTitle(observableMovies);
-        getMostPopularActor(observableMovies);
+        getMostPopularActor(observableMovies);*/
     }
     //SORT BUTTON
 
@@ -331,7 +341,7 @@ public class HomeController implements Initializable {
             }
         }
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        //Java Streams
+     //   Java Streams
         public List<Integer> getAllExistingReleaseYears (List < Movie > movies) {
             List<Integer> releaseYears = movies.stream()
                     .map(Movie::getReleaseYear)
@@ -340,7 +350,7 @@ public class HomeController implements Initializable {
                     .collect(Collectors.toList());
             return releaseYears;
         }
-
+/*
         void methodToTryStreams () {
             countMoviesFrom(observableMovies, "Frank Capra");
             getMoviesBetweenYears(observableMovies, 1995, 2000);
@@ -394,6 +404,8 @@ public class HomeController implements Initializable {
             System.out.println("there are " + result + " movies of director " + director + " in the movie list");
             return result;
         }
+
+
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         //queryFilter method - for staticList
         public List<Movie> filterByQuery (List < Movie > movies, String query){
@@ -441,8 +453,19 @@ public class HomeController implements Initializable {
             observableMovies.clear();
             observableMovies.addAll(filteredMovies);
         }
-
+*/
         public void resetBtnClicked (ActionEvent actionEvent){
+            sortBtn.setText("Sort");
+            searchField.clear();
+          //  movieIdField.clear();
+            //   genreComboBox.getSelectionModel().clearSelection();
+            genreComboBox.setValue(null);
+            // ratingComboBox.getSelectionModel().clearSelection();
+            ratingComboBox.setValue(null);
+            //ratingComboBox.getItems().addAll();
+            //   releaseYearComboBox.getSelectionModel().clearSelection();
+            releaseYearComboBox.setValue(null);
+
             try {
                 allMovies = MovieAPI.getAllMoviesDown(BASE);
             } catch (MovieApiException e) {
@@ -453,12 +476,6 @@ public class HomeController implements Initializable {
                 observableMovies.clear();
                 observableMovies.addAll(allMovies);
 
-            sortBtn.setText("Sort");
-            searchField.clear();
-            movieIdField.clear();
-            genreComboBox.setValue(null);
-            ratingComboBox.setValue(null);
-            releaseYearComboBox.setValue(null);
 
             }
         }

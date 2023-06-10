@@ -58,8 +58,6 @@ public class WatchlistController {
 
             UIAlert.showErrorAlert("Error while deleting movie from watchlist");
         }
-
-
     };
 
 
@@ -95,8 +93,6 @@ public class WatchlistController {
             movieRepo = new WatchlistRepository();
             watchlist = movieRepo.getAllMoviesFromWatchlist();
 
-        watchlist = movieRepo.getAllMoviesFromWatchlist();
-
         } catch (Exception e) {
             System.out.println("Some databaseError " + e.getMessage());
             UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n" +
@@ -113,9 +109,6 @@ public class WatchlistController {
         watchlistView.setCellFactory(movieListView-> {
             return new MovieCell(true, onAddToWatchlistClicked);
         });
-
-
-
     }
 
     public void initializeLayout(ObservableList<Movie>movies) throws DatabaseException{

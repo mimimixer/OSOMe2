@@ -50,10 +50,6 @@ public class MovieCell extends ListCell<Movie> {
     private boolean hiddenDetails = true;
     private final boolean isWatchlistcell;
 
-
-
-
-
     public MovieCell(boolean isWatchlistcell, ClickEventHandler addToWatchListClicked) {//ClickEventHandler addToWatchlistClicked
         super();
         this.isWatchlistcell = isWatchlistcell;
@@ -104,15 +100,11 @@ public class MovieCell extends ListCell<Movie> {
 
         /*
         watchlistBtn.setOnMouseClicked(mouseEvent -> {
-
             if(!isWatchlistcell) {
-
                 try {
                     repository.addToWatchlist(getItem());
                     watchlistState = WatchlistState.ADDED;
                     UIAlert.showInfoAlert("Successfully added " + title.getText() +" to watchlist");
-
-
 
                 } catch (DatabaseException e) {
                     //throw new DatabaseException(e);
