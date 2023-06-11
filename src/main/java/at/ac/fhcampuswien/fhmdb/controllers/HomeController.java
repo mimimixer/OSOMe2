@@ -1,6 +1,10 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
+import at.ac.fhcampuswien.fhmdb.StatePattern.AscendingState;
+import at.ac.fhcampuswien.fhmdb.StatePattern.DescendingState;
+import at.ac.fhcampuswien.fhmdb.StatePattern.NoneState;
+import at.ac.fhcampuswien.fhmdb.StatePattern.SortState;
 import at.ac.fhcampuswien.fhmdb.persistience.URLBuilder;
 
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
@@ -8,16 +12,13 @@ import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.observePattern.ObservableEnum;
 import at.ac.fhcampuswien.fhmdb.observePattern.ObservableUpdates;
 import at.ac.fhcampuswien.fhmdb.observePattern.Observer;
-import at.ac.fhcampuswien.fhmdb.persistience.Database;
 import at.ac.fhcampuswien.fhmdb.persistience.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
-import at.ac.fhcampuswien.fhmdb.enums.SortedState;
 import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import at.ac.fhcampuswien.fhmdb.ui.UIAlert;
-import com.j256.ormlite.dao.Dao;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -26,7 +27,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
@@ -35,8 +35,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
-import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -184,7 +182,7 @@ public class HomeController implements Observer {
     //SET meaning of BUTTONS in UI
     //SEARCH BUTTON
     public void sortMovies() {
-        sortState.sort(allMovies);
+        sortState.sort(observableMovies);
     }
 
     //von Leon hinzugefügt
@@ -331,26 +329,10 @@ public class HomeController implements Observer {
                 .collect(Collectors.toList());
         return releaseYears;
     }
-    public class AscendingState implements SortState {
-        @Override
-        public void sort(List<Movie> movies) {
-            movies.sort(Comparator.comparing(Movie::getMovieTitle));
-        }
-    }
 
-    public class DescendingState implements SortState {
-        @Override
-        public void sort(List<Movie> movies) {
-            movies.sort(Comparator.comparing(Movie::getMovieTitle).reversed());
-        }
-    }
 
-    public class NoneState implements SortState {
-        @Override
-        public void sort(List<Movie> movies) {
-            // Do nothing, keep the movies in their original order
-        }
-    }
+
+
 
 
     public void resetBtnClicked (ActionEvent actionEvent) {
