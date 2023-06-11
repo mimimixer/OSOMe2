@@ -1,6 +1,5 @@
 package at.ac.fhcampuswien.fhmdb.persistience;
 
-import at.ac.fhcampuswien.fhmdb.persistience.URLBuilder;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 
@@ -10,7 +9,6 @@ import com.google.gson.JsonParseException;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package at.ac.fhcampuswien.fhmdb.persistience;
+package at.ac.fhcampuswien.fhmdb.creationalPatterns;
 
 public class URLBuilder {
     private String host;
