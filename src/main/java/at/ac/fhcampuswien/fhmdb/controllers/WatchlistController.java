@@ -13,11 +13,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +46,12 @@ public class WatchlistController {
     WatchlistRepository movieRepo;
 
     ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
+
+    private static Callback<Class<?>, Object> controllerFactory;
+    private static HomeController homePage;
+    public static void setControllerFactory(Callback<Class<?>, Object> factory) {
+        controllerFactory = factory;
+    }
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem)->{
 
@@ -68,7 +78,13 @@ public class WatchlistController {
     }
 
     public void loadHomeView() {
+      /*  if (homePage == null) {
+            homePage = (HomeController) controllerFactory.call(HomeController.class);
+        }
+
+       */
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
+        //fxmlLoader.setController(homePage);
         try {
             Scene scene = new Scene(fxmlLoader.load(), 880, 620);
             Stage stage = (Stage) box.getScene().getWindow();

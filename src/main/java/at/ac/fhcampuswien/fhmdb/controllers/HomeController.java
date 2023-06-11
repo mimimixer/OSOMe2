@@ -32,6 +32,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -45,7 +46,7 @@ import java.util.stream.DoubleStream;
 import static at.ac.fhcampuswien.fhmdb.ui.UIAlert.showInfoAlert;
 
 
-public class HomeController implements Initializable, Observer {
+public class HomeController implements Observer {
     @FXML
     public JFXButton searchBtn;
 
@@ -79,14 +80,21 @@ public class HomeController implements Initializable, Observer {
     @FXML
     public JFXButton sortBtn;
     public List<Movie> allMovies;
-    private static final String BASE = "http://prog2.fh-campuswien.ac.at/movies";
+    String BASE = new URLBuilder().setHost(MovieAPI.getBASE()).setPath(MovieAPI.getPath()).build();
     public JFXButton showWatchlistBtn;
 
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     protected ObservableList<WatchlistMovieEntity> watchlistMovies = FXCollections.observableArrayList();
     public List<WatchlistMovieEntity> watchlistAll=new ArrayList<>();
     protected SortedState sortedState;
-    WatchlistRepository repository;
+
+        WatchlistRepository repository;
+    private static Callback<Class<?>, Object> controllerFactory;
+    private static WatchlistController watchlistPage;
+
+    public static void setControllerFactory(Callback<Class<?>, Object> factory) {
+        controllerFactory = factory;
+    }
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {
 
@@ -126,8 +134,7 @@ public class HomeController implements Initializable, Observer {
     //}
 
     //START UI
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize() {
         try{
             repository = WatchlistRepository.getWatchlist();
             repository.addObserver(this);
@@ -499,12 +506,14 @@ public class HomeController implements Initializable, Observer {
                 observableMovies.clear();
                 observableMovies.addAll(allMovies);
 
-            sortBtn.setText("Sort");
+           /* sortBtn.setText("Sort");
             searchField.clear();
             movieIdField.clear();
             genreComboBox.setValue(null);
             ratingComboBox.setValue(null);
             releaseYearComboBox.setValue(null);
+
+            */
 
             }
         }
@@ -526,7 +535,18 @@ public class HomeController implements Initializable, Observer {
 
 
         public void loadWatchlistView() {
-            FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
+          /*  if (watchlistPage == null) {
+                watchlistPage = (WatchlistController) controllerFactory.call(WatchlistController.class);
+            }
+
+           */
+           // URL location = FhmdbApplication.class.getResource("/watchlist-view.fxml");
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+         //   System.out.println(location.toString());
+            fxmlLoader.setLocation(FhmdbApplication.class.getResource("watchlist-view.fxml"));
+          //  fxmlLoader.setController(watchlistPage);
+
                 try{
                     Scene scene = new Scene(fxmlLoader.load(), 880, 620);
                     Stage stage = (Stage)box.getScene().getWindow();

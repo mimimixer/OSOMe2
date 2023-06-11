@@ -25,7 +25,14 @@ public class MovieAPI {
     private static final String DELI = "&";
     private static OkHttpClient client = new OkHttpClient();
 
- /*   private static String makeUrl(String query, String genre, String releaseYear, String ratingFrom) {
+    public static String getPath() {
+        return path;
+    }
+
+    public static String getBASE() {
+        return BASE;
+    }
+    /*   private static String makeUrl(String query, String genre, String releaseYear, String ratingFrom) {
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme(scheme)
                 .host(BASE)
