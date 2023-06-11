@@ -5,8 +5,7 @@ import at.ac.fhcampuswien.fhmdb.StatePattern.AscendingState;
 import at.ac.fhcampuswien.fhmdb.StatePattern.DescendingState;
 import at.ac.fhcampuswien.fhmdb.StatePattern.NoneState;
 import at.ac.fhcampuswien.fhmdb.StatePattern.SortState;
-import at.ac.fhcampuswien.fhmdb.persistience.URLBuilder;
-
+import at.ac.fhcampuswien.fhmdb.creationalPatterns.URLBuilder;
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.observePattern.ObservableEnum;

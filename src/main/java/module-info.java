@@ -22,4 +22,6 @@ module at.ac.fhcampuswien.fhmdb {
     opens at.ac.fhcampuswien.fhmdb.persistience to com.google.gson, ormlite.jdbc;
     exports at.ac.fhcampuswien.fhmdb.StatePattern;
     opens at.ac.fhcampuswien.fhmdb.StatePattern to javafx.fxml;
+    exports at.ac.fhcampuswien.fhmdb.creationalPatterns;
+    opens at.ac.fhcampuswien.fhmdb.creationalPatterns to com.google.gson, javafx.fxml, ormlite.jdbc;
 }
