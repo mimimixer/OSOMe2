@@ -53,10 +53,10 @@ public class WatchlistController {
         Scene scene = box.getScene();
         scene.setRoot(root);
         String title = ((Movie) clickedItem).getMovieTitle();
-        UIAlert.showConfirmationAlert(title + " removed from watchlist");
+        //UIAlert.showConfirmationAlert(title + " removed from watchlist");
         } catch (DatabaseException e){
 
-            UIAlert.showErrorAlert("Error while deleting movie from watchlist");
+        //    UIAlert.showErrorAlert("Error while deleting movie from watchlist");
         }
     };
 

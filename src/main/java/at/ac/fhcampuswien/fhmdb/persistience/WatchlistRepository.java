@@ -3,13 +3,17 @@ package at.ac.fhcampuswien.fhmdb.persistience;
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.observePattern.Observable;
+import at.ac.fhcampuswien.fhmdb.observePattern.ObservableEnum;
+import at.ac.fhcampuswien.fhmdb.observePattern.ObservableUpdates;
+import at.ac.fhcampuswien.fhmdb.observePattern.Observer;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class WatchlistRepository { // die DAO-KLasse
+public class WatchlistRepository implements Observable { // die DAO-KLasse
                                   /* The Data Access Object (DAO) pattern is a structural pattern that allows us to
                                   isolate the application/business layer from the persistence layer (usually a relational
                                   database but could be any other persistence mechanism) using an abstract API.
@@ -66,7 +70,7 @@ public class WatchlistRepository { // die DAO-KLasse
     }
         */
 
-    private WatchlistMovieEntity movieToEntity(Movie movie)
+    public WatchlistMovieEntity movieToEntity(Movie movie)
     {
         return new WatchlistMovieEntity(movie.getApiID(), movie.getMovieTitle(), movie.getDescription(), movie.getGenres(), movie.getReleaseYear(), movie.getRating(), movie.getLengthInMinutes(), movie.getImgUrl());
     }
@@ -99,4 +103,25 @@ public class WatchlistRepository { // die DAO-KLasse
     }
 
 
+
+    @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+
+    }
+
+
+    @Override
+    public void notifyObservers(ObservableUpdates observableUpdates) {
+        for(Observer observer: observers){
+            observer.update(observableUpdates);
+        }
+
+    }
 }

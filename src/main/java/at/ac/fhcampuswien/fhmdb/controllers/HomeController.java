@@ -5,6 +5,10 @@ import at.ac.fhcampuswien.fhmdb.persistience.URLBuilder;
 
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
+import at.ac.fhcampuswien.fhmdb.observePattern.ObservableEnum;
+import at.ac.fhcampuswien.fhmdb.observePattern.ObservableUpdates;
+import at.ac.fhcampuswien.fhmdb.observePattern.Observer;
+import at.ac.fhcampuswien.fhmdb.persistience.Database;
 import at.ac.fhcampuswien.fhmdb.persistience.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.enums.Genre;
@@ -13,6 +17,7 @@ import at.ac.fhcampuswien.fhmdb.enums.SortedState;
 import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import at.ac.fhcampuswien.fhmdb.ui.UIAlert;
+import com.j256.ormlite.dao.Dao;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -30,6 +35,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,7 +45,7 @@ import java.util.stream.DoubleStream;
 import static at.ac.fhcampuswien.fhmdb.ui.UIAlert.showInfoAlert;
 
 
-public class HomeController implements Initializable {
+public class HomeController implements Initializable, Observer {
     @FXML
     public JFXButton searchBtn;
 
@@ -80,29 +86,38 @@ public class HomeController implements Initializable {
     protected ObservableList<WatchlistMovieEntity> watchlistMovies = FXCollections.observableArrayList();
     public List<WatchlistMovieEntity> watchlistAll=new ArrayList<>();
     protected SortedState sortedState;
-
-        WatchlistRepository repository;
+    WatchlistRepository repository;
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {
+
+        //insert observePattern here..
         try{
             repository = WatchlistRepository.getWatchlist();
             repository.addToWatchlist((Movie) clickedItem);
-            UIAlert.showConfirmationAlert(((Movie) clickedItem).getMovieTitle()+" has been added to your watchlist.");
+
+
+            //UIAlert.showConfirmationAlert(((Movie) clickedItem).getMovieTitle()+" has been added to your watchlist.");
+
+            repository.notifyObservers(new ObservableUpdates(
+                    ((Movie) clickedItem).getMovieTitle(), ObservableEnum.ADDED));
+
         }catch (DatabaseException e) {
+            repository.notifyObservers(new ObservableUpdates(
+                    ((Movie) clickedItem).getMovieTitle(), ObservableEnum.EXISTS));
             String eMessage = e.getMessage();
             if (eMessage != null) {
                 if (eMessage.equals("add")) {
                     System.out.println("Error while executing request: movie might already be on watchlist " + e.getMessage());
-                    UIAlert.showDoneAlert(((Movie) clickedItem).getMovieTitle() + " already on your watchlist!");
+                    //UIAlert.showDoneAlert(((Movie) clickedItem).getMovieTitle() + " already on your watchlist!");
                 } else {
                     System.out.println("Error while executing request: " + e.getMessage());
-                    UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n" +
-                            "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");
+                    /*UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n" +
+                            "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");*/
                 }
             } else {
                 System.out.println("Error while executing request: " + e.getMessage());
-                UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n" +
-                        "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");
+                /*UIAlert.showInfoAlert(" There is an error connecting to your saved movies. \n Check your connection. \n\n In the meantime you can look at a cat \n\n" +
+                        "             /\\_/\\\n" + "            ( o.o )\n" + "            > ^ <");*/
             }
         }
     };
@@ -113,6 +128,16 @@ public class HomeController implements Initializable {
     //START UI
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try{
+            repository = WatchlistRepository.getWatchlist();
+            repository.addObserver(this);
+        } catch (DatabaseException e) {
+            System.out.println();
+            System.out.println();
+            System.out.println("what now");
+        }
+
+
         try {
             initializeState();
         } catch (Exception e) {
@@ -152,10 +177,9 @@ public class HomeController implements Initializable {
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
-
-    //    watchlistMovies.clear();
-     //   watchlistMovies.addAll(watchlistAll); // add all movies to the observable list
-     //   sortedState = SortedState.NONE;
+        //    watchlistMovies.clear();
+        //   watchlistMovies.addAll(watchlistAll); // add all movies to the observable list
+        //   sortedState = SortedState.NONE;
     }
 
     //SET meaning of BUTTONS in UI
@@ -268,7 +292,6 @@ public class HomeController implements Initializable {
     public void initializeLayout() {
         movieListView.setItems(observableMovies);   // set the items of the listview to the observable list
         movieListView.setCellFactory(movieListView -> {
-
                 return new MovieCell(false, onAddToWatchlistClicked);
 
         }); // apply custom cells to the listview
@@ -471,11 +494,17 @@ public class HomeController implements Initializable {
             } catch (MovieApiException e) {
                 System.out.println("Error while executing request: " + e.getMessage());
 
-                UIAlert.showInfoAlert(" There is an error downloading the movie list. \n Check your internet connection. \n\n In the meantime we will show your saved movies");
+                //UIAlert.showInfoAlert(" There is an error downloading the movie list. \n Check your internet connection. \n\n In the meantime we will show your saved movies");
 
                 observableMovies.clear();
                 observableMovies.addAll(allMovies);
 
+            sortBtn.setText("Sort");
+            searchField.clear();
+            movieIdField.clear();
+            genreComboBox.setValue(null);
+            ratingComboBox.setValue(null);
+            releaseYearComboBox.setValue(null);
 
             }
         }
@@ -510,4 +539,18 @@ public class HomeController implements Initializable {
                     alert.setContentText("Error while loading.");
                 }
             }
-        }
+
+
+
+    @Override
+    public void update(ObservableUpdates update) {
+            if (update.getObservableEnum() == ObservableEnum.ADDED){
+                UIAlert.showConfirmationAlert( update.getTitle() + " successfully added to your watchlist.");
+            }else{
+                UIAlert.showInfoAlert(update.getTitle() + " already exists in your watchlist");
+
+            }
+
+
+    }
+}

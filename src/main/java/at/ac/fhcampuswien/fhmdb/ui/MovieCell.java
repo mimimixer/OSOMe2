@@ -5,6 +5,7 @@ import at.ac.fhcampuswien.fhmdb.controllers.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 //import at.ac.fhcampuswien.fhmdb.enums.WatchlistState;
+
 import at.ac.fhcampuswien.fhmdb.enums.WatchlistState;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;

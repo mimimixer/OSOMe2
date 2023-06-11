@@ -49,7 +49,7 @@ public class Database {
     //neue Database erstellen wenn es noch keine gibt - SINGLETON Pattern!
     public static Database getDatabase() throws DatabaseException{
         if (instance == null) {
-            instance= new Database();
+            instance = new Database();
         }
         System.out.println(instance);
         return instance;
