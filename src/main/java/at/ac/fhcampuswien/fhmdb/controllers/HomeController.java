@@ -1,7 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
-import at.ac.fhcampuswien.fhmdb.persistience.URLBuilder;
+import at.ac.fhcampuswien.fhmdb.creationalPatterns.URLBuilder;
 
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
@@ -80,7 +80,7 @@ public class HomeController implements Observer {
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     protected ObservableList<WatchlistMovieEntity> watchlistMovies = FXCollections.observableArrayList();
     public List<WatchlistMovieEntity> watchlistAll = new ArrayList<>();
-    private SortState sortState = new NoneState();;
+    private SortState sortState = new NoneState();
 
     WatchlistRepository repository;
     private static Callback<Class<?>, Object> controllerFactory;

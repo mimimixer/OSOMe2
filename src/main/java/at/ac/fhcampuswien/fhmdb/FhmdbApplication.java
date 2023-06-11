@@ -2,8 +2,6 @@ package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.controllers.HomeController;
 import at.ac.fhcampuswien.fhmdb.controllers.WatchlistController;
-import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
-import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,7 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
-import at.ac.fhcampuswien.fhmdb.controllers.ControllerFactory;
+import at.ac.fhcampuswien.fhmdb.creationalPatterns.ControllerFactory;
 import javafx.util.Callback;
 
 public class FhmdbApplication extends Application {
