@@ -90,7 +90,7 @@ public class WatchlistController {
         List<WatchlistMovieEntity> watchlist = new ArrayList<>();
 
         try {
-            movieRepo = new WatchlistRepository();
+            movieRepo = WatchlistRepository.getWatchlist();
             watchlist = movieRepo.getAllMoviesFromWatchlist();
 
         } catch (Exception e) {

@@ -16,6 +16,7 @@ public class WatchlistRepository { // die DAO-KLasse
                                     */
     //Declarations
     Dao<WatchlistMovieEntity, Long> movieEntityDao;
+    private static WatchlistRepository repository;
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -81,9 +82,19 @@ public class WatchlistRepository { // die DAO-KLasse
     private WatchlistMovieEntity chosenMovie(WatchlistMovieEntity movie){
         return new WatchlistMovieEntity();
     }
-
      */
-    public WatchlistRepository() throws DatabaseException{
+
+
+    public static WatchlistRepository getWatchlist() throws DatabaseException{
+        if (repository == null) {
+            repository= new WatchlistRepository();
+        }
+        System.out.println(repository);
+        return repository;
+    }
+
+
+    private WatchlistRepository() throws DatabaseException{
         this.movieEntityDao = Database.getDatabase().getMovieEntityDao();
     }
 

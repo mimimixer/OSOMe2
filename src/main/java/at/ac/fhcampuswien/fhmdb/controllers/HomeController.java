@@ -85,7 +85,7 @@ public class HomeController implements Initializable {
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {
         try{
-            repository = new WatchlistRepository();
+            repository = WatchlistRepository.getWatchlist();
             repository.addToWatchlist((Movie) clickedItem);
             UIAlert.showConfirmationAlert(((Movie) clickedItem).getMovieTitle()+" has been added to your watchlist.");
         }catch (DatabaseException e) {
@@ -132,7 +132,7 @@ public class HomeController implements Initializable {
             System.out.println("Error while executing request: " + e.getMessage());;
             UIAlert.showInfoAlert(" There is an error downloading the movie list. \n Check your internet connection. \n\n In the meantime we will show your saved movies");
 
-            WatchlistRepository movieRepo = new WatchlistRepository();
+            WatchlistRepository movieRepo = WatchlistRepository.getWatchlist();
             List<WatchlistMovieEntity> watchlist;
             try {
                 watchlist = movieRepo.getAllMoviesFromWatchlist();
