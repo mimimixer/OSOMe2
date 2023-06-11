@@ -54,7 +54,7 @@ public class Movie{
         this.genres = genres;
         this.releaseYear = releaseYear;
         this.rating = rating;
-       this.writers = writers;
+        this.writers = writers;
         this.directors = directors;
         this.mainCast = mainCast;
         this.lengthInMinutes = lengthInMinutes;
