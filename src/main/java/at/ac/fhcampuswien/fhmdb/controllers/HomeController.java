@@ -193,7 +193,7 @@ public class HomeController implements Observer {
     //SET meaning of BUTTONS in UI
     //SEARCH BUTTON
     public void sortMovies() {
-        sortState.sort(observableMovies);
+        sortState.performSort(observableMovies);
     }
 
     //von Leon hinzugefügt
