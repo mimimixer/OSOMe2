@@ -1,10 +1,10 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
-import at.ac.fhcampuswien.fhmdb.StatePattern.AscendingState;
-import at.ac.fhcampuswien.fhmdb.StatePattern.DescendingState;
-import at.ac.fhcampuswien.fhmdb.StatePattern.NoneState;
-import at.ac.fhcampuswien.fhmdb.StatePattern.SortState;
+import at.ac.fhcampuswien.fhmdb.statePattern.AscendingState;
+import at.ac.fhcampuswien.fhmdb.statePattern.DescendingState;
+import at.ac.fhcampuswien.fhmdb.statePattern.NoneState;
+import at.ac.fhcampuswien.fhmdb.statePattern.SortState;
 import at.ac.fhcampuswien.fhmdb.creationalPatterns.URLBuilder;
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
@@ -35,7 +35,6 @@ import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import java.util.stream.DoubleStream;
