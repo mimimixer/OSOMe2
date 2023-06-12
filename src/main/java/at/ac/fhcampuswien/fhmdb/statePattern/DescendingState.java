@@ -11,8 +11,8 @@ public class DescendingState implements SortState{
     private SortedState sortedState;
     private SortState sortState;
 
-    public DescendingState() {
-        this.sortedState = SortedState.DESCENDING;
+    public DescendingState(ObservableList<Movie> movieList) {
+        movieList.sort(Comparator.comparing(Movie::getMovieTitle).reversed());
     }
     public void setSortedState(SortedState sortedState) {
         this.sortedState = sortedState;
@@ -26,11 +26,7 @@ public class DescendingState implements SortState{
         return sortedState;
     }
     @Override
-    public void performSort(ObservableList<Movie> movieList) {
-        movieList.sort(Comparator.comparing(Movie::getMovieTitle));
-        setSortedState(SortedState.ASCENDING);
-       // this.sortState=new AscendingState();
-        setSortState(new AscendingState());
-
+    public SortState performSort(ObservableList<Movie> movieList) {
+        return new AscendingState(movieList);
     }
 }

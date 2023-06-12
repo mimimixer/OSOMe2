@@ -4,8 +4,6 @@ import at.ac.fhcampuswien.fhmdb.enums.SortedState;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.collections.ObservableList;
 
-import java.util.Comparator;
-
 public class NoneState implements SortState {
     ObservableList<Movie> movieList;
     private SortedState sortedState;
@@ -27,10 +25,8 @@ public class NoneState implements SortState {
         return sortedState;
     }
     @Override
-    public void performSort(ObservableList<Movie> movieList) {
-        movieList.sort(Comparator.comparing(Movie::getMovieTitle));
-        setSortedState(SortedState.ASCENDING);
-        setSortState(new AscendingState());
+    public SortState performSort(ObservableList<Movie> movieList) {
+        return new  AscendingState(movieList);
     }
 }
 

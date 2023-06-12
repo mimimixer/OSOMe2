@@ -5,6 +5,8 @@ import at.ac.fhcampuswien.fhmdb.statePattern.AscendingState;
 import at.ac.fhcampuswien.fhmdb.statePattern.DescendingState;
 import at.ac.fhcampuswien.fhmdb.statePattern.NoneState;
 import at.ac.fhcampuswien.fhmdb.statePattern.SortState;
+import at.ac.fhcampuswien.fhmdb.statePattern.MovieSortState;
+
 import at.ac.fhcampuswien.fhmdb.creationalPatterns.URLBuilder;
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.customExceptions.MovieApiException;
@@ -76,7 +78,8 @@ public class HomeController implements Observer {
     protected ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     protected ObservableList<WatchlistMovieEntity> watchlistMovies = FXCollections.observableArrayList();
     public List<WatchlistMovieEntity> watchlistAll = new ArrayList<>();
-    private SortState sortState = new NoneState();;
+    private SortState sortState = new NoneState();
+    public MovieSortState movieSortState=new MovieSortState();
 
     WatchlistRepository repository;
     private static Callback<Class<?>, Object> myFactory;
@@ -188,12 +191,15 @@ public class HomeController implements Observer {
         //    watchlistMovies.clear();
         //   watchlistMovies.addAll(watchlistAll); // add all movies to the observable list
         //   sortedState = SortedState.NONE;
+
     }
 
     //SET meaning of BUTTONS in UI
     //SEARCH BUTTON
     public void sortMovies() {
-        sortState.sort(observableMovies);
+        movieSortState.sort(observableMovies);
+        System.out.println(movieSortState.actualObjectToBeSorted.getClass());
+
     }
 
     //von Leon hinzugefügt
@@ -290,15 +296,12 @@ public class HomeController implements Observer {
         getMostPopularActor(observableMovies);*/
     }
     public void sortBtnClicked(ActionEvent actionEvent) {
-        if (sortState instanceof NoneState) {
-            sortState = new AscendingState();
-            sortBtn.setText("Sort (Ascending)");
-        } else if (sortState instanceof AscendingState) {
-            sortState = new DescendingState();
-            sortBtn.setText("Sort (Descending)");
-        } else if (sortState instanceof DescendingState) {
-            sortState = new NoneState();
+        if (movieSortState.actualObjectToBeSorted instanceof NoneState){
             sortBtn.setText("Sort");
+        } else if (movieSortState.actualObjectToBeSorted instanceof AscendingState) {
+            sortBtn.setText("Sort (Ascending)");
+        } else if (movieSortState.actualObjectToBeSorted instanceof DescendingState) {
+            sortBtn.setText("Sort (Descending)");
         }
         sortMovies();
     }

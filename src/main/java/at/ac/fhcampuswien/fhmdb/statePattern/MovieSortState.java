@@ -6,12 +6,12 @@ import javafx.collections.ObservableList;
 import at.ac.fhcampuswien.fhmdb.statePattern.*;
 
 public class MovieSortState {
-    public SortState actualObjectToBeSorted;
+    public SortState actualObjectToBeSorted=new NoneState();;
     private SortedState currentStateOfSortingInformation;
 
 
     public MovieSortState() {
-        actualObjectToBeSorted=new NoneState();
+        this.actualObjectToBeSorted=actualObjectToBeSorted;
         currentStateOfSortingInformation = SortedState.NONE;
     }
 
@@ -26,7 +26,8 @@ public class MovieSortState {
         return currentStateOfSortingInformation;
     }
 
-    public void sortMovies(ObservableList<Movie> movieList) {
-        actualObjectToBeSorted.performSort(movieList);
+    public SortState sort(ObservableList<Movie> movieList) {
+        actualObjectToBeSorted = actualObjectToBeSorted.performSort(movieList);
+        return actualObjectToBeSorted;
     }
 }

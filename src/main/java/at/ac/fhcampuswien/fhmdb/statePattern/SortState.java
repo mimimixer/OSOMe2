@@ -7,6 +7,6 @@ import javafx.collections.ObservableList;
 import java.util.List;
 
 public interface SortState {
-    void performSort(ObservableList<Movie>  movieList);
+    SortState performSort(ObservableList<Movie>  movieList);
 
 }
