@@ -4,6 +4,9 @@ import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
 import at.ac.fhcampuswien.fhmdb.customExceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.observePattern.ObservableEnum;
+import at.ac.fhcampuswien.fhmdb.observePattern.ObservableUpdates;
+import at.ac.fhcampuswien.fhmdb.observePattern.Observer;
 import at.ac.fhcampuswien.fhmdb.persistience.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import at.ac.fhcampuswien.fhmdb.ui.UIAlert;
@@ -13,9 +16,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -28,9 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static at.ac.fhcampuswien.fhmdb.ui.UIAlert.showInfoAlert;
-
-public class WatchlistController {
+public class WatchlistController implements Observer {
 
     @FXML
     public VBox box;
@@ -43,7 +41,7 @@ public class WatchlistController {
     @FXML
     public JFXButton returnBtn;
 
-    WatchlistRepository movieRepo;
+    WatchlistRepository repository;
 
     ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
@@ -55,18 +53,18 @@ public class WatchlistController {
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem)->{
 
         try{
-            movieRepo.removeFromWatchlist((Movie) clickedItem);
-
-        FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
+            repository.removeFromWatchlist((Movie) clickedItem);
+            repository.notifyObservers(new ObservableUpdates(((Movie) clickedItem).getMovieTitle(), ObservableEnum.REMOVED));
+            FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
             fxmlLoader.setControllerFactory(myFactory);
             Parent root = FXMLLoader.load(fxmlLoader.getLocation());
-        Scene scene = box.getScene();
-        scene.setRoot(root);
-        String title = ((Movie) clickedItem).getMovieTitle();
-        //UIAlert.showConfirmationAlert(title + " removed from watchlist");
-        } catch (DatabaseException e){
+            Scene scene = box.getScene();
+            scene.setRoot(root);
 
-        //    UIAlert.showErrorAlert("Error while deleting movie from watchlist");
+
+
+        } catch (DatabaseException e){
+            UIAlert.showErrorAlert("Error while deleting movie from watchlist");
         }
     };
 
@@ -100,15 +98,24 @@ public class WatchlistController {
     }
 
 
-    public void initialize()  {
+    public void initialize() throws DatabaseException {
 
         System.out.println("WatchlistController initialized");
 
         List<WatchlistMovieEntity> watchlist = new ArrayList<>();
 
         try {
-            movieRepo = WatchlistRepository.getWatchlist();
-            watchlist = movieRepo.getAllMoviesFromWatchlist();
+            repository = WatchlistRepository.getWatchlist();
+            repository.addObserver(this);
+        } catch (DatabaseException e) {
+            System.out.println();
+            System.out.println();
+            System.out.println("what now");
+        }
+
+        try {
+            repository = WatchlistRepository.getWatchlist();
+            watchlist = repository.getAllMoviesFromWatchlist();
 
         } catch (Exception e) {
             System.out.println("Some databaseError " + e.getMessage());
@@ -122,10 +129,7 @@ public class WatchlistController {
                         .collect(Collectors.toList())
         );
 
-        watchlistView.setItems(movies);
-        watchlistView.setCellFactory(movieListView-> {
-            return new MovieCell(true, onAddToWatchlistClicked);
-        });
+        initializeLayout(movies);
     }
 
     public void initializeLayout(ObservableList<Movie>movies) throws DatabaseException{
@@ -145,20 +149,16 @@ public class WatchlistController {
             throw new DatabaseException("Error initializing watchlist layout", e);
         }
 
-        /*
-        watchlistView.setItems(movies);
-        watchlistView.setCellFactory(watchlistView -> {
-            try {
-                return new MovieCell(true);
-            } catch (DatabaseException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        */
     }
 
+    @Override
+    public void update(ObservableUpdates observableUpdates) {
+        if(observableUpdates.getObservableEnum()== ObservableEnum.REMOVED){
+                String title = (observableUpdates.getData());
+                UIAlert.showConfirmationAlert(title + " removed from watchlist");
+        }
     }
+}
     /*Die Controller Klasse(n) fungieren als Schicht zwischen dem UI-Layer und dem Data-Layer.
     Folglich sind diese nur um jeweils eine Click-Funktion zu erweitern. So soll beim Klick auf
     „(Add to) Watchlist” ein Film in der Datenbank angelegt, bzw. beim Klick auf „Remove“ wieder

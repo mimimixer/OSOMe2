@@ -109,19 +109,16 @@ public class WatchlistRepository implements Observable { // die DAO-KLasse
         observers.add(observer);
 
     }
-
     @Override
     public void removeObserver(Observer observer) {
         observers.remove(observer);
 
     }
 
-
     @Override
     public void notifyObservers(ObservableUpdates observableUpdates) {
         for(Observer observer: observers){
             observer.update(observableUpdates);
         }
-
     }
 }

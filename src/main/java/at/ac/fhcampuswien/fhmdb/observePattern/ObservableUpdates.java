@@ -1,11 +1,11 @@
 package at.ac.fhcampuswien.fhmdb.observePattern;
 
 public class ObservableUpdates {
-    private String title;
+    private String data;
     private ObservableEnum observableEnum;
 
-    public ObservableUpdates(String title, ObservableEnum observableEnum){
-        this.title = title;
+    public ObservableUpdates(String data, ObservableEnum observableEnum){
+        this.data = data;
         this.observableEnum = observableEnum;
 
     }
@@ -13,8 +13,8 @@ public class ObservableUpdates {
     public ObservableEnum getObservableEnum(){
         return observableEnum;
     }
-    public String getTitle(){
-        return title;
+    public String getData(){
+        return data;
     }
 
 }

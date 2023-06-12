@@ -101,6 +101,8 @@ public class HomeController implements Observer {
         } catch (DatabaseException e) {
             repository.notifyObservers(new ObservableUpdates(
                     ((Movie) clickedItem).getMovieTitle(), ObservableEnum.EXISTS));
+
+
             String eMessage = e.getMessage();
             if (eMessage != null) {
                 if (eMessage.equals("add")) {
@@ -401,11 +403,11 @@ public class HomeController implements Observer {
     @Override
     public void update(ObservableUpdates update) {
         if (update.getObservableEnum() == ObservableEnum.ADDED){
-            UIAlert.showConfirmationAlert( update.getTitle() + " successfully added to your watchlist.");
-        }else{
-            UIAlert.showInfoAlert(update.getTitle() + " already exists in your watchlist");
+            UIAlert.showConfirmationAlert( update.getData() + " successfully added to your watchlist.");
+        }if (update.getObservableEnum() == ObservableEnum.EXISTS)
+            UIAlert.showInfoAlert(update.getData() + " already exists in your watchlist");
         }
     }
-}
+
 
 
