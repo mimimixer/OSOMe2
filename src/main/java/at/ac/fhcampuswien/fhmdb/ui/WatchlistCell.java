@@ -16,7 +16,7 @@ public class WatchlistCell extends ListCell<WatchlistMovieEntity> {
     private final Button showWatchlistBtn=new Button("Show Watchlist");
 
     private boolean collapsedDetails = true;
-    WatchlistRepository repository= WatchlistRepository.getWatchlist();
+    WatchlistRepository repository= WatchlistRepository.getInstance();
 
 
     //new

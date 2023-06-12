@@ -11,10 +11,22 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
   //  private Object watchlistControllerInstance;
     private Object newController;
 
-    public Object getInstance(Class<?> controllerClass) {
+    private static ControllerFactory controllerFactoryInstance;
+/*private ControllerFactory(){}
+    public static ControllerFactory getInstance() { // allows only 1 instance of MyFactory
+        if(controllerFactoryInstance == null)
+        {
+            controllerFactoryInstance = new ControllerFactory();
+        }
+        return controllerFactoryInstance;
+    }
+
+*/
+   /*
+    public Object getControllerInstance(Class<?> controllerClass) {
         try {
         if(controllerClass == HomeController.class || controllerClass== WatchlistController.class){
-            if (controllerClass == null){
+            if (getConInstance(controllerClass) == null){
                 controllerInstance= call(controllerClass);
             }
         }
@@ -24,10 +36,20 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
         }
         return controllerInstance;
     }
+
+    */
+
+
     @Override
     public Object call(Class<?> controllerClass) {
         try {
-           newController = controllerClass.getDeclaredConstructor().newInstance();
+            if (controllerClass == HomeController.class) {
+                newController = HomeController.getInstance();
+            } else if (controllerClass == WatchlistController.class) {
+                newController = WatchlistController.getInstance();
+            } else {
+                newController = controllerClass.getDeclaredConstructor().newInstance();
+            }
         } catch (Exception e) {
             System.out.println("failed to create instance in FXMLLoader");
             e.printStackTrace();

@@ -89,7 +89,8 @@ public class WatchlistRepository implements Observable { // die DAO-KLasse
      */
 
 
-    public static WatchlistRepository getWatchlist() throws DatabaseException{
+
+    public static WatchlistRepository getInstance() throws DatabaseException{
         if (repository == null) {
             repository= new WatchlistRepository();
         }
@@ -106,8 +107,8 @@ public class WatchlistRepository implements Observable { // die DAO-KLasse
 
     @Override
     public void addObserver(Observer observer) {
+        if(!observers.contains(observer))
         observers.add(observer);
-
     }
     @Override
     public void removeObserver(Observer observer) {

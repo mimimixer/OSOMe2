@@ -85,11 +85,22 @@ public class HomeController implements Observer {
         myFactory = factory;
     }
 
+    //Constructor
+    private static HomeController homeController;
+
+    public static HomeController getInstance(){
+        if (homeController == null) {
+            homeController= new HomeController();
+        }
+        System.out.println(homeController);
+        return homeController;
+    }
+
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {
 
         //insert observePattern here..
         try {
-            repository = WatchlistRepository.getWatchlist();
+            repository = WatchlistRepository.getInstance();
             repository.addToWatchlist((Movie) clickedItem);
 
 
@@ -124,8 +135,10 @@ public class HomeController implements Observer {
     //START UI
     public void initialize() {
         try {
-            repository = WatchlistRepository.getWatchlist();
+            repository = WatchlistRepository.getInstance();
             repository.addObserver(this);
+            System.out.println("Observerlist: ");
+            System.out.println(WatchlistRepository.observers.toString());
         } catch (DatabaseException e) {
             System.out.println();
             System.out.println();
@@ -153,7 +166,7 @@ public class HomeController implements Observer {
             ;
             UIAlert.showInfoAlert(" There is an error downloading the movie list. \n Check your internet connection. \n\n In the meantime we will show your saved movies");
 
-            WatchlistRepository movieRepo = WatchlistRepository.getWatchlist();
+            WatchlistRepository movieRepo = WatchlistRepository.getInstance();
             List<WatchlistMovieEntity> watchlist;
             try {
                 watchlist = movieRepo.getAllMoviesFromWatchlist();
@@ -288,7 +301,6 @@ public class HomeController implements Observer {
             sortState = new NoneState();
             sortBtn.setText("Sort");
         }
-
         sortMovies();
     }
 
@@ -319,7 +331,6 @@ public class HomeController implements Observer {
         }
     }
 
-
     public List<Integer> getAllExistingReleaseYears (List < Movie > movies) {
         List<Integer> releaseYears = movies.stream()
                 .map(Movie::getReleaseYear)
@@ -328,11 +339,6 @@ public class HomeController implements Observer {
                 .collect(Collectors.toList());
         return releaseYears;
     }
-
-
-
-
-
 
     public void resetBtnClicked (ActionEvent actionEvent) {
         sortBtn.setText("Sort");
@@ -358,22 +364,9 @@ public class HomeController implements Observer {
         }
     }
 
-
-
-    String getBusiestWriter (List < Movie > movies) {
-        return movies.stream()
-                .flatMap(movie -> movie.getWriters().stream())
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey).orElse("");
-    }
-
     public void showWatchlistBtnClicked(){
         loadWatchlistView();
     }
-
 
     public void loadWatchlistView() {
           /*  if (watchlistPage == null) {
@@ -405,7 +398,7 @@ public class HomeController implements Observer {
         if (update.getObservableEnum() == ObservableEnum.ADDED){
             UIAlert.showConfirmationAlert( update.getData() + " successfully added to your watchlist.");
         }if (update.getObservableEnum() == ObservableEnum.EXISTS)
-            UIAlert.showInfoAlert(update.getData() + " already exists in your watchlist");
+            UIAlert.showDoneAlert(update.getData() + " already exists in your watchlist");
         }
     }
 

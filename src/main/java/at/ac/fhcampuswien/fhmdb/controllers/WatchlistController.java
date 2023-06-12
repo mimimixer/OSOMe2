@@ -36,7 +36,8 @@ public class WatchlistController implements Observer {
     @FXML
     public JFXListView watchlistView;
 
-
+private WatchlistController(){}
+    private static  WatchlistController watchlistController;
 
     @FXML
     public JFXButton returnBtn;
@@ -76,14 +77,8 @@ public class WatchlistController implements Observer {
     }
 
     public void loadHomeView() {
-      /*  if (homePage == null) {
-            homePage = (HomeController) controllerFactory.call(HomeController.class);
-        }
-
-       */
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
         fxmlLoader.setControllerFactory(myFactory);
-        //fxmlLoader.setController(homePage);
         try {
             Scene scene = new Scene(fxmlLoader.load(), 880, 620);
             Stage stage = (Stage) box.getScene().getWindow();
@@ -105,7 +100,7 @@ public class WatchlistController implements Observer {
         List<WatchlistMovieEntity> watchlist = new ArrayList<>();
 
         try {
-            repository = WatchlistRepository.getWatchlist();
+            repository = WatchlistRepository.getInstance();
             repository.addObserver(this);
         } catch (DatabaseException e) {
             System.out.println();
@@ -114,7 +109,7 @@ public class WatchlistController implements Observer {
         }
 
         try {
-            repository = WatchlistRepository.getWatchlist();
+            repository = WatchlistRepository.getInstance();
             watchlist = repository.getAllMoviesFromWatchlist();
 
         } catch (Exception e) {
@@ -157,6 +152,14 @@ public class WatchlistController implements Observer {
                 String title = (observableUpdates.getData());
                 UIAlert.showConfirmationAlert(title + " removed from watchlist");
         }
+    }
+
+    public static WatchlistController getInstance() throws DatabaseException{
+        if (watchlistController == null) {
+            watchlistController= new WatchlistController();
+        }
+        System.out.println(watchlistController);
+        return watchlistController;
     }
 }
     /*Die Controller Klasse(n) fungieren als Schicht zwischen dem UI-Layer und dem Data-Layer.
