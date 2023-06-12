@@ -80,11 +80,9 @@ public class HomeController implements Observer {
     private SortState sortState = new NoneState();;
 
     WatchlistRepository repository;
-    private static Callback<Class<?>, Object> controllerFactory;
-    private static WatchlistController watchlistPage;
-
+    private static Callback<Class<?>, Object> myFactory;
     public static void setControllerFactory(Callback<Class<?>, Object> factory) {
-        controllerFactory = factory;
+        myFactory = factory;
     }
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem) -> {
@@ -386,6 +384,7 @@ public class HomeController implements Observer {
         FXMLLoader fxmlLoader = new FXMLLoader();
         //   System.out.println(location.toString());
         fxmlLoader.setLocation(FhmdbApplication.class.getResource("watchlist-view.fxml"));
+        fxmlLoader.setControllerFactory(myFactory);
         //  fxmlLoader.setController(watchlistPage);
 
         try{
@@ -405,10 +404,7 @@ public class HomeController implements Observer {
             UIAlert.showConfirmationAlert( update.getTitle() + " successfully added to your watchlist.");
         }else{
             UIAlert.showInfoAlert(update.getTitle() + " already exists in your watchlist");
-
         }
-
-
     }
 }
 

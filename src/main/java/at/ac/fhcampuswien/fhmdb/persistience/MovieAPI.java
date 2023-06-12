@@ -20,7 +20,6 @@ public class MovieAPI {
   //  private static final String scheme="http";
     private static final String path = "/movies";
 
-    private static final String DELI = "&";
     private static OkHttpClient client = new OkHttpClient();
 
     public static String getPath() {

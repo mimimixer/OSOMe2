@@ -47,10 +47,9 @@ public class WatchlistController {
 
     ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-    private static Callback<Class<?>, Object> controllerFactory;
-    private static HomeController homePage;
+    private static Callback<Class<?>, Object> myFactory;
     public static void setControllerFactory(Callback<Class<?>, Object> factory) {
-        controllerFactory = factory;
+        myFactory = factory;
     }
 
     private final ClickEventHandler onAddToWatchlistClicked = (clickedItem)->{
@@ -59,7 +58,8 @@ public class WatchlistController {
             movieRepo.removeFromWatchlist((Movie) clickedItem);
 
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("watchlist-view.fxml"));
-        Parent root = FXMLLoader.load(fxmlLoader.getLocation());
+            fxmlLoader.setControllerFactory(myFactory);
+            Parent root = FXMLLoader.load(fxmlLoader.getLocation());
         Scene scene = box.getScene();
         scene.setRoot(root);
         String title = ((Movie) clickedItem).getMovieTitle();
@@ -84,6 +84,7 @@ public class WatchlistController {
 
        */
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
+        fxmlLoader.setControllerFactory(myFactory);
         //fxmlLoader.setController(homePage);
         try {
             Scene scene = new Scene(fxmlLoader.load(), 880, 620);
